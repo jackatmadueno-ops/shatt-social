@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Shatt | Inicio</title>
+    <script src="https://unpkg.com/pocketbase@0.21.5/dist/pocketbase.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/plugin/relativeTime.js"></script>
+    <script>dayjs.extend(window.dayjs_plugin_relativeTime);</script>
+
+    <style>
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        :root { 
+            --main-blue: #3a6186; 
+            --glossy: linear-gradient(180deg, #ffffff 0%, #d1d1d1 100%); 
+            --shatt-blue: #3b5998; 
+            --panel-opacity: 1;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.15);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.2);
+            --transition: all 0.3s ease;
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-lg: 16px;
+            --spacing-xl: 24px;
+            --star-color: #ddd;
+            --star-active: #ffc107;
+            --star-hover: #ffdb6e;
+        }
+        
+        body { 
+            background: var(--main-blue); 
+            background-size: cover; 
+            background-attachment: fixed; 
+            background-position: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; 
+            margin: 0; 
+            min-height: 100vh;
+            color: #000; 
+            line-height: 1.5;
+            transition: background 0.3s ease;
+            padding-bottom: 70px;
+        }
+        
+        body.dark-mode {
+            background: #0f0f1a;
+        }
+        
+        body.dark-mode .panel-retro,
+        body.dark-mode .publish-area,
+        body.dark-mode .post {
+            background: rgba(30, 30, 50, 0.95);
+            color: white;
+            border-color: #555;
+        }
+        
+        body.dark-mode .navbar-top {
+            background: #2a2a3a;
+            border-color: #555;
+        }
+        
+        body.dark-mode .navbar-top a,
+        body.dark-mode .navbar-top span {
+            color: white;
+        }
+        
+        body.dark-mode .btn-retro {
+            background: #444;
+            color: white;
+            border-color: #666;
+        }
+        
+        .app-wrapper { 
+            max-width: 1600px; 
+            margin: 0 auto; 
+            padding: var(--spacing-md); 
+        }
+        
+        /* ========== NAVBAR SUPERIOR ========== */
+        .navbar-top {
+            background: var(--glossy);
+            border: 2px solid #666;
+            border-radius: var(--border-radius);
+            padding: 6px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: var(--spacing-xl);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo-shatt { 
+            font-size: 24px; 
+            font-weight: bold; 
+            color: #fff; 
+            text-decoration: none; 
+            text-shadow: 2px 2px 0px var(--shatt-blue); 
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+        
+        .nav-links {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 5px;
+            background: rgba(0,0,0,0.05);
+            padding: 4px 12px;
+            border-radius: 40px;
+        }
+        
+        .nav-links a { 
+            text-decoration: none; 
+            color: #000; 
+            font-weight: bold; 
+            padding: 6px 14px; 
+            font-size: 13px;
+            white-space: nowrap;
+            border-radius: 30px;
+            transition: var(--transition);
+        }
+        
+        .nav-links a:hover { 
+            color: var(--shatt-blue); 
+            background: rgba(59,89,152,0.1); 
+        }
+        
+        .nav-links a.active {
+            background: var(--shatt-blue);
+            color: white;
+        }
+        
+        .nav-icons { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            flex-wrap: nowrap;
+        }
+        
+        .nav-icons > * { 
+            cursor: pointer; 
+            font-size: 18px; 
+            transition: var(--transition); 
+            padding: 6px;
+            min-width: 36px;
+            min-height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            position: relative;
+        }
+        
+        .nav-icons > *:hover { 
+            transform: scale(1.1); 
+            background: rgba(255,255,255,0.3); 
+        }
+        
+        /* ========== BÚSQUEDA ========== */
+        .search-icon-btn {
+            cursor: pointer;
+            font-size: 20px;
+            background: none;
+            border: none;
+        }
+        
+        .search-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 10000;
+            overflow-y: auto;
+        }
+        
+        .search-modal-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .search-modal-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 60px;
+            position: sticky;
+            top: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 10;
+        }
+        
+        .search-back-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: white;
+            padding: 10px;
+            min-width: 50px;
+            min-height: 50px;
+            border-radius: 50%;
+        }
+        
+        .search-modal-input {
+            flex: 1;
+            padding: 15px 20px;
+            font-size: 18px;
+            border: 2px solid var(--shatt-blue);
+            border-radius: 50px;
+            outline: none;
+            background: white;
+            color: #000;
+        }
+        
+        .search-history-section {
+            background: rgba(255,255,255,0.1);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .search-history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            color: white;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .clear-history-btn {
+            background: rgba(255,80,80,0.8);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .history-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .history-item {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .search-results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .search-result-item-modal {
+            background: rgba(255,255,255,0.15);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .search-result-img-modal {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--shatt-blue);
+        }
+        
+        .search-result-name-modal {
+            font-weight: bold;
+            color: white;
+        }
+        
+        .no-results-modal {
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            padding: 40px;
+        }
+        
+        /* ========== NOTIFICACIONES ========== */
+        .notifications-overlay {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .notifications-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .notifications-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: min(400px, 85%);
+            background: linear-gradient(135deg, #fff 0%, #f5f7fa 100%);
+            box-shadow: -5px 0 30px rgba(0,0,0,0.3);
+            z-index: 10001;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .notifications-panel.active {
+            transform: translateX(0);
+        }
+        
+        body.dark-mode .notifications-panel {
+            background: linear-gradient(135deg, #1e1e2e 0%, #2a2a3a 100%);
+            color: white;
+        }
+        
+        .notifications-header {
+            background: var(--shatt-blue);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .notifications-header h2 {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .close-notif-panel {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 30px;
+        }
+        
+        .mark-all-read {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        
+        .notifications-stats {
+            padding: 12px 20px;
+            background: #e8ecf1;
+            font-size: 12px;
+            color: #666;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .notifications-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .notif-group-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #999;
+            margin-bottom: 10px;
+            padding-left: 10px;
+        }
+        
+        .notif-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            border-left: 3px solid transparent;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        body.dark-mode .notif-card {
+            background: #2a2a3a;
+            color: white;
+        }
+        
+        .notif-card.unread {
+            background: linear-gradient(135deg, #e8f0fe 0%, #ffffff 100%);
+            border-left-color: var(--shatt-blue);
+        }
+        
+        .notif-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        
+        .notif-icon.like { background: rgba(233,30,99,0.15); color: #e91e63; }
+        .notif-icon.comment { background: rgba(76,175,80,0.15); color: #4caf50; }
+        .notif-icon.follow { background: rgba(33,150,243,0.15); color: #2196f3; }
+        .notif-icon.share { background: rgba(255,152,0,0.15); color: #ff9800; }
+        
+        .notif-content { flex: 1; }
+        .notif-text { font-size: 13px; line-height: 1.4; margin-bottom: 4px; }
+        .notif-text strong { color: var(--shatt-blue); }
+        .notif-time { font-size: 10px; color: #999; }
+        .empty-notifications { text-align: center; padding: 60px 20px; color: #999; }
+        
+        /* ========== CONFIGURACIÓN ========== */
+        .settings-overlay {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .settings-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: min(400px, 85%);
+            background: linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%);
+            color: white;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.3);
+            z-index: 10001;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .settings-panel.active {
+            transform: translateX(0);
+        }
+        
+        .settings-header {
+            background: var(--shatt-blue);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .settings-header h2 { font-size: 20px; display: flex; align-items: center; gap: 8px; }
+        .close-settings-panel { background: rgba(255,255,255,0.2); border: none; color: white; font-size: 20px; cursor: pointer; padding: 8px 12px; border-radius: 30px; }
+        .settings-list { flex: 1; overflow-y: auto; padding: 15px; }
+        .settings-section { margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        .settings-section-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #5dade2; margin-bottom: 12px; }
+        .settings-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .settings-item-info { flex: 1; }
+        .settings-item-title { font-size: 14px; font-weight: bold; margin-bottom: 4px; }
+        .settings-item-desc { font-size: 11px; opacity: 0.6; }
+        
+        .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: 0.3s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: 0.3s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--shatt-blue); }
+        input:checked + .slider:before { transform: translateX(26px); }
+        
+        .filter-tag { display: inline-flex; align-items: center; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 20px; font-size: 12px; margin: 4px 4px 0 0; }
+        .filter-tag .remove-filter { margin-left: 6px; cursor: pointer; font-weight: bold; }
+        .filter-input-container { display: flex; gap: 8px; margin-top: 8px; }
+        .filter-input-container input { flex: 1; padding: 8px; border-radius: 20px; border: none; background: rgba(255,255,255,0.15); color: white; }
+        .add-filter-btn { background: var(--shatt-blue); border: none; padding: 8px 15px; border-radius: 20px; color: white; cursor: pointer; }
+        
+        .settings-btn { background: rgba(255,255,255,0.15); border: none; padding: 10px 15px; border-radius: 25px; color: white; cursor: pointer; font-size: 13px; width: 100%; text-align: left; margin-bottom: 8px; }
+        .settings-btn.danger { background: rgba(231, 76, 60, 0.3); color: #e74c3c; }
+        .settings-btn:hover { background: rgba(255,255,255,0.25); }
+        .version-info { text-align: center; font-size: 11px; opacity: 0.5; padding: 15px; }
+        
+        /* ========== BARRA INFERIOR (MÓVIL) ========== */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--glossy);
+            border-top: 2px solid #000;
+            padding: 8px 12px;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 200;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            color: #000;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 30px;
+            transition: var(--transition);
+        }
+        
+        .bottom-nav-item span:first-child { font-size: 22px; }
+        .bottom-nav-item span:last-child { font-size: 10px; }
+        .bottom-nav-item.active { background: var(--shatt-blue); color: white; }
+        .bottom-nav-item:hover { background: rgba(0,0,0,0.05); }
+        
+        /* ========== MAIN CONTAINER ========== */
+        .main-container { 
+            display: grid; 
+            grid-template-columns: 280px 1fr 280px; 
+            gap: var(--spacing-lg); 
+            max-width: 1400px; 
+            margin: 0 auto; 
+        }
+        
+        .sidebar { display: block; }
+        .right-sidebar { display: block; }
+        
+        /* ========== ESTILOS ORIGINALES ========== */
+        .panel-retro { 
+            background: rgba(255, 255, 255, var(--panel-opacity)); 
+            border: 2px solid #000; 
+            padding: var(--spacing-lg); 
+            box-shadow: var(--shadow-md); 
+            margin-bottom: var(--spacing-lg); 
+            backdrop-filter: blur(2px); 
+            border-radius: var(--border-radius); 
+            width: 100%; 
+            overflow: hidden; 
+        }
+        
+        .pfp-box { 
+            width: 100%; 
+            aspect-ratio: 1/1; 
+            max-height: 220px; 
+            border: 2px solid #000; 
+            background: #eee; 
+            overflow: hidden; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: var(--border-radius-sm); 
+            margin-bottom: var(--spacing-md); 
+        }
+        
+        .pfp-box img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .side-title { 
+            background: #d5e1ef; 
+            padding: var(--spacing-md); 
+            font-weight: bold; 
+            border: 1px solid #3a6186; 
+            margin-bottom: var(--spacing-md); 
+            font-size: 13px; 
+            text-align: center; 
+            border-radius: var(--border-radius-sm); 
+        }
+        
+        .publish-area { 
+            background: rgba(244, 244, 244, 0.95); 
+            border: 2px solid #999; 
+            padding: var(--spacing-xl); 
+            border-radius: var(--border-radius); 
+            margin-bottom: var(--spacing-xl); 
+            width: 100%; 
+        }
+        
+        .content-input { 
+            width: 100%; 
+            min-height: 80px; 
+            border: 1px solid #ccc; 
+            padding: var(--spacing-md); 
+            border-radius: var(--border-radius-sm); 
+            font-family: inherit; 
+            font-size: 14px; 
+            resize: vertical; 
+            margin: var(--spacing-md) 0; 
+        }
+        
+        /* POSTS */
+        .post { 
+            background: rgba(255, 255, 255, var(--panel-opacity)); 
+            border: 2px solid #333; 
+            padding: var(--spacing-xl); 
+            margin-bottom: var(--spacing-lg); 
+            box-shadow: var(--shadow-md); 
+            border-radius: var(--border-radius); 
+            transition: var(--transition); 
+            width: 100%; 
+            overflow: hidden; 
+            position: relative; 
+            word-wrap: break-word;
+        }
+        
+        .post:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+        
+        .post-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+            object-position: center;
+            border-radius: var(--border-radius-sm);
+            margin: var(--spacing-md) 0;
+            cursor: pointer;
+            display: block;
+            background: #f0f2f5;
+        }
+        
+        .post audio { 
+            width: 100%; 
+            height: 45px; 
+            margin: var(--spacing-md) 0; 
+            border-radius: var(--border-radius-sm); 
+            background: #f0f0f0; 
+            border: 1px solid #ddd; 
+        }
+        
+        .post-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start; 
+            margin-bottom: var(--spacing-md); 
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+        
+        .post-user-info { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            flex-wrap: wrap; 
+            flex: 1;
+        }
+        
+        .post-user-name { font-weight: bold; font-size: 15px; }
+        .post-user-status { font-size: 12px; color: #666; }
+        .post-date { font-size: 11px; color: #888; }
+        
+        .post-menu-container { position: relative; }
+        .post-menu-btn { background: none; border: none; font-size: 20px; cursor: pointer; padding: 5px 10px; border-radius: 50%; min-width: 44px; min-height: 44px; }
+        .post-menu { position: absolute; top: 30px; right: 0; background: white; border: 2px solid #000; border-radius: var(--border-radius-sm); min-width: 180px; z-index: 1000; display: none; }
+        .post-menu.show { display: block; }
+        .post-menu-item { padding: 10px 15px; cursor: pointer; border-bottom: 1px solid #eee; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+        .post-menu-item.delete:hover { background: #ffebee; color: #c62828; }
+        
+        .interaction-bar { 
+            margin-top: var(--spacing-lg); 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: space-between; 
+            align-items: center; 
+            gap: var(--spacing-md); 
+            border-top: 1px solid #eee; 
+            padding-top: var(--spacing-lg); 
+        }
+        
+        .star-rating { display: inline-flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+        .star-rating .star { font-size: 24px; cursor: pointer; color: var(--star-color); transition: all 0.2s; }
+        .star-rating .star.active { color: var(--star-active); }
+        .star-rating .star:hover { transform: scale(1.2); color: var(--star-hover); }
+        
+        .rating-info { font-size: 13px; color: #666; background: rgba(0,0,0,0.05); padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
+        
+        .comment-btn { color: #0055aa; cursor: pointer; font-size: 13px; font-weight: bold; display: inline-flex; align-items: center; gap: 5px; padding: 8px 16px; border-radius: 20px; transition: var(--transition); min-height: 44px; }
+        .comment-btn:hover { background: rgba(0,85,170,0.1); }
+        
+        .comment-box { margin-top: var(--spacing-lg); padding: var(--spacing-lg); background: rgba(0,0,0,0.03); border-radius: var(--border-radius-sm); border-top: 2px solid #ddd; display: none; }
+        .comment-box input { width: 100%; padding: var(--spacing-md); border: 2px solid #000; border-radius: var(--border-radius-sm); font-size: 14px; }
+        .comm-list { margin-bottom: 15px; max-height: 200px; overflow-y: auto; }
+        
+        .comment-item { margin-bottom: 10px; padding: 8px; background: #f5f5f5; border-radius: 4px; word-wrap: break-word; }
+        .comment-user { cursor: pointer; color: var(--shatt-blue); text-decoration: underline; font-weight: bold; }
+        .comment-date { font-size: 10px; color: #666; margin-top: 4px; }
+        
+        .galeria-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-sm); margin-top: var(--spacing-md); }
+        .galeria-item { width: 100%; aspect-ratio: 1/1; object-fit: cover; border: 2px solid #000; border-radius: var(--border-radius-sm); cursor: pointer; }
+        .galeria-item:hover { transform: scale(1.05); box-shadow: var(--shadow-md); }
+        
+        .notification-badge { 
+            position: absolute; 
+            top: -5px; 
+            right: -5px; 
+            background: #ff4444; 
+            color: white; 
+            border-radius: 50%; 
+            padding: 2px 6px; 
+            font-size: 10px; 
+            font-weight: bold; 
+            display: none; 
+            min-width: 18px; 
+            text-align: center; 
+        }
+        
+        .tag-item { 
+            color: var(--shatt-blue); 
+            text-decoration: underline; 
+            cursor: pointer; 
+            display: block; 
+            margin-bottom: var(--spacing-sm); 
+            font-size: 13px; 
+            padding: var(--spacing-xs); 
+        }
+        .tag-item:hover { color: #1d3a6b; background: rgba(0,0,0,0.05); border-radius: var(--border-radius-sm); }
+        
+        .btn-retro { 
+            background: #e0e0e0; 
+            border: 2px outset #fff; 
+            padding: 12px 20px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            text-decoration: none; 
+            color: black; 
+            display: inline-flex; 
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px; 
+            border-radius: var(--border-radius-sm); 
+            transition: var(--transition); 
+            text-align: center; 
+            min-height: 44px;
+        }
+        .btn-retro:hover { background: #d0d0d0; transform: translateY(-1px); }
+        .btn-retro:active { border-style: inset; transform: translateY(2px); }
+        
+        #custom-toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            z-index: 10000;
+            animation: fadeInOut 2s ease;
+            pointer-events: none;
+            white-space: nowrap;
+            max-width: 90%;
+            text-align: center;
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+        }
+        
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 5000; backdrop-filter: blur(3px); }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #f0f0f0; border: 3px solid #000; padding: var(--spacing-xl); z-index: 5001; width: min(450px, 90%); max-height: 90vh; overflow-y: auto; border-radius: var(--border-radius); }
+        .preset-bg { width: 45px; height: 45px; border: 2px solid #000; display: inline-block; cursor: pointer; margin: var(--spacing-xs); border-radius: var(--border-radius-sm); }
+        .rec-timer { color: red; font-weight: bold; display: none; font-family: monospace; }
+        .post-user { cursor: pointer; color: var(--shatt-blue); text-decoration: underline; font-weight: bold; }
+        
+        /* ========== RESPONSIVE MÓVIL ========== */
+        @media (max-width: 768px) { 
+            .main-container { 
+                grid-template-columns: 1fr; 
+                gap: var(--spacing-lg); 
+            }
+            
+            .sidebar, .right-sidebar {
+                display: none !important;
+            }
+            
+            .nav-links {
+                display: none !important;
+            }
+            
+            .bottom-nav {
+                display: flex;
+            }
+            
+            .navbar-top {
+                padding: 6px 15px;
+                gap: 8px;
+            }
+            
+            .logo-shatt {
+                font-size: 18px;
+            }
+            
+            .nav-icons > * {
+                font-size: 16px;
+                padding: 4px;
+                min-width: 32px;
+                min-height: 32px;
+            }
+            
+            .publish-area {
+                padding: var(--spacing-md);
+            }
+            
+            .post {
+                padding: var(--spacing-md);
+            }
+            
+            .post-header {
+                flex-direction: column;
+            }
+            
+            .interaction-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .star-rating {
+                justify-content: center;
+            }
+            
+            .star-rating .star {
+                font-size: 28px;
+            }
+            
+            .comment-btn {
+                text-align: center;
+                justify-content: center;
+            }
+            
+            .galeria-container {
+                display: none;
+            }
+            
+            .post-menu {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 250px;
+                z-index: 2002;
+            }
+            
+            #custom-toast {
+                bottom: 70px;
+            }
+            
+            .notifications-panel, .settings-panel {
+                width: 100%;
+            }
+            
+            .publish-area .btn-retro {
+                flex: 1;
+                font-size: 12px;
+                padding: 10px 12px;
+            }
+            
+            .publish-actions-mobile {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-top: 16px;
+            }
+            
+            .publish-actions-mobile .btn-retro {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .bottom-nav-item {
+                padding: 6px 8px;
+            }
+            .bottom-nav-item span:first-child { font-size: 20px; }
+            .bottom-nav-item span:last-child { font-size: 9px; }
+            
+            .publish-area .btn-retro {
+                font-size: 11px;
+                padding: 8px 10px;
+            }
+            
+            .post-image {
+                max-height: 300px;
+            }
+        }
+        
+        @media (hover: none) and (pointer: coarse) {
+            .btn-retro, .nav-icons span, .comment-btn, .star-rating .star, .post-menu-btn {
+                min-height: 44px;
+                min-width: 44px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .star-rating .star { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- NAVBAR SUPERIOR -->
+        <div class="navbar-top">
+            <a href="inicio.html" class="logo-shatt">Shatt</a>
+            <div class="nav-links">
+                <a href="inicio.html" class="active">inicio</a>
+                <a href="mi-perfil.html">mi perfil</a>
+                <a href="me.html">M.E.</a>
+                <a href="diario.html">diario</a>
+                <a href="shatts.html">shatts</a>
+            </div>
+            <div class="nav-icons">
+                <span class="search-icon-btn" onclick="abrirBuscadorFullscreen()">🔍</span>
+                <span id="notification-bell" onclick="abrirPanelNotificaciones()">
+                    🔔
+                    <span id="notification-count" class="notification-badge">0</span>
+                </span>
+                <span onclick="abrirPersonalizacion()">🖌️</span>
+                <span onclick="abrirPanelConfiguracion()">⚙️</span>
+            </div>
+        </div>
+
+        <!-- PANEL DE NOTIFICACIONES -->
+        <div id="notifications-overlay" class="notifications-overlay" onclick="cerrarPanelNotificaciones()">
+            <div class="notifications-panel" onclick="event.stopPropagation()">
+                <div class="notifications-header">
+                    <h2><span>🔔</span> Notificaciones</h2>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="mark-all-read" onclick="marcarTodasComoLeidas()">✓ Marcar todo</button>
+                        <button class="close-notif-panel" onclick="cerrarPanelNotificaciones()">✕</button>
+                    </div>
+                </div>
+                <div class="notifications-stats" id="notif-stats">Cargando...</div>
+                <div class="notifications-list" id="notifications-list-modern">
+                    <div class="empty-notifications"><span>📭</span><p>No hay notificaciones</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL DE CONFIGURACIÓN -->
+        <div id="settings-overlay" class="settings-overlay" onclick="cerrarPanelConfiguracion()">
+            <div class="settings-panel" onclick="event.stopPropagation()">
+                <div class="settings-header">
+                    <h2><span>⚙️</span> Configuración</h2>
+                    <button class="close-settings-panel" onclick="cerrarPanelConfiguracion()">✕</button>
+                </div>
+                <div class="settings-list">
+                    <div class="settings-section">
+                        <div class="settings-section-title">🌓 APARIENCIA</div>
+                        <div class="settings-item">
+                            <div class="settings-item-info">
+                                <div class="settings-item-title">Modo oscuro</div>
+                                <div class="settings-item-desc">Cambiar entre tema claro y oscuro</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkMode()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <div class="settings-section-title">🔔 NOTIFICACIONES</div>
+                        <div class="settings-item">
+                            <div class="settings-item-info">
+                                <div class="settings-item-title">Silenciar todas</div>
+                                <div class="settings-item-desc">No recibir notificaciones</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="mute-notifications" onchange="toggleMuteNotifications()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <div class="settings-section-title">🔒 PRIVACIDAD</div>
+                        <div class="settings-item">
+                            <div class="settings-item-info">
+                                <div class="settings-item-title">Perfil privado</div>
+                                <div class="settings-item-desc">Solo seguidores ven tus posts</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="private-profile" onchange="togglePrivateProfile()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-item">
+                            <div class="settings-item-info">
+                                <div class="settings-item-title">Ocultar estado en línea</div>
+                                <div class="settings-item-desc">No aparecer en línea</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="hide-online-status" onchange="toggleHideOnlineStatus()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <div class="settings-section-title">📝 FILTRO</div>
+                        <div id="filter-words-list" class="filter-words-list"></div>
+                        <div class="filter-input-container">
+                            <input type="text" id="new-filter-word" placeholder="Palabra a bloquear...">
+                            <button class="add-filter-btn" onclick="agregarPalabraFiltro()">+</button>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <div class="settings-section-title">⚡ ACCIONES</div>
+                        <button class="settings-btn" onclick="editarPerfilRapido()">✏️ Editar perfil</button>
+                        <button class="settings-btn danger" onclick="borrarTodosMisPosts()">🗑️ Borrar todos mis posts</button>
+                        <button class="settings-btn danger" onclick="cerrarSesion()">🚪 Cerrar sesión</button>
+                    </div>
+                    <div class="settings-section">
+                        <div class="settings-section-title">ℹ️ ACERCA DE</div>
+                        <div class="version-info">Shatt v3.0 | © 2026</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL DE BÚSQUEDA -->
+        <div id="search-modal" class="search-modal">
+            <div class="search-modal-content">
+                <div class="search-modal-header">
+                    <button class="search-back-btn" onclick="cerrarBuscadorFullscreen()">←</button>
+                    <input type="text" id="search-modal-input" class="search-modal-input" placeholder="🔎 Buscar usuarios...">
+                </div>
+                <div class="search-history-section">
+                    <div class="search-history-header">
+                        <span>📜 Búsquedas recientes</span>
+                        <button class="clear-history-btn" onclick="borrarHistorialBusquedas()">Borrar</button>
+                    </div>
+                    <div id="history-list" class="history-list"></div>
+                </div>
+                <div class="search-results-section">
+                    <div class="search-results-title">👥 Resultados</div>
+                    <div id="search-modal-results" class="search-results-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <div class="main-container">
+            <div class="sidebar">
+                <div class="panel-retro">
+                    <div class="pfp-box" id="user-pfp">👤</div>
+                    <div style="text-align:center; font-weight:bold; margin:var(--spacing-md) 0;" id="user-display">Cargando...</div>
+                    <div style="font-size: 13px; background: #f8f8f8; padding: var(--spacing-md); border: 1px solid #ddd; border-radius: var(--border-radius-sm);">
+                        <div><b>📍 De:</b> <span id="user-pais">No especificado</span></div>
+                        <div><b>⚥ Sexo:</b> <span id="user-sexo">No especificado</span></div>
+                        <div><b>🚬 Fuma:</b> <span id="user-fuma">No especificado</span></div>
+                        <div><b>🍷 Toma:</b> <span id="user-toma">No especificado</span></div>
+                    </div>
+                    <a href="perfil.html" class="btn-retro" style="width:100%; margin-top:var(--spacing-lg);">VER PERFIL</a>
+                </div>
+                <div class="panel-retro">
+                    <div class="side-title">📸 Álbum de fotos</div>
+                    <div id="galeria" class="galeria-container"></div>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="publish-area">
+                    <input type="text" id="p-status" class="status-input" style="width:100%; border:none; border-bottom:1px dashed #999; background:transparent; font-style:italic; padding:var(--spacing-sm) 0;" placeholder="¿Cómo te sientes hoy?">
+                    <textarea id="p-text" class="content-input" placeholder="Comparte algo con tus amigos..."></textarea>
+                    <div id="p-preview" style="display:none; margin-top:var(--spacing-md); padding:var(--spacing-md); background:#f9f9f9; border-radius:var(--border-radius-sm);">
+                        <img id="img-render" src="" style="max-width:100px; border:1px solid #000; border-radius:var(--border-radius-sm);">
+                        <div id="audio-preview-container" style="display:none;"><small>🎤 Audio listo</small></div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 16px;">
+                        <button class="btn-retro" id="mic-btn" onclick="toggleMic()" style="flex:1; justify-content: center;">🎤 Grabar audio</button>
+                        <label for="f-file" class="btn-retro" style="flex:1; justify-content: center; cursor: pointer;">📷 Subir imagen</label>
+                        <input type="file" id="f-file" style="display:none" accept="image/*" onchange="previewImg(this)">
+                        <span id="timer" class="rec-timer" style="margin-left: 8px;">00:00</span>
+                        <button class="btn-retro" style="background:#4CAF50; color:white; border-color:#388E3C; flex:0 0 auto;" onclick="publish()">📤 PUBLICAR</button>
+                    </div>
+                </div>
+                <div id="muro"></div>
+            </div>
+
+            <div class="right-sidebar">
+                <div class="panel-retro">
+                    <div class="side-title">🟢 En línea</div>
+                    <div id="online-users"></div>
+                </div>
+                <div class="panel-retro">
+    <div class="side-title">🔥 Tendencias</div>
+    <span class="tag-item" onclick="cargarTendencias()">🏆 Top Semanal</span>
+    <span class="tag-item" onclick="cargarTendencias()">📊 Ranking SHATTS</span>
+    <span class="tag-item" onclick="cargarTendencias()">⭐ Líderes</span>
+</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BARRA INFERIOR MÓVIL -->
+    <div class="bottom-nav">
+        <a href="inicio.html" class="bottom-nav-item active"><span>🏠</span><span>Inicio</span></a>
+        <a href="mi-perfil.html" class="bottom-nav-item"><span>👤</span><span>Perfil</span></a>
+        <a href="me.html" class="bottom-nav-item"><span>🎵</span><span>M.E.</span></a>
+        <a href="diario.html" class="bottom-nav-item"><span>📖</span><span>Diario</span></a>
+        <a href="shatts.html" class="bottom-nav-item"><span>💬</span><span>Shatts</span></a>
+    </div>
+
+    <div id="modal-overlay" class="overlay" onclick="cerrarModalesGlobal()"></div>
+    <div id="design-modal" class="modal">
+        <h3>🎨 Personalizar Shatt</h3>
+        <div>
+            <label>🎨 Colores predefinidos:</label>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
+                <div class="preset-bg" style="background:#3a6186;" onclick="setBgColorGlobal('#3a6186')"></div>
+                <div class="preset-bg" style="background:#ff99cc;" onclick="setBgColorGlobal('#ff99cc')"></div>
+                <div class="preset-bg" style="background:#000;" onclick="setBgColorGlobal('#000')"></div>
+                <div class="preset-bg" style="background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);" onclick="setBgColorGlobal('linear-gradient(135deg, #667eea 0%, #764ba2 100%)')"></div>
+                <div class="preset-bg" style="background:linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" onclick="setBgColorGlobal('linear-gradient(135deg, #f093fb 0%, #f5576c 100%)')"></div>
+            </div>
+        </div>
+        <div style="margin-top: 15px;">
+            <label>🎨 Color personalizado:</label>
+            <input type="color" id="custom-color-global" onchange="setBgColorGlobal(this.value)" style="width:100%; height:40px;">
+        </div>
+        <div style="margin-top: 15px;">
+            <label>🖼️ Imagen de fondo:</label>
+            <input type="file" id="bg-image-global" accept="image/*" onchange="setImageBgGlobal(this)">
+        </div>
+        <div style="margin-top: 15px;">
+            <label>🔆 Transparencia:</label>
+            <input type="range" id="opacity-slider-global" min="0.1" max="1" step="0.1" value="1" oninput="setOpacityGlobal(this.value)">
+        </div>
+        <div style="display:flex; gap: 10px; margin-top: 20px;">
+            <button class="btn-retro" onclick="guardarDisenoGlobal()" style="flex:2; background:#4CAF50; color:white;">💾 GUARDAR</button>
+            <button class="btn-retro" onclick="cerrarModalesGlobal()" style="flex:1;">❌ CERRAR</button>
+        </div>
+    </div>
+
+    <script>
+        const pb = new PocketBase('http://127.0.0.1:8090');
+        pb.autoCancellation(false);
+        
+        let currentUser = null;
+        let tempImg = null;
+        let audioChunks = [];
+        let mediaRecorder = null;
+        let isRecording = false;
+        let recInterval = null;
+        let seconds = 0;
+        let currentOpenMenu = null;
+        let searchTimeout;
+        let notificacionesCache = [];
+        let historialBusquedas = [];
+        let palabrasFiltro = [];
+        
+        function mostrarToast(mensaje) {
+            let toast = document.getElementById('custom-toast');
+            if (!toast) { toast = document.createElement('div'); toast.id = 'custom-toast'; document.body.appendChild(toast); }
+            toast.textContent = mensaje;
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 2000);
+        }
+        
+        function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+        
+        // CONFIGURACIÓN
+
+        function abrirPanelConfiguracion() {
+            document.getElementById('settings-overlay').classList.add('active');
+            document.querySelector('.settings-panel').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            cargarConfiguraciones();
+        }
+        
+        function cerrarPanelConfiguracion() {
+            document.getElementById('settings-overlay').classList.remove('active');
+            document.querySelector('.settings-panel').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        function cargarConfiguraciones() {
+            document.getElementById('dark-mode-toggle').checked = localStorage.getItem('shatt_dark_mode') === 'true';
+            document.getElementById('mute-notifications').checked = localStorage.getItem('shatt_mute_notifications') === 'true';
+            document.getElementById('private-profile').checked = localStorage.getItem('shatt_private_profile') === 'true';
+            document.getElementById('hide-online-status').checked = localStorage.getItem('shatt_hide_online') === 'true';
+            palabrasFiltro = JSON.parse(localStorage.getItem('shatt_filter_words') || '[]');
+            renderFiltroPalabras();
+        }
+        
+        function renderFiltroPalabras() {
+            const container = document.getElementById('filter-words-list');
+            if (palabrasFiltro.length === 0) { container.innerHTML = '<div style="font-size:12px; opacity:0.6;">Sin palabras bloqueadas</div>'; return; }
+            container.innerHTML = palabrasFiltro.map(p => `<span class="filter-tag">🚫 ${escapeHtml(p)} <span class="remove-filter" onclick="eliminarPalabraFiltro('${escapeHtml(p)}')">✕</span></span>`).join('');
+        }
+        
+        function agregarPalabraFiltro() {
+            const input = document.getElementById('new-filter-word');
+            const palabra = input.value.trim().toLowerCase();
+            if (palabra && !palabrasFiltro.includes(palabra)) {
+                palabrasFiltro.push(palabra);
+                localStorage.setItem('shatt_filter_words', JSON.stringify(palabrasFiltro));
+                renderFiltroPalabras();
+                input.value = '';
+                cargarPosts();
+                mostrarToast(`🔇 "${palabra}" bloqueada`);
+            }
+        }
+        
+        function eliminarPalabraFiltro(palabra) {
+            palabrasFiltro = palabrasFiltro.filter(p => p !== palabra);
+            localStorage.setItem('shatt_filter_words', JSON.stringify(palabrasFiltro));
+            renderFiltroPalabras();
+            cargarPosts();
+        }
+        
+        function toggleDarkMode() {
+            const isDark = document.getElementById('dark-mode-toggle').checked;
+            if (isDark) document.body.classList.add('dark-mode');
+            else document.body.classList.remove('dark-mode');
+            localStorage.setItem('shatt_dark_mode', isDark);
+        }
+        
+        function toggleMuteNotifications() { localStorage.setItem('shatt_mute_notifications', document.getElementById('mute-notifications').checked); }
+        function togglePrivateProfile() { localStorage.setItem('shatt_private_profile', document.getElementById('private-profile').checked); cargarPosts(); }
+        function toggleHideOnlineStatus() { localStorage.setItem('shatt_hide_online', document.getElementById('hide-online-status').checked); actualizarUltimaVez(); }
+        function editarPerfilRapido() { cerrarPanelConfiguracion(); window.location.href = "mi-perfil.html"; }
+        
+        async function borrarTodosMisPosts() {
+            if (!confirm("¿Borrar TODOS tus posts? No se puede deshacer.")) return;
+            const misPosts = await pb.collection('posts').getFullList({ filter: `usuario = "${currentUser.id}"` });
+            for (const post of misPosts) {
+                const votos = await pb.collection('votos').getFullList({ filter: `post = "${post.id}"` });
+                for (const v of votos) await pb.collection('votos').delete(v.id);
+                await pb.collection('posts').delete(post.id);
+            }
+            await cargarPosts();
+            await cargarGaleria();
+            mostrarToast(`✅ ${misPosts.length} posts eliminados`);
+            cerrarPanelConfiguracion();
+        }
+        
+        function cerrarSesion() { 
+    // Guardar las cuentas antes de limpiar
+    const cuentasGuardadas = localStorage.getItem('shatt_cuentas');
+    
+    // Limpiar autenticación
+    pb.authStore.clear();
+    localStorage.removeItem('pocketbase_auth');
+    
+    // Restaurar las cuentas guardadas
+    if (cuentasGuardadas) {
+        localStorage.setItem('shatt_cuentas', cuentasGuardadas);
+    }
+    
+    window.location.href = "iniciarsesion.html";
+}
+        
+        // NOTIFICACIONES
+        async function crearNotificacion(para, tipo, postId = null, comentario = null) {
+            const muted = localStorage.getItem('shatt_mute_notifications') === 'true';
+            if (muted || para === currentUser?.id) return;
+            await pb.collection('notificaciones').create({ para, de: currentUser.id, deNick: currentUser.email.split('@')[0], tipo, postId, comentario, leido: false });
+            await cargarNotificaciones();
+        }
+        
+        function abrirPanelNotificaciones() {
+            document.getElementById('notifications-overlay').classList.add('active');
+            document.querySelector('.notifications-panel').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            renderNotificacionesModernas();
+        }
+        
+        function cerrarPanelNotificaciones() {
+            document.getElementById('notifications-overlay').classList.remove('active');
+            document.querySelector('.notifications-panel').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        function renderNotificacionesModernas() {
+    const container = document.getElementById('notifications-list-modern');
+    const statsDiv = document.getElementById('notif-stats');
+    
+    if (!container) return;
+    
+    if (!notificacionesCache || notificacionesCache.length === 0) {
+        container.innerHTML = '<div class="empty-notifications"><span>📭</span><p>No hay notificaciones</p></div>';
+        if (statsDiv) statsDiv.innerHTML = '0 notificaciones';
+        return;
+    }
+    
+    const noLeidas = notificacionesCache.filter(n => !n.leido).length;
+    if (statsDiv) statsDiv.innerHTML = `${notificacionesCache.length} notificaciones · ${noLeidas} no leídas`;
+    
+    const hoy = dayjs().startOf('day');
+    const ayer = dayjs().subtract(1, 'day').startOf('day');
+    const grupos = { hoy: [], ayer: [], anteriores: [] };
+    
+    notificacionesCache.forEach(noti => {
+        const fecha = dayjs(noti.created);
+        if (fecha.isSame(hoy, 'day')) grupos.hoy.push(noti);
+        else if (fecha.isSame(ayer, 'day')) grupos.ayer.push(noti);
+        else grupos.anteriores.push(noti);
+    });
+    
+    let html = '';
+    
+    if (grupos.hoy.length > 0) {
+        html += `<div class="notif-group"><div class="notif-group-title">HOY</div>`;
+        grupos.hoy.forEach(noti => { html += crearNotifCardHTML(noti); });
+        html += `</div>`;
+    }
+    
+    if (grupos.ayer.length > 0) {
+        html += `<div class="notif-group"><div class="notif-group-title">AYER</div>`;
+        grupos.ayer.forEach(noti => { html += crearNotifCardHTML(noti); });
+        html += `</div>`;
+    }
+    
+    if (grupos.anteriores.length > 0) {
+        html += `<div class="notif-group"><div class="notif-group-title">ANTERIORES</div>`;
+        grupos.anteriores.forEach(noti => { html += crearNotifCardHTML(noti); });
+        html += `</div>`;
+    }
+    
+    container.innerHTML = html;
+}
+        
+        function crearNotifCardHTML(noti) {
+    let texto = '';
+    let icon = '🔔';
+    let tipoClass = '';
+    let onClickAction = '';
+    
+    if (noti.tipo === 'like') { 
+        texto = `<strong>@${escapeHtml(noti.deNick)}</strong> le gusta tu publicación`;
+        icon = '❤️';
+        tipoClass = 'like';
+        onClickAction = `marcarNotificacionLeida('${noti.id}', '${noti.postId || ''}')`;
+    }
+    else if (noti.tipo === 'comentario') { 
+        texto = `<strong>@${escapeHtml(noti.deNick)}</strong> comentó: "${escapeHtml(noti.comentario?.substring(0, 50))}"`;
+        icon = '💬';
+        tipoClass = 'comment';
+        onClickAction = `marcarNotificacionLeida('${noti.id}', '${noti.postId || ''}')`;
+    }
+    else if (noti.tipo === 'seguidor') { 
+        texto = `<strong>@${escapeHtml(noti.deNick)}</strong> comenzó a seguirte`;
+        icon = '👤';
+        tipoClass = 'follow';
+        onClickAction = `marcarNotificacionLeida('${noti.id}', '')`;
+    }
+    else if (noti.tipo === 'compartido') { 
+        texto = `<strong>@${escapeHtml(noti.deNick)}</strong> compartió una publicación contigo`;
+        icon = '📤';
+        tipoClass = 'share';
+        onClickAction = `marcarNotificacionLeida('${noti.id}', '')`;
+    }
+    else if (noti.tipo === 'postit') { 
+        texto = `<strong>@${escapeHtml(noti.deNick)}</strong> dejó un post-it en tu diario: "${escapeHtml(noti.comentario?.substring(0, 50))}"`;
+        icon = '📌';
+        tipoClass = 'postit';
+        onClickAction = `window.location.href='diario.html?uid=${noti.para}'`;
+    }
+    
+    return `<div class="notif-card ${noti.leido ? '' : 'unread'}" onclick="${onClickAction}">
+        <div class="notif-icon ${tipoClass}">${icon}</div>
+        <div class="notif-content">
+            <div class="notif-text">${texto}</div>
+            <div class="notif-time">${dayjs(noti.created).fromNow()}</div>
+        </div>
+    </div>`;
+}
+        
+        async function marcarNotificacionLeida(id, postId) {
+            await pb.collection('notificaciones').update(id, { leido: true });
+            await cargarNotificaciones();
+            if (postId) { cerrarPanelNotificaciones(); window.location.href = `post.html?id=${postId}`; }
+        }
+        
+        async function marcarTodasComoLeidas() {
+            const noLeidas = notificacionesCache.filter(n => !n.leido);
+            for (const n of noLeidas) await pb.collection('notificaciones').update(n.id, { leido: true });
+            await cargarNotificaciones();
+            mostrarToast("✅ Todas leídas");
+        }
+        
+        // BÚSQUEDA
+        function abrirBuscadorFullscreen() {
+            document.getElementById('search-modal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => document.getElementById('search-modal-input').focus(), 100);
+            cargarHistorial();
+        }
+        
+        function cerrarBuscadorFullscreen() {
+            document.getElementById('search-modal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+        
+        function cargarHistorial() {
+            historialBusquedas = JSON.parse(localStorage.getItem('shatt_busquedas') || '[]');
+            const container = document.getElementById('history-list');
+            if (!historialBusquedas.length) { container.innerHTML = '<span style="color:rgba(255,255,255,0.5);">No hay búsquedas</span>'; return; }
+            container.innerHTML = historialBusquedas.map(t => `<div class="history-item" onclick="buscarDesdeHistorial('${escapeHtml(t)}')">🔍 ${escapeHtml(t)}</div>`).join('');
+        }
+        
+        function borrarHistorialBusquedas() { localStorage.setItem('shatt_busquedas', '[]'); cargarHistorial(); mostrarToast("🧹 Historial borrado"); }
+        function buscarDesdeHistorial(termino) { document.getElementById('search-modal-input').value = termino; ejecutarBusquedaFullscreen(termino); }
+        
+        async function ejecutarBusquedaFullscreen(termino) {
+            const resultsDiv = document.getElementById('search-modal-results');
+            if (termino.length < 2) { resultsDiv.innerHTML = '<div class="no-results-modal">✏️ 2+ caracteres</div>'; return; }
+            let history = JSON.parse(localStorage.getItem('shatt_busquedas') || '[]');
+            if (!history.includes(termino)) { history.unshift(termino); if (history.length > 5) history.pop(); localStorage.setItem('shatt_busquedas', JSON.stringify(history)); cargarHistorial(); }
+            resultsDiv.innerHTML = '<div class="no-results-modal">🔍 Buscando...</div>';
+            const users = await pb.collection('usuarios').getFullList();
+            const termLower = termino.toLowerCase();
+            const resultados = users.filter(u => u.id !== currentUser?.id && ((u.email || '').toLowerCase().includes(termLower) || (u.nick || u.email?.split('@')[0] || '').toLowerCase().includes(termLower)));
+            if (!resultados.length) { resultsDiv.innerHTML = '<div class="no-results-modal">😕 No encontrados</div>'; return; }
+            resultsDiv.innerHTML = '';
+            for (const user of resultados) {
+                const nombre = user.nick || user.email?.split('@')[0] || 'Usuario';
+                const avatar = user.pfp ? pb.files.getUrl(user, user.pfp) : `https://ui-avatars.com/api/?name=${encodeURIComponent(nombre)}&background=3b5998&color=fff&size=50`;
+                const item = document.createElement('div');
+                item.className = 'search-result-item-modal';
+                item.onclick = () => verPerfil(user.id);
+                item.innerHTML = `<img src="${avatar}" class="search-result-img-modal"><div><div class="search-result-name-modal">@${escapeHtml(nombre)}</div><div style="font-size:11px;opacity:0.7;">${escapeHtml(user.email || '')}</div></div>`;
+                resultsDiv.appendChild(item);
+            }
+        }
+        
+        // PERSONALIZACIÓN
+        function aplicarDiseno(fondo, opacidad) {
+            if (fondo) {
+                if (fondo.startsWith('url')) { document.body.style.backgroundImage = fondo; document.body.style.backgroundSize = 'cover'; document.body.style.backgroundAttachment = 'fixed'; }
+                else if (fondo.startsWith('linear-gradient')) { document.body.style.background = fondo; document.body.style.backgroundImage = 'none'; }
+                else { document.body.style.background = fondo; document.body.style.backgroundImage = 'none'; }
+            }
+            if (opacidad) document.documentElement.style.setProperty('--panel-opacity', opacidad);
+        }
+        
+        async function guardarDisenoGlobal() {
+            let fondo = document.body.style.backgroundImage !== 'none' ? document.body.style.backgroundImage : document.body.style.background || '#3a6186';
+            let opacidad = document.documentElement.style.getPropertyValue('--panel-opacity') || '1';
+            await pb.collection('usuarios').update(currentUser.id, { diseno: { fondo, opacidad: parseFloat(opacidad) } });
+            mostrarToast("✅ Diseño guardado");
+            cerrarModalesGlobal();
+        }
+        
+        async function cargarDisenoGuardado() {
+            const user = await pb.collection('usuarios').getOne(currentUser.id);
+            if (user.diseno) { let d = user.diseno; if (typeof d === 'string') d = JSON.parse(d); aplicarDiseno(d.fondo, d.opacidad); }
+        }
+        
+        function abrirPersonalizacion() { document.getElementById('design-modal').style.display = 'block'; document.getElementById('modal-overlay').style.display = 'block'; }
+        function cerrarModalesGlobal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); document.getElementById('modal-overlay').style.display = 'none'; }
+        function setBgColorGlobal(color) { document.body.style.background = color; document.body.style.backgroundImage = 'none'; }
+        function setImageBgGlobal(input) { if (input.files[0]) { const reader = new FileReader(); reader.onload = e => { document.body.style.backgroundImage = `url(${e.target.result})`; document.body.style.backgroundSize = 'cover'; }; reader.readAsDataURL(input.files[0]); } }
+        function setOpacityGlobal(val) { document.documentElement.style.setProperty('--panel-opacity', val); }
+        
+        // PRINCIPALES
+        function verPerfil(uid) { cerrarBuscadorFullscreen(); window.location.href = `perfil.html?uid=${uid}`; }
+        function buscarPorTag(tag) { document.getElementById('p-text').value = tag + ' '; document.getElementById('p-text').focus(); mostrarToast(`🔍 Buscando ${tag}`); }
+        
+        async function actualizarUltimaVez() {
+            if (!currentUser) return;
+            if (localStorage.getItem('shatt_hide_online') === 'true') return;
+            await pb.collection('usuarios').update(currentUser.id, { ultimaVez: new Date().toISOString() });
+        }
+        
+        async function cargarPerfilUsuario(uid) {
+            const user = await pb.collection('usuarios').getOne(uid);
+            let nombre = user.nick || user.email.split('@')[0] || "Usuario";
+            document.getElementById('user-display').innerHTML = `@${escapeHtml(nombre)}`;
+            if (user.pfp) document.getElementById('user-pfp').innerHTML = `<img src="${pb.files.getUrl(user, user.pfp)}">`;
+            document.getElementById('user-pais').innerHTML = user.pais || 'No especificado';
+            document.getElementById('user-sexo').innerHTML = user.sexo || 'No especificado';
+            document.getElementById('user-fuma').innerHTML = user.fuma || 'No especificado';
+            document.getElementById('user-toma').innerHTML = user.toma || 'No especificado';
+        }
+        
+        async function cargarGaleria() {
+            const records = await pb.collection('posts').getList(1, 20, { filter: `imagen != null && usuario = "${currentUser.id}"`, sort: '-created' });
+            const galeria = document.getElementById('galeria');
+            galeria.innerHTML = '';
+            if (!records.items.length) { galeria.innerHTML = '<div style="grid-column:span 3; text-align:center; padding:20px;">📷 Sin fotos</div>'; return; }
+            records.items.slice(0, 9).forEach(post => {
+                const img = document.createElement('img');
+                img.src = pb.files.getUrl(post, post.imagen);
+                img.className = 'galeria-item';
+                img.onclick = () => window.open(pb.files.getUrl(post, post.imagen), '_blank');
+                galeria.appendChild(img);
+            });
+        }
+        
+        async function cargarUsuariosEnLinea() {
+    if (localStorage.getItem('shatt_hide_online') === 'true') { 
+        document.getElementById('online-users').innerHTML = '<div style="padding:8px 0; color:#666;">👤 Oculto</div>'; 
+        return; 
+    }
+    
+    try {
+        // Obtener TODOS los usuarios
+        let todosLosUsuarios = await pb.collection('usuarios').getFullList();
+        
+        // Calcular hace 5 minutos en milisegundos
+        let hace5MinMs = Date.now() - (5 * 60 * 1000);
+        
+        // Filtrar manualmente los que tienen ultimaVez reciente
+        let usuariosEnLinea = todosLosUsuarios.filter(u => {
+            if (!u.ultimaVez) return false;
+            if (u.id === currentUser?.id) return false; // Excluir al propio usuario
+            let fechaUltimaVez = new Date(u.ultimaVez).getTime();
+            return fechaUltimaVez > hace5MinMs;
+        });
+        
+        const onlineDiv = document.getElementById('online-users');
+        
+        if (usuariosEnLinea.length === 0) { 
+            onlineDiv.innerHTML = '<div style="padding:8px 0; color:#666;">😴 Nadie en línea</div>'; 
+            return; 
+        }
+        
+        let html = '';
+        usuariosEnLinea.forEach(user => {
+            const nombre = user.nick || user.email.split('@')[0] || 'Usuario';
+            html += `<div style="padding:8px 0; display:flex; align-items:center; gap:8px;">
+                        <span style="color:#4CAF50;">●</span>
+                        <span>@${escapeHtml(nombre)}</span>
+                     </div>`;
+        });
+        
+        onlineDiv.innerHTML = html;
+        
+    } catch(e) {
+        console.error("Error al cargar usuarios en línea:", e);
+        document.getElementById('online-users').innerHTML = '<div style="padding:8px 0; color:#666;">❌ Error</div>';
+    }
+}
+
+        async function cargarTendencias(tipo = 'top') {
+    const contenedor = document.getElementById('contenido-tendencias');
+    
+    try {
+        let hace7Dias = new Date();
+        hace7Dias.setDate(hace7Dias.getDate() - 7);
+        
+        let mensajes = await pb.collection('mensajes').getFullList({
+            filter: `created >= "${hace7Dias.toISOString()}"`
+        });
+        
+        let contador = {};
+        mensajes.forEach(msg => {
+            contador[msg.remitenteId] = (contador[msg.remitenteId] || 0) + 1;
+        });
+        
+        let topUsuarios = Object.entries(contador)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5);
+        
+        if (topUsuarios.length === 0) {
+            contenedor.innerHTML = '<div style="padding:20px; text-align:center;">💬 Sin actividad reciente</div>';
+            return;
+        }
+        
+        let medallas = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
+        let html = '<div style="background:linear-gradient(135deg, #fff8e7, #fff); border-radius:12px; padding:12px;">';
+        html += '<div style="display:flex; justify-content:space-between; margin-bottom:12px;"><span style="font-weight:bold;">👤 Usuario</span><span style="font-weight:bold;">📊 Mensajes</span></div>';
+        
+        for (let i = 0; i < topUsuarios.length; i++) {
+            let [userId, count] = topUsuarios[i];
+            try {
+                let user = await pb.collection('usuarios').getOne(userId);
+                let nombre = user.nick || user.email.split('@')[0];
+                html += `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;">
+                            <span>${medallas[i]} <strong>@${escapeHtml(nombre)}</strong></span>
+                            <span style="color:#4CAF50;">${count}</span>
+                         </div>`;
+            } catch(e) {}
+        }
+        
+        html += `<div style="margin-top:12px; font-size:11px; color:#888; text-align:center;">📊 Últimos 7 días</div>`;
+        html += `<button class="btn-retro" style="margin-top:12px; width:100%;" onclick="volverTendencias()">← Volver</button>`;
+        html += '</div>';
+        
+        contenedor.innerHTML = html;
+        
+    } catch(e) {
+        console.error(e);
+        contenedor.innerHTML = '<div style="padding:20px; text-align:center;">❌ Error</div>';
+    }
+}
+
+function volverTendencias() {
+    const contenedor = document.getElementById('contenido-tendencias');
+    contenedor.innerHTML = `
+        <span class="tag-item" onclick="cargarTendencias('top')">🏆 Top Semanal</span>
+        <span class="tag-item" onclick="cargarTendencias('ranking')">📊 Ranking SHATTS</span>
+        <span class="tag-item" onclick="cargarTendencias('lideres')">⭐ Líderes</span>
+    `;
+}
+        
+        async function cargarPosts() {
+            const privateProfile = localStorage.getItem('shatt_private_profile') === 'true';
+            let filter = privateProfile ? `usuario = "${currentUser.id}"` : '';
+            const records = await pb.collection('posts').getList(1, 50, { sort: '-created', expand: 'usuario', filter });
+            const muro = document.getElementById('muro');
+            if (!records.items.length) { muro.innerHTML = '<div style="text-align:center; padding:40px;">No hay posts</div>'; return; }
+            muro.innerHTML = '';
+            for (const post of records.items) {
+                if (!post.expand?.usuario) continue;
+                if (palabrasFiltro.some(p => (post.texto || '').toLowerCase().includes(p))) continue;
+                muro.appendChild(crearPostElement(post));
+            }
+        }
+        
+        function crearPostElement(post) {
+            const autor = post.expand.usuario;
+            const autorNombre = autor.nick || autor.email?.split('@')[0] || 'Usuario';
+            const autorId = autor.id;
+            const rating = post.rating || 0;
+            const ratingCount = post.ratingCount || 0;
+            let estrellas = '';
+            for (let i = 1; i <= 5; i++) estrellas += `<span class="star ${i <= Math.round(rating) ? 'active' : ''}" onclick="rate('${post.id}', ${i})">★</span>`;
+            const imagenHtml = post.imagen ? `<img src="${pb.files.getUrl(post, post.imagen)}" class="post-image" onclick="window.open('${pb.files.getUrl(post, post.imagen)}', '_blank')">` : '';
+            const audioHtml = post.audio ? `<audio controls src="${pb.files.getUrl(post, post.audio)}"></audio>` : '';
+            const commentsHtml = post.comments?.length ? post.comments.map(c => `<div class="comment-item"><span class="comment-user" onclick="verPerfil('${c.userId}')">@${escapeHtml(c.userNick)}</span>: ${escapeHtml(c.text)}<div class="comment-date">${dayjs(c.createdAt).fromNow()}</div></div>`).join('') : '<div style="padding:10px; text-align:center;">Sin comentarios</div>';
+            const esPropio = autorId === currentUser?.id;
+            const menuHtml = `<div class="post-menu-container"><button class="post-menu-btn" onclick="event.stopPropagation(); togglePostMenu('${post.id}')">⋮</button><div id="menu-${post.id}" class="post-menu"><div class="post-menu-item" onclick="editarPost('${post.id}')">✏️ Editar</div><div class="post-menu-item delete" onclick="eliminarPost('${post.id}')">🗑️ Eliminar</div><div class="post-menu-item" onclick="copiarEnlace('${post.id}')">🔗 Copiar enlace</div></div></div>`;
+            const div = document.createElement('div');
+            div.className = 'post';
+            div.innerHTML = `
+                <div class="post-header"><div class="post-user-info"><span class="post-user-name"><span class="post-user" onclick="verPerfil('${autorId}')">@${escapeHtml(autorNombre)}</span></span>${post.status ? `<span class="post-user-status">- ${escapeHtml(post.status)}</span>` : ''}<span class="post-date">${dayjs(post.created).fromNow()}</span></div>${menuHtml}</div>
+                <div style="white-space:pre-wrap;">${escapeHtml(post.texto || '')}</div>${imagenHtml}${audioHtml}
+                <div class="interaction-bar"><div style="display:flex; gap:15px;"><div class="star-rating">${estrellas}</div><span class="rating-info">${rating.toFixed(1)} (${ratingCount})</span></div><span class="comment-btn" onclick="toggleComm(this)">💬 <span class="c-num">${post.comments?.length || 0}</span></span></div>
+                <div class="comment-box"><div class="comm-list">${commentsHtml}</div><div style="display:flex; gap:10px;"><input type="text" placeholder="Comentario..." id="comment-input-${post.id}" style="flex:1; padding:10px; border:2px solid #000; border-radius:5px;"><button class="btn-retro" onclick="addComm('${post.id}')" style="padding:10px 20px;">Enviar</button></div></div>`;
+            return div;
+        }
+        
+        async function rate(postId, stars) {
+            const post = await pb.collection('posts').getOne(postId);
+            const existing = await pb.collection('votos').getList(1, 1, { filter: `usuario = "${currentUser.id}" && post = "${postId}"` });
+            if (existing.items[0]) await pb.collection('votos').update(existing.items[0].id, { valor: stars });
+            else await pb.collection('votos').create({ usuario: currentUser.id, post: postId, valor: stars });
+            const votos = await pb.collection('votos').getFullList({ filter: `post = "${postId}"` });
+            const newRating = votos.reduce((a, v) => a + v.valor, 0) / votos.length;
+            await pb.collection('posts').update(postId, { rating: newRating, ratingCount: votos.length });
+            if (post.usuario !== currentUser.id) await crearNotificacion(post.usuario, 'like', postId);
+            await cargarPosts();
+            mostrarToast("⭐ Votado");
+        }
+        
+        function toggleComm(btn) {
+            const box = btn.closest('.post').querySelector('.comment-box');
+            if (box.style.display === 'none') { box.style.display = 'block'; btn.innerHTML = `💬 ${btn.querySelector('.c-num')?.textContent} (ocultar)`; }
+            else { box.style.display = 'none'; btn.innerHTML = `💬 ${btn.querySelector('.c-num')?.textContent}`; }
+        }
+        
+        async function addComm(postId) {
+            const input = document.getElementById(`comment-input-${postId}`);
+            const text = input.value.trim();
+            if (!text) return;
+            const post = await pb.collection('posts').getOne(postId);
+            const comments = post.comments || [];
+            comments.push({ userNick: currentUser.email.split('@')[0], userId: currentUser.id, text, createdAt: new Date().toISOString() });
+            await pb.collection('posts').update(postId, { comments });
+            if (post.usuario !== currentUser.id) await crearNotificacion(post.usuario, 'comentario', postId, text);
+            input.value = '';
+            await cargarPosts();
+            mostrarToast("💬 Comentado");
+        }
+        
+        async function cargarNotificaciones() {
+            if (!currentUser) return;
+            const notis = await pb.collection('notificaciones').getList(1, 50, { filter: `para = "${currentUser.id}"`, sort: '-created' });
+            notificacionesCache = notis.items;
+            const noLeidas = notificacionesCache.filter(n => !n.leido).length;
+            const badge = document.getElementById('notification-count');
+            badge.textContent = noLeidas;
+            badge.style.display = noLeidas > 0 ? 'block' : 'none';
+            if (document.getElementById('notifications-overlay').classList.contains('active')) renderNotificacionesModernas();
+        }
+        
+        async function publish() {
+            const text = document.getElementById('p-text').value.trim();
+            const status = document.getElementById('p-status').value.trim();
+            if (!text && !tempImg && !audioChunks.length) { mostrarToast("Escribe algo"); return; }
+            const formData = new FormData();
+            formData.append('usuario', currentUser.id);
+            formData.append('texto', text || '');
+            if (status) formData.append('status', status);
+            formData.append('rating', '0');
+            formData.append('ratingCount', '0');
+            if (tempImg) {
+                const blob = await fetch(tempImg).then(r => r.blob());
+                formData.append('imagen', new File([blob], 'img.jpg', { type: 'image/jpeg' }));
+            }
+            if (audioChunks.length) {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                formData.append('audio', new File([audioBlob], `audio_${Date.now()}.webm`, { type: 'audio/webm' }));
+            }
+            await pb.collection('posts').create(formData);
+            document.getElementById('p-text').value = '';
+            document.getElementById('p-status').value = '';
+            document.getElementById('p-preview').style.display = 'none';
+            tempImg = null;
+            audioChunks = [];
+            await cargarPosts();
+            await cargarGaleria();
+            mostrarToast("📤 Publicado");
+        }
+        
+        async function toggleMic() {
+            if (!isRecording) {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                mediaRecorder.onstop = () => {
+                    document.getElementById('p-preview').style.display = 'block';
+                    document.getElementById('audio-preview-container').style.display = 'block';
+                    document.getElementById('mic-btn').textContent = '🎤 Grabar';
+                    isRecording = false;
+                };
+                mediaRecorder.start();
+                isRecording = true;
+                seconds = 0;
+                document.getElementById('timer').style.display = 'inline';
+                document.getElementById('mic-btn').textContent = '⏹️ Detener';
+                recInterval = setInterval(() => {
+                    seconds++;
+                    const m = Math.floor(seconds / 60);
+                    const s = seconds % 60;
+                    document.getElementById('timer').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+                }, 1000);
+            } else {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(t => t.stop());
+                clearInterval(recInterval);
+                document.getElementById('timer').style.display = 'none';
+                document.getElementById('mic-btn').textContent = '🎤 Grabar';
+            }
+        }
+        
+        function previewImg(input) {
+            const reader = new FileReader();
+            reader.onload = e => { tempImg = e.target.result; document.getElementById('img-render').src = tempImg; document.getElementById('p-preview').style.display = 'block'; };
+            reader.readAsDataURL(input.files[0]);
+        }
+        
+        function togglePostMenu(postId) {
+            const menu = document.getElementById(`menu-${postId}`);
+            if (currentOpenMenu && currentOpenMenu !== menu) currentOpenMenu.classList.remove('show');
+            menu.classList.toggle('show');
+            currentOpenMenu = menu.classList.contains('show') ? menu : null;
+        }
+        
+        async function editarPost(postId) {
+            const nuevo = prompt("Editar publicación:");
+            if (nuevo) { await pb.collection('posts').update(postId, { texto: nuevo }); await cargarPosts(); mostrarToast("✏️ Editado"); }
+            cerrarMenus();
+        }
+        
+        async function eliminarPost(postId) {
+            if (confirm("¿Eliminar?")) {
+                const votos = await pb.collection('votos').getFullList({ filter: `post = "${postId}"` });
+                for (const v of votos) await pb.collection('votos').delete(v.id);
+                await pb.collection('posts').delete(postId);
+                await cargarPosts();
+                await cargarGaleria();
+                mostrarToast("🗑️ Eliminado");
+            }
+            cerrarMenus();
+        }
+        
+        function copiarEnlace(postId) { navigator.clipboard.writeText(`${location.origin}/post.html?id=${postId}`); mostrarToast("✅ Enlace copiado"); cerrarMenus(); }
+        function cerrarMenus() { document.querySelectorAll('.post-menu.show').forEach(m => m.classList.remove('show')); currentOpenMenu = null; }
+        
+        // INICIO
+        (async function() {
+            const saved = localStorage.getItem('pocketbase_auth');
+            if (saved) { try { const { token, model } = JSON.parse(saved); pb.authStore.save(token, model); } catch(e) {} }
+            if (!pb.authStore.isValid) { window.location.href = "iniciarsesion.html"; return; }
+            currentUser = pb.authStore.model;
+            await cargarDisenoGuardado();
+            await actualizarUltimaVez();
+            setInterval(actualizarUltimaVez, 30000);
+            await Promise.all([cargarPerfilUsuario(currentUser.id), cargarPosts(), cargarGaleria(), cargarNotificaciones(), cargarUsuariosEnLinea()]);
+            cargarHistorial();
+            cargarConfiguraciones();
+            setInterval(cargarUsuariosEnLinea, 60000);
+            setInterval(cargarNotificaciones, 30000);
+        })();
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('search-modal-input');
+            if (searchInput) searchInput.addEventListener('input', (e) => { clearTimeout(searchTimeout); searchTimeout = setTimeout(() => ejecutarBusquedaFullscreen(e.target.value), 300); });
+        });
+        document.addEventListener('click', e => { if (!e.target.closest('.post-menu-container')) cerrarMenus(); });
+        
+        window.abrirPanelConfiguracion = abrirPanelConfiguracion;
+        window.cerrarPanelConfiguracion = cerrarPanelConfiguracion;
+        window.toggleDarkMode = toggleDarkMode;
+        window.toggleMuteNotifications = toggleMuteNotifications;
+        window.togglePrivateProfile = togglePrivateProfile;
+        window.toggleHideOnlineStatus = toggleHideOnlineStatus;
+        window.agregarPalabraFiltro = agregarPalabraFiltro;
+        window.eliminarPalabraFiltro = eliminarPalabraFiltro;
+        window.editarPerfilRapido = editarPerfilRapido;
+        window.borrarTodosMisPosts = borrarTodosMisPosts;
+        window.cerrarSesion = cerrarSesion;
+        window.abrirBuscadorFullscreen = abrirBuscadorFullscreen;
+        window.cerrarBuscadorFullscreen = cerrarBuscadorFullscreen;
+        window.borrarHistorialBusquedas = borrarHistorialBusquedas;
+        window.buscarDesdeHistorial = buscarDesdeHistorial;
+        window.abrirPersonalizacion = abrirPersonalizacion;
+        window.guardarDisenoGlobal = guardarDisenoGlobal;
+        window.cerrarModalesGlobal = cerrarModalesGlobal;
+        window.setBgColorGlobal = setBgColorGlobal;
+        window.setImageBgGlobal = setImageBgGlobal;
+        window.setOpacityGlobal = setOpacityGlobal;
+        window.verPerfil = verPerfil;
+        window.buscarPorTag = buscarPorTag;
+        window.rate = rate;
+        window.toggleComm = toggleComm;
+        window.addComm = addComm;
+        window.abrirPanelNotificaciones = abrirPanelNotificaciones;
+        window.cerrarPanelNotificaciones = cerrarPanelNotificaciones;
+        window.marcarNotificacionLeida = marcarNotificacionLeida;
+        window.marcarTodasComoLeidas = marcarTodasComoLeidas;
+        window.publish = publish;
+        window.toggleMic = toggleMic;
+        window.previewImg = previewImg;
+        window.togglePostMenu = togglePostMenu;
+        window.editarPost = editarPost;
+        window.eliminarPost = eliminarPost;
+        window.copiarEnlace = copiarEnlace;
+    </script>
+</body>
+</html>

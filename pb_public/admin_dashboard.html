@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SHATTS ADMIN | Panel de Control</title>
+    <script src="https://unpkg.com/pocketbase@0.21.5/dist/pocketbase.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/plugin/relativeTime.js"></script>
+    <script>dayjs.extend(window.dayjs_plugin_relativeTime);</script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .login-container {
+            background: white;
+            border-radius: 32px;
+            padding: 40px;
+            width: 350px;
+            text-align: center;
+            margin: 100px auto;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .login-container h1 { margin-bottom: 10px; }
+        .login-container input {
+            width: 100%;
+            padding: 14px;
+            margin: 15px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            font-size: 16px;
+        }
+        .login-container button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .error { color: #ff4444; margin-top: 10px; font-size: 14px; }
+        
+        .dashboard { display: none; max-width: 1600px; margin: 0 auto; }
+        .admin-header {
+            background: rgba(255,255,255,0.95);
+            border-radius: 28px;
+            padding: 20px 30px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .logo h1 { font-size: 24px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logout-btn { background: #ff4444; color: white; border: none; padding: 10px 24px; border-radius: 40px; cursor: pointer; font-weight: bold; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .stat-card:hover { transform: translateY(-3px); }
+        .stat-icon { font-size: 32px; }
+        .stat-number { font-size: 28px; font-weight: bold; color: #1f2937; }
+        .stat-label { font-size: 11px; color: #6b7280; margin-top: 4px; }
+        
+        .charts-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .chart-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 16px;
+        }
+        .chart-card h3 { font-size: 14px; margin-bottom: 12px; color: #374151; }
+        canvas { max-height: 220px; width: 100%; }
+        
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            background: rgba(255,255,255,0.1);
+            padding: 8px;
+            border-radius: 60px;
+        }
+        .tab-btn {
+            padding: 8px 18px;
+            background: transparent;
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+            color: white;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover { background: rgba(255,255,255,0.2); }
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .panel {
+            display: none;
+            background: rgba(255,255,255,0.95);
+            border-radius: 24px;
+            padding: 20px;
+        }
+        .panel.active { display: block; }
+        
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .search-input {
+            flex: 1;
+            padding: 10px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 40px;
+            font-size: 13px;
+            min-width: 180px;
+        }
+        .filter-select {
+            padding: 10px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 40px;
+            background: white;
+        }
+        .refresh-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { text-align: left; padding: 12px; background: #f8fafc; border-bottom: 2px solid #e2e8f0; font-weight: 600; color: #1e293b; }
+        td { padding: 12px; border-bottom: 1px solid #f1f5f9; color: #334155; }
+        tr:hover td { background: #f8fafc; }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 40px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .badge.online { background: #d1fae5; color: #065f46; }
+        .badge.offline { background: #f1f5f9; color: #64748b; }
+        .badge.pendiente { background: #fed7aa; color: #9a3412; }
+        .badge.revisado { background: #d1fae5; color: #065f46; }
+        
+        .action-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 0 2px;
+            font-size: 11px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .action-btn.view { background: #6366f1; color: white; }
+        .action-btn.view:hover { background: #4f46e5; }
+        .action-btn.block { background: #ef4444; color: white; }
+        .action-btn.block:hover { background: #dc2626; }
+        .action-btn.check { background: #10b981; color: white; }
+        .action-btn.check:hover { background: #059669; }
+        .action-btn.delete { background: #f97316; color: white; }
+        .action-btn.delete:hover { background: #ea580c; }
+        .action-btn.unblock { background: #22c55e; color: white; }
+        .action-btn.unblock:hover { background: #16a34a; }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.show { display: flex; }
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 16px 20px;
+            color: white;
+            border-radius: 24px 24px 0 0;
+        }
+        .modal-body { padding: 20px; }
+        .modal-footer {
+            padding: 12px 20px;
+            background: #f8fafc;
+            border-radius: 0 0 24px 24px;
+            text-align: right;
+        }
+        
+        .info-row { display: flex; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #e2e8f0; }
+        .info-label { width: 100px; font-weight: 600; color: #475569; }
+        .info-value { flex: 1; color: #1e293b; }
+        
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: #fbbf24;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 13px;
+            display: none;
+            z-index: 2000;
+        }
+        
+        @media (max-width: 768px) {
+            body { padding: 12px; }
+            .stat-number { font-size: 20px; }
+            .tab-btn { padding: 5px 12px; font-size: 11px; }
+            th, td { font-size: 10px; padding: 8px; }
+            .charts-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div id="loginScreen" class="login-container">
+        <h1>🔒 SHATTS ADMIN</h1>
+        <p>Panel de control completo</p>
+        <form onsubmit="event.preventDefault(); verificarPassword()">
+            <input type="password" id="adminPassword" placeholder="Contraseña" autocomplete="off">
+            <button type="submit">Acceder</button>
+        </form>
+        <div id="loginError" class="error"></div>
+    </div>
+
+    <div id="dashboard" class="dashboard">
+        <div class="admin-header">
+            <div class="logo"><h1>🔒 SHATTS ADMIN</h1><small>Panel de control</small></div>
+            <button class="logout-btn" onclick="cerrarSesion()">🚪 Cerrar sesión</button>
+        </div>
+
+        <!-- Estadísticas principales -->
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <!-- Gráficos -->
+        <div class="charts-row">
+            <div class="chart-card">
+                <h3>📊 Publicaciones por día (últimos 7 días)</h3>
+                <canvas id="postsChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>📢 Reportes por motivo</h3>
+                <canvas id="reportesChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs" id="tabs"></div>
+
+        <!-- Panel Dashboard -->
+        <div id="panelDashboard" class="panel">
+            <div class="stats-grid" id="dashboardStats" style="grid-template-columns: repeat(4,1fr);"></div>
+            <h3 style="margin: 15px 0 10px;">🏆 Top 5 usuarios más activos</h3>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>#</th><th>Usuario</th><th>Publicaciones</th><th>Seguidores</th></tr></thead>
+                    <tbody id="topUsuariosBody"></tbody>
+                </table>
+            </div>
+            <h3 style="margin: 15px 0 10px;">📋 Últimos reportes</h3>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Fecha</th><th>Reportó</th><th>Reportado</th><th>Motivo</th><th>Estado</th></tr></thead>
+                    <tbody id="ultimosReportesBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Panel Usuarios -->
+        <div id="panelUsuarios" class="panel">
+            <div class="filters">
+                <input type="text" id="searchUsuarios" class="search-input" placeholder="🔍 Buscar usuario...">
+                <select id="filterUsuariosEstado" class="filter-select"><option value="todos">Todos</option><option value="online">🟢 En línea</option><option value="offline">⚫ Desconectados</option></select>
+                <button class="refresh-btn" onclick="cargarUsuarios()">🔄 Actualizar</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Usuario</th><th>Email</th><th>Estado</th><th>Registro</th><th>Posts</th><th>Acciones</th></tr></thead>
+                    <tbody id="usuariosBody"><tr><td colspan="6">Cargando...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Panel Publicaciones -->
+        <div id="panelPublicaciones" class="panel">
+            <div class="filters">
+                <input type="text" id="searchPosts" class="search-input" placeholder="🔍 Buscar...">
+                <select id="filterPostsTipo" class="filter-select"><option value="todos">Todos</option><option value="texto">📝 Texto</option><option value="imagen">📷 Imagen</option><option value="audio">🎤 Audio</option></select>
+                <button class="refresh-btn" onclick="cargarPublicaciones()">🔄 Actualizar</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Fecha</th><th>Autor</th><th>Contenido</th><th>⭐</th><th>💬</th><th>Acciones</th></tr></thead>
+                    <tbody id="publicacionesBody"><tr><td colspan="6">Cargando...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Panel Reportes -->
+        <div id="panelReportes" class="panel">
+            <div class="filters">
+                <input type="text" id="searchReportes" class="search-input" placeholder="🔍 Buscar...">
+                <select id="filterReportesEstado" class="filter-select"><option value="todos">Todos</option><option value="pendiente">⏳ Pendientes</option><option value="revisado">✅ Revisados</option></select>
+                <button class="refresh-btn" onclick="cargarReportes()">🔄 Actualizar</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Fecha</th><th>📢 Reportó</th><th>⚠️ Reportado</th><th>Motivo</th><th>Estado</th><th>Acciones</th></tr></thead>
+                    <tbody id="reportesBody"><tr><td colspan="6">Cargando...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Panel Diarios -->
+        <div id="panelDiarios" class="panel">
+            <div class="filters">
+                <input type="text" id="searchDiarios" class="search-input" placeholder="🔍 Buscar usuario...">
+                <button class="refresh-btn" onclick="cargarDiarios()">🔄 Actualizar</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Usuario</th><th>Diario</th><th>Páginas</th><th>Post-its</th><th>Acciones</th></tr></thead>
+                    <tbody id="diariosBody"><tr><td colspan="5">Cargando...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Panel Post-its -->
+        <div id="panelPostits" class="panel">
+            <div class="filters">
+                <input type="text" id="searchPostits" class="search-input" placeholder="🔍 Buscar...">
+                <button class="refresh-btn" onclick="cargarPostits()">🔄 Actualizar</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Fecha</th><th>De</th><th>Para</th><th>Contenido</th><th>Acciones</th></tr></thead>
+                    <tbody id="postitsBody"><tr><td colspan="5">Cargando...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Panel Bloqueados -->
+        <div id="panelBloqueados" class="panel">
+            <div class="filters">
+                <button class="refresh-btn" onclick="cargarBloqueados()">🔄 Actualizar</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Usuario</th><th>Email</th><th>Bloqueado por</th><th>Fecha</th><th>Acciones</th></tr></thead>
+                    <tbody id="bloqueadosBody"><tr><td colspan="5">Cargando...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalDetalle" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h3>📋 Detalle completo</h3></div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer"><button class="action-btn view" onclick="cerrarModal()">Cerrar</button></div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        const PB_URL = 'http://127.0.0.1:8090';
+        const pb = new PocketBase(PB_URL);
+        pb.autoCancellation(false);
+        
+        const ADMIN_PASSWORD = 'shatts123';
+        
+        let todosUsuarios = [];
+        let todasPublicaciones = [];
+        let reportes = [];
+        let charts = { posts: null, reportes: null };
+        
+        // ========== LOGIN ==========
+        async function verificarPassword() {
+            const pass = document.getElementById('adminPassword').value;
+            if (pass === ADMIN_PASSWORD) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                await inicializarDashboard();
+            } else {
+                document.getElementById('loginError').textContent = '❌ Contraseña incorrecta';
+            }
+        }
+        
+        function cerrarSesion() {
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('adminPassword').value = '';
+        }
+        
+        async function inicializarDashboard() {
+            mostrarToast('🔄 Cargando datos...');
+            await cargarTodosLosDatos();
+            inicializarTabs();
+            setInterval(cargarTodosLosDatos, 30000);
+        }
+        
+        async function cargarTodosLosDatos() {
+            try {
+                await Promise.all([
+                    cargarUsuarios(),
+                    cargarPublicaciones(),
+                    cargarReportes(),
+                    cargarDiarios(),
+                    cargarPostits()
+                ]);
+                actualizarEstadisticas();
+                actualizarGraficos();
+                actualizarDashboardStats();
+            } catch(e) { console.error(e); }
+        }
+        
+        // ========== CARGAR DATOS ==========
+        async function cargarUsuarios() {
+            try {
+                const ahora = Date.now();
+                const hace5Min = ahora - (5*60*1000);
+                todosUsuarios = await pb.collection('usuarios').getFullList();
+                for (let u of todosUsuarios) {
+                    u.online = u.ultimaVez && new Date(u.ultimaVez).getTime() > hace5Min;
+                    const posts = await pb.collection('posts').getList(1, 1, { filter: `usuario = "${u.id}"` });
+                    u.postsCount = posts.totalItems;
+                    const seguidores = await pb.collection('seguidores').getList(1, 1, { filter: `seguido = "${u.id}"` });
+                    u.seguidores = seguidores.totalItems;
+                }
+                renderizarTablaUsuarios();
+                console.log(`✅ ${todosUsuarios.length} usuarios`);
+            } catch(e) { console.error(e); mostrarToast("Error usuarios", true); }
+        }
+        
+        async function cargarPublicaciones() {
+            try {
+                todasPublicaciones = await pb.collection('posts').getFullList({ sort: '-created' });
+                for (let p of todasPublicaciones) {
+                    try {
+                        const autor = await pb.collection('usuarios').getOne(p.usuario);
+                        p.autorNick = autor.nick || autor.email.split('@')[0];
+                    } catch(e) { p.autorNick = 'Usuario'; }
+                }
+                renderizarTablaPublicaciones();
+                console.log(`✅ ${todasPublicaciones.length} publicaciones`);
+            } catch(e) { console.error(e); }
+        }
+        
+        async function cargarReportes() {
+            try {
+                reportes = await pb.collection('reportes_usuarios').getFullList({ sort: '-created' });
+                console.log(`✅ ${reportes.length} reportes cargados`);
+                renderizarTablaReportes();
+            } catch(e) { 
+                console.error("Error reportes:", e);
+                mostrarToast("Error cargando reportes", true);
+            }
+        }
+        
+        async function cargarDiarios() {
+            try {
+                const diariosList = await pb.collection('diarios').getFullList();
+                const tbody = document.getElementById('diariosBody');
+                if (!tbody) return;
+                
+                if (diariosList.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5">📭 No hay diarios creados</td></tr>';
+                    return;
+                }
+                
+                let html = '';
+                for (const d of diariosList) {
+                    try {
+                        const user = await pb.collection('usuarios').getOne(d.usuario);
+                        const userNick = user.nick || user.email.split('@')[0];
+                        const paginas = await pb.collection('paginas_diario').getFullList({ filter: `diarioId = "${d.id}"` });
+                        let postitsCount = 0;
+                        for (const pagina of paginas) {
+                            const comentarios = await pb.collection('comentarios_diario').getList(1, 1, { filter: `paginaId = "${pagina.id}"` });
+                            postitsCount += comentarios.totalItems;
+                        }
+                        html += `<tr>
+                            <td><strong>@${escapeHtml(userNick)}</strong><br><small>${d.usuario}</small></td>
+                            <td>${escapeHtml(d.titulo || 'Mi Bitácora')}</td>
+                            <td>${paginas.length}</td>
+                            <td>${postitsCount}</td>
+                            <td><button class="action-btn view" onclick="verDiario('${d.usuario}')">👁️ Ver</button></td>
+                        </tr>`;
+                    } catch(e) { console.error(e); }
+                }
+                tbody.innerHTML = html || '<tr><td colspan="5">Error al cargar</td></tr>';
+                console.log(`✅ ${diariosList.length} diarios cargados`);
+            } catch(e) { 
+                console.error(e);
+                document.getElementById('diariosBody').innerHTML = '<tr><td colspan="5">❌ Error al cargar diarios</td></tr>';
+            }
+        }
+        
+        async function cargarPostits() {
+            try {
+                const postitsList = await pb.collection('comentarios_diario').getFullList({ sort: '-created' });
+                const tbody = document.getElementById('postitsBody');
+                if (!tbody) return;
+                
+                if (postitsList.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5">📭 No hay post-its</td></tr>';
+                    return;
+                }
+                
+                let html = '';
+                for (const p of postitsList) {
+                    let paraUsuario = 'Desconocido';
+                    try {
+                        const pagina = await pb.collection('paginas_diario').getOne(p.paginaId);
+                        const diario = await pb.collection('diarios').getOne(pagina.diarioId);
+                        const user = await pb.collection('usuarios').getOne(diario.usuario);
+                        paraUsuario = user.nick || user.email.split('@')[0];
+                    } catch(e) {}
+                    
+                    html += `<tr>
+                        <td style="white-space: nowrap;">${new Date(p.created).toLocaleString()}</td>
+                        <td><strong>${escapeHtml(p.userNick)}</strong></td>
+                        <td>@${escapeHtml(paraUsuario)}</td>
+                        <td>${escapeHtml(p.texto?.substring(0, 60))}${p.texto?.length > 60 ? '...' : ''}</td>
+                        <td><button class="action-btn delete" onclick="eliminarPostit('${p.id}')">🗑️</button></td>
+                    </tr>`;
+                }
+                tbody.innerHTML = html;
+                console.log(`✅ ${postitsList.length} post-its cargados`);
+            } catch(e) { 
+                console.error(e);
+                document.getElementById('postitsBody').innerHTML = '<tr><td colspan="5">❌ Error al cargar post-its</td></tr>';
+            }
+        }
+        
+        async function cargarBloqueados() {
+            try {
+                const bloqueados = todosUsuarios.filter(u => u.bloqueado === true);
+                const tbody = document.getElementById('bloqueadosBody');
+                if (!tbody) return;
+                
+                if (bloqueados.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5">🚫 No hay usuarios bloqueados</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = bloqueados.map(u => `
+                    <tr>
+                        <td><strong>@${escapeHtml(u.nick || u.email.split('@')[0])}</strong><br><small>${u.id}</small></td>
+                        <td>${escapeHtml(u.email)}</td>
+                        <td>${escapeHtml(u.bloqueadoPor || 'Admin')}</td>
+                        <td>${u.updated ? new Date(u.updated).toLocaleDateString() : '-'}</td>
+                        <td><button class="action-btn unblock" onclick="desbloquearUsuario('${u.id}')">🔓 Desbloquear</button></td>
+                    </tr>
+                `).join('');
+            } catch(e) { console.error(e); }
+        }
+        
+        // ========== ACTUALIZAR UI ==========
+        function actualizarEstadisticas() {
+            const stats = [
+                { icon: "👥", number: todosUsuarios.length, label: "Usuarios", tab: "usuarios" },
+                { icon: "📝", number: todasPublicaciones.length, label: "Publicaciones", tab: "publicaciones" },
+                { icon: "📢", number: reportes.length, label: "Reportes", tab: "reportes" },
+                { icon: "🚫", number: todosUsuarios.filter(u => u.bloqueado === true).length, label: "Bloqueados", tab: "bloqueados" }
+            ];
+            document.getElementById('statsGrid').innerHTML = stats.map(s => `
+                <div class="stat-card" onclick="cambiarTab('${s.tab}')">
+                    <div class="stat-icon">${s.icon}</div>
+                    <div class="stat-number">${s.number}</div>
+                    <div class="stat-label">${s.label}</div>
+                </div>
+            `).join('');
+        }
+        
+        function actualizarDashboardStats() {
+            const totalImagenes = todasPublicaciones.filter(p => p.imagen).length;
+            const totalAudios = todasPublicaciones.filter(p => p.audio).length;
+            const totalComentarios = todasPublicaciones.reduce((sum, p) => sum + (p.comments?.length || 0), 0);
+            const ratingPromedio = todasPublicaciones.reduce((sum, p) => sum + (p.rating || 0), 0) / (todasPublicaciones.length || 1);
+            
+            document.getElementById('dashboardStats').innerHTML = `
+                <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-number">${ratingPromedio.toFixed(1)}</div><div class="stat-label">Rating promedio</div></div>
+                <div class="stat-card"><div class="stat-icon">💬</div><div class="stat-number">${totalComentarios}</div><div class="stat-label">Comentarios</div></div>
+                <div class="stat-card"><div class="stat-icon">🎤</div><div class="stat-number">${totalAudios}</div><div class="stat-label">Audios</div></div>
+                <div class="stat-card"><div class="stat-icon">📷</div><div class="stat-number">${totalImagenes}</div><div class="stat-label">Imágenes</div></div>
+            `;
+            
+            // Top usuarios
+            const userPosts = {};
+            todasPublicaciones.forEach(p => { userPosts[p.usuario] = (userPosts[p.usuario] || 0) + 1; });
+            const topUsers = Object.entries(userPosts).sort((a,b) => b[1] - a[1]).slice(0,5);
+            const topBody = document.getElementById('topUsuariosBody');
+            if (topUsers.length === 0) {
+                topBody.innerHTML = '<tr><td colspan="4">Sin datos</td></tr>';
+            } else {
+                let html = '';
+                for (let i = 0; i < topUsers.length; i++) {
+                    const [uid, count] = topUsers[i];
+                    const user = todosUsuarios.find(u => u.id === uid);
+                    const nombre = user?.nick || user?.email?.split('@')[0] || uid.slice(0,6);
+                    html += `<tr><td>${i+1}</td><td><strong>@${escapeHtml(nombre)}</strong></td><td>${count}</td><td>${user?.seguidores || 0}</td></tr>`;
+                }
+                topBody.innerHTML = html;
+            }
+            
+            // Últimos reportes
+            const ultimosBody = document.getElementById('ultimosReportesBody');
+            if (reportes.length === 0) {
+                ultimosBody.innerHTML = '<tr><td colspan="5">Sin reportes</td></tr>';
+            } else {
+                ultimosBody.innerHTML = reportes.slice(0,5).map(r => `
+                    <tr>
+                        <td style="white-space: nowrap;">${new Date(r.created).toLocaleString()}</td>
+                        <td><strong>${escapeHtml(r.reportadoPorNick)}</strong></td>
+                        <td>@${escapeHtml(r.reportadoNick)}</td>
+                        <td><span style="background:#f44336; color:white; padding:2px 8px; border-radius:20px; font-size:11px;">${escapeHtml(r.motivo)}</span></td>
+                        <td><span class="badge ${r.estado}">${r.estado === 'pendiente' ? '⏳ Pendiente' : '✅ Revisado'}</span></td>
+                    </tr>
+                `).join('');
+            }
+        }
+        
+        function actualizarGraficos() {
+            // Gráfico de publicaciones por día
+            const ultimos7Dias = [];
+            const postsPorDia = [];
+            for (let i = 6; i >= 0; i--) {
+                const fecha = new Date(); fecha.setDate(fecha.getDate() - i);
+                ultimos7Dias.push(fecha.toLocaleDateString());
+                const inicio = new Date(fecha); inicio.setHours(0,0,0,0);
+                const fin = new Date(fecha); fin.setHours(23,59,59,999);
+                postsPorDia.push(todasPublicaciones.filter(p => new Date(p.created) >= inicio && new Date(p.created) <= fin).length);
+            }
+            if (charts.posts) charts.posts.destroy();
+            charts.posts = new Chart(document.getElementById('postsChart'), {
+                type: 'bar',
+                data: { labels: ultimos7Dias, datasets: [{ label: 'Publicaciones', data: postsPorDia, backgroundColor: '#6366f1', borderRadius: 6 }] },
+                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top' } } }
+            });
+            
+            // Gráfico de reportes por motivo
+            const motivos = {};
+            reportes.forEach(r => { motivos[r.motivo] = (motivos[r.motivo] || 0) + 1; });
+            if (charts.reportes) charts.reportes.destroy();
+            charts.reportes = new Chart(document.getElementById('reportesChart'), {
+                type: 'doughnut',
+                data: { labels: Object.keys(motivos), datasets: [{ data: Object.values(motivos), backgroundColor: ['#6366f1', '#8b5cf6', '#a855f7', '#d946ef', '#f43f5e', '#f97316'] }] },
+                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'right' } } }
+            });
+        }
+        
+        // ========== RENDERIZADO ==========
+        function renderizarTablaUsuarios() {
+            const busqueda = document.getElementById('searchUsuarios')?.value.toLowerCase() || '';
+            const estadoFiltro = document.getElementById('filterUsuariosEstado')?.value || 'todos';
+            let filtrados = todosUsuarios.filter(u => !busqueda || (u.nick?.toLowerCase().includes(busqueda) || u.email?.toLowerCase().includes(busqueda)));
+            if (estadoFiltro === 'online') filtrados = filtrados.filter(u => u.online);
+            if (estadoFiltro === 'offline') filtrados = filtrados.filter(u => !u.online);
+            
+            const tbody = document.getElementById('usuariosBody');
+            if (filtrados.length === 0) {
+                tbody.innerHTML = '<td><td colspan="6">No hay usuarios<\/td><\/tr>';
+                return;
+            }
+            tbody.innerHTML = filtrados.map(u => `
+                <tr>
+                    <td><strong>@${escapeHtml(u.nick || u.email.split('@')[0])}</strong><br><small style="color:#888;">${u.id}</small></td>
+                    <td>${escapeHtml(u.email)}</span></td>
+                    <td><span class="badge ${u.online ? 'online' : 'offline'}">${u.online ? '🟢 En línea' : '⚫ Desconectado'}</span></td>
+                    <td>${new Date(u.created).toLocaleDateString()}</span></td>
+                    <td>${u.postsCount || 0}</td>
+                    <td><button class="action-btn view" onclick="verUsuario('${u.id}')">👁️ Ver</button><button class="action-btn block" onclick="bloquearUsuario('${u.id}')">🚫 Bloquear</button></td>
+                </tr>
+            `).join('');
+        }
+        
+        function renderizarTablaPublicaciones() {
+            const busqueda = document.getElementById('searchPosts')?.value.toLowerCase() || '';
+            const tipoFiltro = document.getElementById('filterPostsTipo')?.value || 'todos';
+            let filtrados = [...todasPublicaciones];
+            if (tipoFiltro === 'imagen') filtrados = filtrados.filter(p => p.imagen);
+            else if (tipoFiltro === 'audio') filtrados = filtrados.filter(p => p.audio);
+            else if (tipoFiltro === 'texto') filtrados = filtrados.filter(p => !p.imagen && !p.audio);
+            if (busqueda) filtrados = filtrados.filter(p => p.texto?.toLowerCase().includes(busqueda) || p.autorNick?.toLowerCase().includes(busqueda));
+            
+            const tbody = document.getElementById('publicacionesBody');
+            if (filtrados.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6">No hay publicaciones<\/td><\/tr>';
+                return;
+            }
+            tbody.innerHTML = filtrados.map(p => {
+                const preview = p.texto ? p.texto.substring(0, 50) + (p.texto.length > 50 ? '...' : '') : (p.imagen ? '📷 Imagen' : (p.audio ? '🎤 Audio' : ''));
+                return `
+                    <tr>
+                        <td style="white-space: nowrap;">${new Date(p.created).toLocaleString()}</td>
+                        <td><strong>@${escapeHtml(p.autorNick)}</strong></td>
+                        <td>${escapeHtml(preview)}</span></td>
+                        <td>⭐ ${(p.rating || 0).toFixed(1)}</span></td>
+                        <td>${p.comments?.length || 0}</td>
+                        <td><button class="action-btn view" onclick="verPublicacion('${p.id}')">👁️</button><button class="action-btn delete" onclick="eliminarPublicacion('${p.id}')">🗑️</button></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        function renderizarTablaReportes() {
+            const tbody = document.getElementById('reportesBody');
+            if (!tbody) return;
+            if (reportes.length === 0) {
+                tbody.innerHTML = '<td><td colspan="6" style="text-align:center;">📭 No hay reportes en la base de datos<\/td><\/tr>';
+                return;
+            }
+            tbody.innerHTML = reportes.map(r => `
+                <tr>
+                    <td style="white-space: nowrap;">${new Date(r.created).toLocaleString()}</td>
+                    <td style="background:#ffebee;"><strong>📢 ${escapeHtml(r.reportadoPorNick)}</strong><br><small style="color:#888;">${r.reportadoPorId}</small></span></td>
+                    <td style="background:#fff3e0;"><strong>⚠️ @${escapeHtml(r.reportadoNick)}</strong><br><small style="color:#888;">${r.reportadoId}</small></span></td>
+                    <td><span style="background:#f44336; color:white; padding:2px 10px; border-radius:20px; font-size:11px; display:inline-block;">${escapeHtml(r.motivo)}</span></span></td>
+                    <td><span class="badge ${r.estado}">${r.estado === 'pendiente' ? '⏳ Pendiente' : '✅ Revisado'}</span></span></td>
+                    <td>
+                        <button class="action-btn view" onclick="verDetalleReporte('${r.id}')">👁️</button>
+                        ${r.estado === 'pendiente' ? `<button class="action-btn check" onclick="cambiarEstadoReporte('${r.id}', 'revisado')">✅</button>` : ''}
+                        <button class="action-btn block" onclick="bloquearUsuario('${r.reportadoId}')">🚫</button>
+                     </span>
+                </tr>
+            `).join('');
+        }
+        
+        // ========== ACCIONES ==========
+        window.verUsuario = async function(id) {
+            const u = todosUsuarios.find(u => u.id === id);
+            if (!u) return;
+            const modal = document.getElementById('modalDetalle');
+            document.getElementById('modalBody').innerHTML = `
+                <div class="info-row"><div class="info-label">ID:</div><div class="info-value">${u.id}</div></div>
+                <div class="info-row"><div class="info-label">Nick:</div><div class="info-value">@${escapeHtml(u.nick || u.email)}</div></div>
+                <div class="info-row"><div class="info-label">Email:</div><div class="info-value">${escapeHtml(u.email)}</div></div>
+                <div class="info-row"><div class="info-label">País:</div><div class="info-value">${u.pais || '-'}</div></div>
+                <div class="info-row"><div class="info-label">Registro:</div><div class="info-value">${new Date(u.created).toLocaleString()}</div></div>
+                <div class="info-row"><div class="info-label">Publicaciones:</div><div class="info-value">${u.postsCount || 0}</div></div>
+                <div class="info-row"><div class="info-label">Seguidores:</div><div class="info-value">${u.seguidores || 0}</div></div>
+                <div class="info-row"><div class="info-label">Bloqueado:</div><div class="info-value">${u.bloqueado ? 'Sí' : 'No'}</div></div>
+            `;
+            modal.classList.add('show');
+        };
+        
+        window.verPublicacion = async function(id) {
+            const p = todasPublicaciones.find(p => p.id === id);
+            if (!p) return;
+            const modal = document.getElementById('modalDetalle');
+            let extra = '';
+            if (p.imagen) extra += `<img src="${pb.files.getUrl(p, p.imagen)}" style="max-width:100%; max-height:150px; border-radius:12px; margin:10px 0;">`;
+            if (p.audio) extra += `<audio src="${pb.files.getUrl(p, p.audio)}" controls style="width:100%; margin:10px 0;"></audio>`;
+            document.getElementById('modalBody').innerHTML = `
+                <div class="info-row"><div class="info-label">Autor:</div><div class="info-value">@${escapeHtml(p.autorNick)}</div></div>
+                <div class="info-row"><div class="info-label">Fecha:</div><div class="info-value">${new Date(p.created).toLocaleString()}</div></div>
+                <div class="info-row"><div class="info-label">Texto:</div><div class="info-value">${escapeHtml(p.texto || '-')}</div></div>
+                <div class="info-row"><div class="info-label">Rating:</div><div class="info-value">⭐ ${(p.rating || 0).toFixed(1)} (${p.ratingCount || 0} votos)</div></div>
+                <div class="info-row"><div class="info-label">Comentarios:</div><div class="info-value">${p.comments?.length || 0}</div></div>
+                ${extra}
+            `;
+            modal.classList.add('show');
+        };
+        
+        window.verDetalleReporte = async function(id) {
+            const r = reportes.find(r => r.id === id);
+            if (!r) return;
+            const modal = document.getElementById('modalDetalle');
+            document.getElementById('modalBody').innerHTML = `
+                <div class="info-row" style="background:#ffebee; padding:10px; border-radius:12px; margin-bottom:12px;">
+                    <div class="info-label">📢 QUIEN REPORTA:</div>
+                    <div class="info-value"><strong>${escapeHtml(r.reportadoPorNick)}</strong><br><span style="font-size:11px; color:#888;">ID: ${r.reportadoPorId}</span></div>
+                </div>
+                <div class="info-row" style="background:#fff3e0; padding:10px; border-radius:12px; margin-bottom:12px;">
+                    <div class="info-label">⚠️ USUARIO REPORTADO:</div>
+                    <div class="info-value"><strong>@${escapeHtml(r.reportadoNick)}</strong><br><span style="font-size:11px; color:#888;">ID: ${r.reportadoId}</span></div>
+                </div>
+                <div class="info-row"><div class="info-label">📅 Fecha:</div><div class="info-value">${new Date(r.created).toLocaleString()}</div></div>
+                <div class="info-row"><div class="info-label">⚠️ Motivo:</div><div class="info-value"><span style="background:#f44336; color:white; padding:3px 12px; border-radius:20px; display:inline-block;">${escapeHtml(r.motivo)}</span></div></div>
+                <div class="info-row"><div class="info-label">📝 Detalle:</div><div class="info-value">${escapeHtml(r.detalle) || 'Sin detalles adicionales'}</div></div>
+                <div class="info-row"><div class="info-label">🏷️ Estado:</div><div class="info-value"><span class="badge ${r.estado}">${r.estado === 'pendiente' ? '⏳ Pendiente' : '✅ Revisado'}</span></div></div>
+            `;
+            modal.classList.add('show');
+        };
+        
+        window.verDiario = function(uid) {
+            window.open(`diario.html?uid=${uid}`, '_blank');
+        };
+        
+        window.cambiarEstadoReporte = async function(id, estado) {
+            try {
+                await pb.collection('reportes_usuarios').update(id, { estado });
+                mostrarToast(`✅ Reporte marcado como ${estado === 'revisado' ? 'revisado' : estado}`);
+                await cargarReportes();
+                actualizarDashboardStats();
+                actualizarGraficos();
+            } catch(e) { mostrarToast("Error al cambiar estado", true); }
+        };
+        
+        window.bloquearUsuario = async function(id) {
+            if (!confirm('¿Bloquear este usuario?')) return;
+            try {
+                await pb.collection('usuarios').update(id, { bloqueado: true, bloqueadoPor: 'Admin' });
+                mostrarToast(`🚫 Usuario bloqueado`);
+                await cargarUsuarios();
+                await cargarBloqueados();
+                actualizarEstadisticas();
+            } catch(e) { mostrarToast("Error al bloquear", true); }
+        };
+        
+        window.desbloquearUsuario = async function(id) {
+            try {
+                await pb.collection('usuarios').update(id, { bloqueado: false, bloqueadoPor: null });
+                mostrarToast(`🔓 Usuario desbloqueado`);
+                await cargarUsuarios();
+                await cargarBloqueados();
+                actualizarEstadisticas();
+            } catch(e) { mostrarToast("Error al desbloquear", true); }
+        };
+        
+        window.eliminarPublicacion = async function(id) {
+            if (!confirm('¿Eliminar esta publicación permanentemente?')) return;
+            try {
+                await pb.collection('posts').delete(id);
+                mostrarToast('🗑️ Publicación eliminada');
+                await cargarPublicaciones();
+                actualizarDashboardStats();
+                actualizarGraficos();
+            } catch(e) { mostrarToast("Error al eliminar", true); }
+        };
+        
+        window.eliminarPostit = async function(id) {
+            if (!confirm('¿Eliminar este post-it?')) return;
+            try {
+                await pb.collection('comentarios_diario').delete(id);
+                mostrarToast('📌 Post-it eliminado');
+                await cargarPostits();
+            } catch(e) { mostrarToast("Error al eliminar", true); }
+        };
+        
+        // ========== TABS ==========
+        function inicializarTabs() {
+            const tabs = ['dashboard', 'usuarios', 'publicaciones', 'reportes', 'diarios', 'postits', 'bloqueados'];
+            const nombres = ['📊 Dashboard', '👥 Usuarios', '📝 Publicaciones', '📢 Reportes', '📖 Diarios', '📌 Post-its', '🚫 Bloqueados'];
+            const tabsContainer = document.getElementById('tabs');
+            if (tabsContainer) {
+                tabsContainer.innerHTML = tabs.map((tab, i) => `<button class="tab-btn ${i === 0 ? 'active' : ''}" data-tab="${tab}" onclick="cambiarTab('${tab}')">${nombres[i]}</button>`).join('');
+            }
+        }
+        
+        window.cambiarTab = function(tab) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            const panelMap = {
+                'dashboard': 'panelDashboard',
+                'usuarios': 'panelUsuarios',
+                'publicaciones': 'panelPublicaciones',
+                'reportes': 'panelReportes',
+                'diarios': 'panelDiarios',
+                'postits': 'panelPostits',
+                'bloqueados': 'panelBloqueados'
+            };
+            const panelId = panelMap[tab];
+            if (panelId) {
+                document.getElementById(panelId).classList.add('active');
+            }
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            const btn = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
+            if (btn) btn.classList.add('active');
+            if (tab === 'bloqueados') cargarBloqueados();
+        };
+        
+        window.filtrarUsuarios = () => renderizarTablaUsuarios();
+        window.filtrarPublicaciones = () => renderizarTablaPublicaciones();
+        window.filtrarReportes = () => renderizarTablaReportes();
+        
+        window.cerrarModal = () => document.getElementById('modalDetalle').classList.remove('show');
+        
+        document.getElementById('searchUsuarios')?.addEventListener('keyup', () => renderizarTablaUsuarios());
+        document.getElementById('filterUsuariosEstado')?.addEventListener('change', () => renderizarTablaUsuarios());
+        document.getElementById('searchPosts')?.addEventListener('keyup', () => renderizarTablaPublicaciones());
+        document.getElementById('filterPostsTipo')?.addEventListener('change', () => renderizarTablaPublicaciones());
+        document.getElementById('searchReportes')?.addEventListener('keyup', () => renderizarTablaReportes());
+        document.getElementById('filterReportesEstado')?.addEventListener('change', () => renderizarTablaReportes());
+        document.getElementById('searchDiarios')?.addEventListener('keyup', () => cargarDiarios());
+        document.getElementById('searchPostits')?.addEventListener('keyup', () => cargarPostits());
+        
+        function escapeHtml(text) { if (!text) return ''; return text.replace(/[&<>]/g, function(m) { return m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'; }); }
+        function mostrarToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.style.background = isError ? '#3a1a1a' : '#1e293b';
+            toast.textContent = msg;
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 2500);
+        }
+    </script>
+</body>
+</html>
