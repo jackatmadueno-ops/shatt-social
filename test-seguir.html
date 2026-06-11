@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verificar Usuario</title>
+    <script src="https://unpkg.com/pocketbase@0.21.5/dist/pocketbase.umd.js"></script>
+</head>
+<body>
+    <h1>Verificar Usuario Específico</h1>
+    
+    <div>
+        <label>ID del usuario a verificar:</label>
+        <input type="text" id="userId" value="4rajstq1jdsdwsg" style="width: 300px;">
+        <button onclick="verificar()">Verificar</button>
+    </div>
+    
+    <pre id="resultado" style="background:#f0f0f0; padding:10px; margin-top:20px;">Esperando...</pre>
+
+    <script>
+        const pb = new PocketBase('http://127.0.0.1:8090');
+        
+        async function verificar() {
+            const userId = document.getElementById('userId').value;
+            const resultado = document.getElementById('resultado');
+            
+            if (!userId) {
+                resultado.textContent = "❌ Escribe un ID";
+                return;
+            }
+            
+            resultado.textContent = `Verificando usuario: ${userId}...\n\n`;
+            
+            try {
+                // Intentar obtener el usuario
+                const user = await pb.collection('usuarios').getOne(userId);
+                
+                resultado.textContent += `✅ USUARIO ENCONTRADO:\n`;
+                resultado.textContent += `═`.repeat(40) + `\n`;
+                resultado.textContent += `ID: ${user.id}\n`;
+                resultado.textContent += `Email: ${user.email || 'SIN EMAIL'}\n`;
+                resultado.textContent += `Nick: ${user.nick || 'SIN NICK'}\n`;
+                resultado.textContent += `Verificado: ${user.verified || false}\n`;
+                resultado.textContent += `\n📊 Seguidores: ${user.seguidores ? (Array.isArray(user.seguidores) ? user.seguidores.length : 0) : 0}\n`;
+                resultado.textContent += `📊 Siguiendo: ${user.siguiendo ? (Array.isArray(user.siguiendo) ? user.siguiendo.length : 0) : 0}\n`;
+                resultado.textContent += `\n`;
+                resultado.textContent += `🔧 DATOS COMPLETOS:\n`;
+                resultado.textContent += JSON.stringify(user, null, 2);
+                
+                // Verificar si es un usuario válido (con email)
+                if (!user.email) {
+                    resultado.textContent += `\n\n⚠️ ADVERTENCIA: Este usuario NO tiene email.`;
+                    resultado.textContent += `\n   Puede que no sea un usuario válido para autenticación.`;
+                    resultado.textContent += `\n   Para seguir a este usuario debería funcionar, pero no podrá iniciar sesión.`;
+                }
+                
+            } catch (error) {
+                resultado.textContent += `❌ ERROR: ${error.message}\n\n`;
+                resultado.textContent += `El usuario con ID "${userId}" NO EXISTE en la base de datos.`;
+                resultado.textContent += `\n\nUsa el botón "Listar Todos" para ver los IDs correctos.`;
+            }
+        }
+        
+        // También agregar botón para listar todos
+        async function listarTodos() {
+            const resultado = document.getElementById('resultado');
+            resultado.textContent = "Cargando lista de usuarios...\n";
+            
+            try {
+                const users = await pb.collection('usuarios').getList(1, 50);
+                resultado.textContent = `📋 TOTAL: ${users.totalItems} usuarios\n\n`;
+                
+                users.items.forEach(user => {
+                    resultado.textContent += `🆔 ${user.id}\n`;
+                    resultado.textContent += `   📧 ${user.email || 'SIN EMAIL'}\n`;
+                    resultado.textContent += `   👤 ${user.nick || 'SIN NICK'}\n`;
+                    resultado.textContent += `   ✅ Verificado: ${user.verified || false}\n`;
+                    resultado.textContent += `   ─────────────────\n`;
+                });
+            } catch (error) {
+                resultado.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+        
+        // Agregar botón extra
+        const btnListar = document.createElement('button');
+        btnListar.textContent = "Listar Todos los Usuarios";
+        btnListar.onclick = listarTodos;
+        btnListar.style.marginLeft = "10px";
+        document.querySelector('div').appendChild(btnListar);
+        
+        // Auto-verificar al cargar
+        verificar();
+    </script>
+</body>
+</html>
