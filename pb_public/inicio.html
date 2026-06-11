@@ -1195,10 +1195,16 @@
     </div>
 
     <script>
-        const PB_URL = 'https://shatt-social-production.up.railway.app';
-        pb.autoCancellation(false);
+
+        // Variables globales
+let currentUser = null;
+let palabrasFiltro = [];
+
+const PB_URL = 'https://shatt-social-production.up.railway.app';
+const pb = new PocketBase(PB_URL);
+pb.autoCancellation(false);
         
-        let currentUser = null;
+        
         let tempImg = null;
         let audioChunks = [];
         let mediaRecorder = null;
