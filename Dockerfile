@@ -11,12 +11,8 @@ RUN chmod +x pocketbase
 RUN mkdir -p /pb_data
 RUN mkdir -p /pb_public
 
-# Copiar tu código
-COPY pb_public/ /pb_public/
-COPY pb_data/ /pb_data/
-
 # Exponer puerto
 EXPOSE 8080
 
-# Iniciar PocketBase
+# Iniciar PocketBase (usará los datos del volumen)
 CMD ["./pocketbase", "serve", "--http=0.0.0.0:8080"]
