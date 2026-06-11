@@ -7,8 +7,8 @@ RUN wget https://github.com/pocketbase/pocketbase/releases/download/v0.22.9/pock
 RUN unzip pocketbase_0.22.9_linux_amd64.zip
 RUN chmod +x pocketbase
 
-# Copiar TODOS los archivos HTML a la raíz del servidor
-COPY *.html ./
+# Copiar TODOS los archivos
+COPY . .
 
 # Crear directorio para datos
 RUN mkdir -p /pb_data
