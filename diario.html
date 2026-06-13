@@ -938,9 +938,15 @@
     </div>
 
     <script>
-        const PB_URL = 'https://shatt-social-production.up.railway.app';
+        // Variables globales (solo una vez)
+let currentUser = null;
+let palabrasFiltro = [];
+
+const PB_URL = 'https://shatt-social-production.up.railway.app';
+const pb = new PocketBase(PB_URL);
+pb.autoCancellation(false);
         
-        let currentUser = null;
+        
         let currentDiaryUserId = null;
         let currentDiarioId = null;
         let paginas = [];
