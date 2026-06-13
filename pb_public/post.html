@@ -686,31 +686,35 @@ pb.autoCancellation(false);
         }
         
         async function enviarComentario() {
-            if (!currentUser) return mostrarToast("Debes iniciar sesión");
-            if (!currentPost) return;
-            
-            const input = document.getElementById('comentarioInput');
-            const texto = input.value.trim();
-            if (!texto) return;
-            
-            try {
-                const comments = currentPost.comments || [];
-                const newComment = {
-                    userNick: currentUser.email.split('@')[0],
-                    userId: currentUser.id,
-                    text: texto,
-                    createdAt: new Date().toISOString()
-                };
-                comments.push(newComment);
-                await pb.collection('posts').update(currentPost.id, { comments: comments });
-                currentPost.comments = comments;
-                input.value = '';
-                await cargarComentarios();
-                mostrarToast("💬 Comentario enviado");
-            } catch(e) {
-                mostrarToast("Error al comentar");
-            }
-        }
+    if (!currentUser) return mostrarToast("Debes iniciar sesión");
+    if (!currentPost) return;
+    
+    const input = document.getElementById('comentarioInput');
+    const texto = input.value.trim();
+    if (!texto) return;
+    
+    try {
+        const comments = currentPost.comments || [];
+        
+        // 🔧 USAR NICKNAME EN LUGAR DE EMAIL
+        const userNick = currentUser.nick || currentUser.email.split('@')[0];
+        
+        const newComment = {
+            userNick: userNick,
+            userId: currentUser.id,
+            text: texto,
+            createdAt: new Date().toISOString()
+        };
+        comments.push(newComment);
+        await pb.collection('posts').update(currentPost.id, { comments: comments });
+        currentPost.comments = comments;
+        input.value = '';
+        await cargarComentarios();
+        mostrarToast("💬 Comentario enviado");
+    } catch(e) {
+        mostrarToast("Error al comentar");
+    }
+}
         
         function verPerfil(uid) {
             window.location.href = `perfil.html?uid=${uid}`;
