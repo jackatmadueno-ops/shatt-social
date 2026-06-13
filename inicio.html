@@ -1195,11 +1195,15 @@
     </div>
 
     <script>
-        const PB_URL = 'https://shatt-social-production.up.railway.app';
-        const pb = new PocketBase(PB_URL);
-        pb.autoCancellation(false);
+        // Variables globales (solo una vez)
+let currentUser = null;
+let palabrasFiltro = [];
+
+const PB_URL = 'https://shatt-social-production.up.railway.app';
+const pb = new PocketBase(PB_URL);
+pb.autoCancellation(false);
         
-        let currentUser = null;
+        
         let tempImg = null;
         let audioChunks = [];
         let mediaRecorder = null;
@@ -1210,7 +1214,7 @@
         let searchTimeout;
         let notificacionesCache = [];
         let historialBusquedas = [];
-        let palabrasFiltro = [];
+        
         
         function mostrarToast(mensaje) {
             let toast = document.getElementById('custom-toast');
