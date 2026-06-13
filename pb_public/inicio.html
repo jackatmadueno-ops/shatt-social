@@ -1720,18 +1720,27 @@ function volverTendencias() {
         }
         
         async function addComm(postId) {
-            const input = document.getElementById(`comment-input-${postId}`);
-            const text = input.value.trim();
-            if (!text) return;
-            const post = await pb.collection('posts').getOne(postId);
-            const comments = post.comments || [];
-            comments.push({ userNick: currentUser.email.split('@')[0], userId: currentUser.id, text, createdAt: new Date().toISOString() });
-            await pb.collection('posts').update(postId, { comments });
-            if (post.usuario !== currentUser.id) await crearNotificacion(post.usuario, 'comentario', postId, text);
-            input.value = '';
-            await cargarPosts();
-            mostrarToast("💬 Comentado");
-        }
+    const input = document.getElementById(`comment-input-${postId}`);
+    const text = input.value.trim();
+    if (!text) return;
+    const post = await pb.collection('posts').getOne(postId);
+    const comments = post.comments || [];
+    
+    // 🔧 USAR NICKNAME EN LUGAR DE EMAIL
+    const userNick = currentUser.nick || currentUser.email.split('@')[0];
+    
+    comments.push({ 
+        userNick: userNick, 
+        userId: currentUser.id, 
+        text, 
+        createdAt: new Date().toISOString() 
+    });
+    await pb.collection('posts').update(postId, { comments });
+    if (post.usuario !== currentUser.id) await crearNotificacion(post.usuario, 'comentario', postId, text);
+    input.value = '';
+    await cargarPosts();
+    mostrarToast("💬 Comentado");
+}
         
         async function cargarNotificaciones() {
             if (!currentUser) return;
