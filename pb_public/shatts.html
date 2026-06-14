@@ -4092,6 +4092,75 @@ function abrirGaleriaMultiple() {
     window.abrirStickerInfoPorUrl = abrirStickerInfoPorUrl;
     window.cerrarStickerInfoModal = cerrarStickerInfoModal;
     window.toggleFavoritoDesdeModal = toggleFavoritoDesdeModal;
+
+    // ========== NOTIFICACIONES DE MENSAJES ==========
+let ultimoMensajeVisto = null;
+let notificationSound = null;
+
+function crearSonido() {
+    notificationSound = new Audio('https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8c8c8c8c8.mp3');
+    notificationSound.volume = 0.3;
+}
+
+async function pedirPermisoNotificaciones() {
+    if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+    }
+}
+
+function mostrarNotificacionNavegador(titulo, cuerpo, icono = '/favicon.ico') {
+    if (Notification.permission === 'granted') {
+        new Notification(titulo, { body: cuerpo, icon: icono });
+    }
+}
+
+function mostrarToastNotificacion(mensaje, esError = false) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.style.background = esError ? '#3a1a1a' : '#1a3a1a';
+    toast.textContent = mensaje;
+    toast.style.display = 'block';
+    setTimeout(() => toast.style.display = 'none', 3000);
+}
+
+async function verificarMensajesNuevos() {
+    if (!currentUser || !currentChatId) return;
+    
+    try {
+        const mensajes = await pb.collection('mensajes').getList(1, 1, {
+            filter: `chatId = "${currentChatId}"`,
+            sort: '-created'
+        });
+        
+        if (mensajes.items.length > 0) {
+            const ultimo = mensajes.items[0];
+            if (ultimoMensajeVisto !== ultimo.id && ultimo.remitenteId !== currentUser.id) {
+                ultimoMensajeVisto = ultimo.id;
+                
+                mostrarNotificacionNavegador(
+                    `📩 Nuevo mensaje de @${ultimo.remitenteNick}`,
+                    ultimo.texto?.substring(0, 50) || '📎 Archivo adjunto'
+                );
+                
+                if (notificationSound) {
+                    notificationSound.play().catch(e => console.log('Sonido no disponible'));
+                }
+                
+                mostrarToastNotificacion(`📩 Nuevo mensaje de @${ultimo.remitenteNick}`);
+                
+                document.title = `📩 Nuevo mensaje - SHATTS`;
+                setTimeout(() => {
+                    document.title = `SHATTS | Mensajería + Juegos`;
+                }, 4000);
+            }
+        }
+    } catch(e) {}
+}
+
+crearSonido();
+pedirPermisoNotificaciones();
+setInterval(verificarMensajesNuevos, 3000);
+    
 </script>
 </body>
 </html>
