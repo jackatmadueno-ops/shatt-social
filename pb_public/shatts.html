@@ -4278,6 +4278,27 @@ manejarVisibilidad();
 window.addEventListener('pageshow', () => {
     manejarVisibilidad();
 });
+    // Forzar chatActivo = false cuando la pestaña no está visible
+window.addEventListener('blur', () => {
+    chatActivo = false;
+    console.log('📴 Ventana perdió foco, chatActivo = false');
+});
+
+window.addEventListener('focus', () => {
+    // No lo ponemos en true automáticamente, solo cuando el chat tenga foco real
+    console.log('🟢 Ventana recuperó foco');
+});
+
+// También detectar si el usuario cambió a otra pestaña
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        chatActivo = false;
+        console.log('📴 Pestaña oculta, chatActivo = false');
+    } else {
+        // No activamos automáticamente, esperamos a que el usuario interactúe con el chat
+        console.log('🟢 Pestaña visible');
+    }
+});
 </script>
 </body>
 </html>
