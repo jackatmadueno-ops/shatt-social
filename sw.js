@@ -1,4 +1,4 @@
-// sw.js - Service Worker para SHATTS
+// sw.js - Service Worker para SHATTS (SOLO NOTIFICACIONES)
 self.addEventListener('push', function(event) {
     if (!(self.Notification && self.Notification.permission === 'granted')) {
         return;
@@ -34,3 +34,5 @@ self.addEventListener('notificationclick', function(event) {
         clients.openWindow(urlToOpen)
     );
 });
+
+// ⚠️ NO hay fetch event handler - así no bloquea el admin
