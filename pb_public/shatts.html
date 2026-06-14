@@ -8,6 +8,65 @@
     <script src="https://unpkg.com/pocketbase@0.21.5/dist/pocketbase.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/dayjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/plugin/relativeTime.js"></script>
+    <!-- Firebase -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-messaging.js";
+    
+    const firebaseConfig = {
+        apiKey: "AIzaSyB2NqLgdLYhO6oouvulQyyuz0u-MwZmmnY",
+        authDomain: "shatt-b92e1.firebaseapp.com",
+        projectId: "shatt-b92e1",
+        storageBucket: "shatt-b92e1.firebasestorage.app",
+        messagingSenderId: "583744258749",
+        appId: "1:583744258749:web:5d9d46285143ebf8d06dd4",
+        measurementId: "G-KHSWMTQKV6"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const messaging = getMessaging(app);
+    
+    // Registrar Service Worker de Firebase
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/firebase-messaging-sw.js')
+            .then(reg => console.log('✅ SW Firebase registrado:', reg))
+            .catch(err => console.error('❌ Error SW:', err));
+    }
+    
+    // Solicitar permiso y obtener token
+    async function iniciarFirebase() {
+        if (!currentUser) return;
+        
+        try {
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                const token = await getToken(messaging, {
+                    vapidKey: 'BFR841uokAtOro14XKYOeEJAVorsfjN0py50YGdaig9w-Cd8IFSs-B1MxIo5IlDBhvcOsfZxawqAlv8bCXIcoSs'
+                });
+                console.log('✅ Token FCM:', token);
+                
+                // Guardar token en PocketBase
+                await pb.collection('usuarios').update(currentUser.id, { fcmToken: token });
+            }
+        } catch(e) {
+            console.error('Error Firebase:', e);
+        }
+    }
+    
+    // Escuchar notificaciones en primer plano
+    onMessage(messaging, (payload) => {
+        console.log('📩 Notificación recibida:', payload);
+        if (payload.notification) {
+            // Mostrar notificación personalizada (puedes usar toast)
+            mostrarToastNotificacion(payload.notification.body);
+        }
+    });
+    
+    // Llamar a la función cuando el usuario esté listo
+    setTimeout(() => {
+        if (currentUser) iniciarFirebase();
+    }, 2000);
+</script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
