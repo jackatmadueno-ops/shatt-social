@@ -4240,10 +4240,44 @@ async function verificarMensajesNuevos() {
     } catch(e) {}
 }
 
+// ========== MANEJO DE NOTIFICACIONES MEJORADO PARA MÓVIL ==========
 crearSonido();
 pedirPermisoNotificaciones();
-setInterval(verificarMensajesNuevos, 3000);
+
+let intervaloActivo = null;
+let temporizadorReactivacion = null;
+
+function iniciarVerificacion(intervalo) {
+    if (intervaloActivo) clearInterval(intervaloActivo);
+    if (temporizadorReactivacion) clearTimeout(temporizadorReactivacion);
     
+    intervaloActivo = setInterval(() => {
+        verificarMensajesNuevos();
+    }, intervalo);
+    
+    console.log(`📡 Verificación activa cada ${intervalo / 1000} segundos`);
+}
+
+function manejarVisibilidad() {
+    if (document.hidden) {
+        // Pestaña oculta o minimizada: verificar cada 30 segundos (más amigable para móvil)
+        iniciarVerificacion(30000);
+    } else {
+        // Pestaña activa: verificar cada 3 segundos (rápido)
+        iniciarVerificacion(3000);
+    }
+}
+
+// Escuchar cambios de visibilidad
+document.addEventListener('visibilitychange', manejarVisibilidad);
+
+// Iniciar según el estado actual
+manejarVisibilidad();
+
+// También verificar cuando el usuario vuelve a la página (por si acaso)
+window.addEventListener('pageshow', () => {
+    manejarVisibilidad();
+});
 </script>
 </body>
 </html>
