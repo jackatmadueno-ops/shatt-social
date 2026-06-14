@@ -19,8 +19,7 @@ messaging.onBackgroundMessage((payload) => {
     const notificationOptions = {
         body: payload.notification?.body || 'Tienes un nuevo mensaje',
         icon: '/icon-192.png',
-        badge: '/icon-192.png',
-        vibrate: [200, 100, 200]
+        badge: '/icon-192.png'
     };
     self.registration.showNotification(notificationTitle, notificationOptions);
 });
