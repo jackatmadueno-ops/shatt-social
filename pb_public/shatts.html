@@ -1504,6 +1504,7 @@
     // Variables globales
     let currentUser = null;
     let palabrasFiltro = [];
+    let chatActivo = true;
     
     const PB_URL = 'https://shatt-social-production.up.railway.app';
     const pb = new PocketBase(PB_URL);
@@ -1533,6 +1534,24 @@
     let currentStickerData = null;
     let currentZoomImage = null;
     let zoomLevel = 1;
+    // Detectar cuando el usuario está activo en el chat
+const chatContainer = document.getElementById('chatMessages');
+if (chatContainer) {
+    chatContainer.addEventListener('mouseenter', () => { chatActivo = true; });
+    chatContainer.addEventListener('mouseleave', () => { chatActivo = false; });
+}
+
+// Detectar cuando el usuario cambia de pestaña
+document.addEventListener('visibilitychange', () => {
+    chatActivo = !document.hidden;
+});
+
+// Detectar cuando el usuario escribe (activo)
+const inputMensaje = document.getElementById('messageInput');
+if (inputMensaje) {
+    inputMensaje.addEventListener('focus', () => { chatActivo = true; });
+    inputMensaje.addEventListener('blur', () => { chatActivo = false; });
+}
     
     const emojis = [
         '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇',
@@ -4135,6 +4154,9 @@ function mostrarToastNotificacion(mensaje, esError = false) {
 
 async function verificarMensajesNuevos() {
     if (!currentUser || !currentChatId) return;
+    
+    // 🚨 CLAVE: Si el usuario está activo en el chat, NO notificar
+    if (chatActivo) return;
     
     try {
         const mensajes = await pb.collection('mensajes').getList(1, 1, {
