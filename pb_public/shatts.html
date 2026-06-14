@@ -4194,13 +4194,12 @@ function mostrarNotificacionNavegador(titulo, cuerpo, icono = '/favicon.ico') {
     }
 }
 
-function mostrarToastNotificacion(mensaje, esError = false) {
+function mostrarToastNotificacion(mensaje) {
     const toast = document.getElementById('toast');
     if (!toast) return;
-    toast.style.background = esError ? '#3a1a1a' : '#1a3a1a';
     toast.textContent = mensaje;
     toast.style.display = 'block';
-    setTimeout(() => toast.style.display = 'none', 3000);
+    setTimeout(() => toast.style.display = 'none', 4000);
 }
 
 async function verificarMensajesNuevos() {
@@ -4214,6 +4213,7 @@ async function verificarMensajesNuevos() {
             filter: `chatId = "${currentChatId}"`,
             sort: '-created'
         });
+        
         
         if (mensajes.items.length > 0) {
             const ultimo = mensajes.items[0];
