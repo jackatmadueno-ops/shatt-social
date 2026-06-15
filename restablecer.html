@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restablecer contraseña - SHATTS</title>
+    <script src="https://unpkg.com/pocketbase@0.21.5/dist/pocketbase.umd.js"></script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #3a6186, #2a4a6a);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 28px;
+            padding: 32px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        h1 { font-size: 24px; margin-bottom: 20px; color: #1a1a2e; }
+        input { width: 100%; padding: 14px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 30px; font-size: 16px; }
+        button { width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .error { color: #ff4444; margin-top: 10px; font-size: 14px; text-align: center; }
+        .success { color: #4CAF50; margin-top: 10px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Restablecer contraseña</h1>
+        <form id="resetForm">
+            <input type="password" id="newPassword" placeholder="Nueva contraseña" required>
+            <input type="password" id="confirmPassword" placeholder="Confirmar contraseña" required>
+            <button type="submit">Restablecer contraseña</button>
+        </form>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        const pb = new PocketBase('https://shatt-social-production.up.railway.app');
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        const email = urlParams.get('email');
+        
+        if (!token || !email) {
+            document.getElementById('message').innerHTML = '<div class="error">❌ Enlace inválido o expirado</div>';
+            document.getElementById('resetForm').style.display = 'none';
+        }
+        
+        document.getElementById('resetForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+            
+            if (newPass.length < 6) {
+                document.getElementById('message').innerHTML = '<div class="error">❌ La contraseña debe tener al menos 6 caracteres</div>';
+                return;
+            }
+            
+            if (newPass !== confirmPass) {
+                document.getElementById('message').innerHTML = '<div class="error">❌ Las contraseñas no coinciden</div>';
+                return;
+            }
+            
+            try {
+                // Verificar token
+                const usuarios = await pb.collection('usuarios').getList(1, 1, {
+                    filter: `email = "${email}" && resetToken = "${token}" && resetTokenExpires > "${new Date().toISOString()}"`
+                });
+                
+                if (usuarios.items.length === 0) {
+                    document.getElementById('message').innerHTML = '<div class="error">❌ Enlace inválido o expirado</div>';
+                    return;
+                }
+                
+                const user = usuarios.items[0];
+                
+                // Actualizar contraseña
+                await pb.collection('usuarios').update(user.id, {
+                    password: newPass,
+                    passwordConfirm: newPass,
+                    resetToken: null,
+                    resetTokenExpires: null
+                });
+                
+                document.getElementById('message').innerHTML = '<div class="success">✅ Contraseña restablecida. <a href="iniciarsesion.html">Iniciar sesión</a></div>';
+                document.getElementById('resetForm').style.display = 'none';
+                
+            } catch(e) {
+                console.error(e);
+                document.getElementById('message').innerHTML = '<div class="error">❌ Error al restablecer la contraseña</div>';
+            }
+        });
+    </script>
+</body>
+</html>
