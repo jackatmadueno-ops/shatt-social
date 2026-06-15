@@ -929,12 +929,12 @@
         window.cerrarDeclaracion = cerrarDeclaracion;
         window.confirmarRegistro = confirmarRegistro;
 
+
 async function recuperarPassword() {
-    const email = prompt("Ingresa tu correo electrónico para recuperar tu cuenta:");
+    const email = prompt("📧 Ingresa tu correo electrónico para recuperar tu cuenta:");
     if (!email) return;
     
     try {
-        // Buscar usuario por email
         const usuarios = await pb.collection('usuarios').getList(1, 1, {
             filter: `email = "${email}"`
         });
@@ -946,19 +946,20 @@ async function recuperarPassword() {
         
         const user = usuarios.items[0];
         
-        // Generar token de restablecimiento
+        // Generar token
         const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         
-        // Guardar token en la base de datos (crea un campo 'resetToken' en usuarios)
+        // Guardar token en la base de datos
         await pb.collection('usuarios').update(user.id, {
             resetToken: token,
-            resetTokenExpires: new Date(Date.now() + 3600000).toISOString() // 1 hora
+            resetTokenExpires: new Date(Date.now() + 3600000).toISOString()
         });
         
-        // Enviar correo con el enlace (usando FormSubmit)
+        // Enlace de restablecimiento
         const resetLink = `${window.location.origin}/restablecer.html?token=${token}&email=${email}`;
         
-        await fetch('https://formsubmit.co/ajax/tuemail@gmail.com', { // 🔴 Cambia por TU correo
+        // Enviar correo
+        await fetch('https://formsubmit.co/ajax/tuemail@gmail.com', { // 🔴 CAMBIA POR TU CORREO
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -969,13 +970,15 @@ async function recuperarPassword() {
             })
         });
         
-        alert("📧 Se ha enviado un enlace de recuperación a tu correo electrónico.");
+        alert("📧 Se ha enviado un enlace de recuperación a tu correo electrónico. Revisa tu bandeja de entrada (y spam).");
         
     } catch(e) {
         console.error(e);
         alert("❌ Error al procesar la solicitud");
     }
 }
+
+
     </script>
 </body>
 </html>
