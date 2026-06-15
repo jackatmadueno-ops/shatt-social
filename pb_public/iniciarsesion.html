@@ -924,6 +924,54 @@
         window.mostrarPrivacidad = mostrarPrivacidad;
         window.cerrarDeclaracion = cerrarDeclaracion;
         window.confirmarRegistro = confirmarRegistro;
+
+async function recuperarPassword() {
+    const email = prompt("Ingresa tu correo electrónico para recuperar tu cuenta:");
+    if (!email) return;
+    
+    try {
+        // Buscar usuario por email
+        const usuarios = await pb.collection('usuarios').getList(1, 1, {
+            filter: `email = "${email}"`
+        });
+        
+        if (usuarios.items.length === 0) {
+            alert("❌ No existe una cuenta con ese correo");
+            return;
+        }
+        
+        const user = usuarios.items[0];
+        
+        // Generar token de restablecimiento
+        const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        
+        // Guardar token en la base de datos (crea un campo 'resetToken' en usuarios)
+        await pb.collection('usuarios').update(user.id, {
+            resetToken: token,
+            resetTokenExpires: new Date(Date.now() + 3600000).toISOString() // 1 hora
+        });
+        
+        // Enviar correo con el enlace (usando FormSubmit)
+        const resetLink = `${window.location.origin}/restablecer.html?token=${token}&email=${email}`;
+        
+        await fetch('https://formsubmit.co/ajax/tuemail@gmail.com', { // 🔴 Cambia por TU correo
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: email,
+                subject: '🔐 Recuperación de contraseña - SHATTS',
+                message: `Haz clic en el siguiente enlace para restablecer tu contraseña:\n\n${resetLink}\n\nEl enlace expira en 1 hora.\n\nSi no solicitaste esto, ignora este mensaje.`,
+                _captcha: 'false'
+            })
+        });
+        
+        alert("📧 Se ha enviado un enlace de recuperación a tu correo electrónico.");
+        
+    } catch(e) {
+        console.error(e);
+        alert("❌ Error al procesar la solicitud");
+    }
+}
     </script>
 </body>
 </html>
