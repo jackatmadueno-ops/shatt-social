@@ -952,7 +952,10 @@ async function recuperarPassword() {
         }
         
         // Generar token
-        const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        // Token criptográficamente seguro (32 bytes en hexadecimal)
+const token = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
         
         // Guardar token
         await pb.collection('usuarios').update(usuario.id, {
