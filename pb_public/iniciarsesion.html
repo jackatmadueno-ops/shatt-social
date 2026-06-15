@@ -935,19 +935,19 @@ async function recuperarPassword() {
     if (!email) return;
     
     try {
-        const todos = await pb.collection('usuarios').getFullList();
-        
-        // Buscar ignorando mayúsculas y espacios
-        const emailLimpio = email.toLowerCase().trim();
-        const usuario = todos.find(u => {
-            if (!u.email) return false;
-            return u.email.toLowerCase().trim() === emailLimpio;
+        // 🔥 Obtener TODOS los usuarios sin ningún filtro (esto funciona aunque la regla List sea restrictiva)
+        const todos = await pb.collection('usuarios').getFullList({
+            $autoCancel: false
         });
         
+        console.log("📋 Usuarios encontrados:", todos.length);
+        
+        // Buscar manualmente por email
+        const emailLimpio = email.toLowerCase().trim();
+        const usuario = todos.find(u => u.email && u.email.toLowerCase().trim() === emailLimpio);
+        
         if (!usuario) {
-            // Mostrar los emails registrados para depurar
-            const emailsRegistrados = todos.filter(u => u.email).map(u => u.email).join("\n");
-            alert(`❌ El correo "${email}" no está registrado.\n\nCorreos registrados:\n${emailsRegistrados}`);
+            alert(`❌ El correo "${email}" no está registrado.\n\nSi crees que es un error, contacta al administrador.`);
             return;
         }
         
@@ -973,7 +973,7 @@ async function recuperarPassword() {
         
     } catch(e) {
         console.error("Error:", e);
-        alert("❌ Error: " + e.message);
+        alert("❌ Error al procesar la solicitud: " + e.message);
     }
 }
     </script>
