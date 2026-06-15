@@ -935,12 +935,19 @@ async function recuperarPassword() {
     if (!email) return;
     
     try {
-        // Buscar usuario por email
-        const usuarios = await pb.collection('usuarios').getFullList();
-        const usuario = usuarios.find(u => u.email === email);
+        const todos = await pb.collection('usuarios').getFullList();
+        
+        // Buscar ignorando mayúsculas y espacios
+        const emailLimpio = email.toLowerCase().trim();
+        const usuario = todos.find(u => {
+            if (!u.email) return false;
+            return u.email.toLowerCase().trim() === emailLimpio;
+        });
         
         if (!usuario) {
-            alert(`❌ El correo "${email}" no está registrado.`);
+            // Mostrar los emails registrados para depurar
+            const emailsRegistrados = todos.filter(u => u.email).map(u => u.email).join("\n");
+            alert(`❌ El correo "${email}" no está registrado.\n\nCorreos registrados:\n${emailsRegistrados}`);
             return;
         }
         
@@ -956,10 +963,8 @@ async function recuperarPassword() {
         // Enlace de recuperación
         const resetLink = `${window.location.origin}/restablecer.html?token=${token}&email=${encodeURIComponent(usuario.email)}`;
         
-        // Mostrar enlace (para pruebas)
         console.log("🔗 Enlace:", resetLink);
         
-        // Preguntar si quiere abrirlo
         if (confirm("🔗 ¿Quieres abrir el enlace de recuperación ahora?")) {
             window.open(resetLink, '_blank');
         } else {
