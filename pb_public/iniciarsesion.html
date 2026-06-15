@@ -961,7 +961,7 @@ async function recuperarPassword() {
         });
         
         // Enlace de recuperación
-        const resetLink = `${window.location.origin}/pb_public/restablecer.html?token=${token}&email=${encodeURIComponent(usuario.email)}`;
+        const resetLink = `${window.location.origin}/restablecer.html?token=${token}&email=${encodeURIComponent(usuario.email)}`;
         
         console.log("🔗 Enlace:", resetLink);
         
