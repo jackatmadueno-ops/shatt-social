@@ -25,17 +25,63 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
         h1 { font-size: 24px; margin-bottom: 20px; color: #1a1a2e; }
-        input { width: 100%; padding: 14px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 30px; font-size: 16px; }
-        button { width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        .error { color: #ff4444; margin-top: 10px; font-size: 14px; text-align: center; }
-        .success { color: #4CAF50; margin-top: 10px; text-align: center; }
+        input { 
+            width: 100%; 
+            padding: 14px; 
+            margin: 10px 0; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 30px; 
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button { 
+            width: 100%; 
+            padding: 14px; 
+            background: linear-gradient(135deg, #667eea, #764ba2); 
+            color: white; 
+            border: none; 
+            border-radius: 30px; 
+            font-size: 16px; 
+            font-weight: bold; 
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+        }
+        .error { 
+            color: #ff4444; 
+            margin-top: 10px; 
+            font-size: 14px; 
+            text-align: center; 
+            padding: 10px;
+            background: #ffebee;
+            border-radius: 12px;
+        }
+        .success { 
+            color: #4CAF50; 
+            margin-top: 10px; 
+            text-align: center; 
+            padding: 10px;
+            background: #e8f5e9;
+            border-radius: 12px;
+        }
+        .success a {
+            color: #4CAF50;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🔐 Restablecer contraseña</h1>
         <form id="resetForm">
-            <input type="password" id="newPassword" placeholder="Nueva contraseña" required>
+            <input type="password" id="newPassword" placeholder="Nueva contraseña (mínimo 6 caracteres)" required>
             <input type="password" id="confirmPassword" placeholder="Confirmar contraseña" required>
             <button type="submit">Restablecer contraseña</button>
         </form>
@@ -49,8 +95,17 @@
         const token = urlParams.get('token');
         const email = urlParams.get('email');
         
+        // Función para validar token hexadecimal (64 caracteres)
+        function esTokenValido(token) {
+            return /^[a-f0-9]{64}$/.test(token);
+        }
+        
+        // Validar token y email
         if (!token || !email) {
             document.getElementById('message').innerHTML = '<div class="error">❌ Enlace inválido o expirado</div>';
+            document.getElementById('resetForm').style.display = 'none';
+        } else if (!esTokenValido(token)) {
+            document.getElementById('message').innerHTML = '<div class="error">❌ Token inválido</div>';
             document.getElementById('resetForm').style.display = 'none';
         }
         
@@ -70,32 +125,34 @@
             }
             
             try {
-                // Verificar token
+                // Verificar token en la base de datos
                 const usuarios = await pb.collection('usuarios').getList(1, 1, {
                     filter: `email = "${email}" && resetToken = "${token}" && resetTokenExpires > "${new Date().toISOString()}"`
                 });
                 
                 if (usuarios.items.length === 0) {
-                    document.getElementById('message').innerHTML = '<div class="error">❌ Enlace inválido o expirado</div>';
+                    document.getElementById('message').innerHTML = '<div class="error">❌ Enlace inválido o expirado. Solicita un nuevo enlace de recuperación.</div>';
                     return;
                 }
                 
                 const user = usuarios.items[0];
                 
-                // Actualizar contraseña
+                // Actualizar contraseña y limpiar token
                 await pb.collection('usuarios').update(user.id, {
                     password: newPass,
                     passwordConfirm: newPass,
                     resetToken: null,
-                    resetTokenExpires: null
+                    resetTokenExpires: null,
+                    resetAttempts: 0,
+                    resetLastAttempt: null
                 });
                 
-                document.getElementById('message').innerHTML = '<div class="success">✅ Contraseña restablecida. <a href="iniciarsesion.html">Iniciar sesión</a></div>';
+                document.getElementById('message').innerHTML = '<div class="success">✅ Contraseña restablecida correctamente.<br><a href="iniciarsesion.html">🔐 Iniciar sesión</a></div>';
                 document.getElementById('resetForm').style.display = 'none';
                 
             } catch(e) {
                 console.error(e);
-                document.getElementById('message').innerHTML = '<div class="error">❌ Error al restablecer la contraseña</div>';
+                document.getElementById('message').innerHTML = '<div class="error">❌ Error al restablecer la contraseña. Intenta nuevamente.</div>';
             }
         });
     </script>
