@@ -931,60 +931,48 @@
 
 
 async function recuperarPassword() {
-    const email = prompt("📧 Ingresa tu correo electrónico para recuperar tu cuenta:");
+    const email = prompt("📧 Ingresa tu correo electrónico:");
     if (!email) return;
     
     try {
-        // Buscar usuario por email (insensible a mayúsculas)
-        const usuarios = await pb.collection('usuarios').getList(1, 1, {
-            filter: `email ~ "${email}"`
-        });
+        // Buscar usuario por correo (más tolerante)
+        const todos = await pb.collection('usuarios').getFullList();
+        const usuario = todos.find(u => u.email.toLowerCase() === email.toLowerCase());
         
-        if (usuarios.items.length === 0) {
-            alert("❌ No existe una cuenta con ese correo. Verifica que lo escribiste correctamente.");
-            return;
-        }
-        
-        const user = usuarios.items[0];
-        
-        // Verificar que el correo coincida exactamente (opcional)
-        if (user.email.toLowerCase() !== email.toLowerCase()) {
-            alert("❌ No existe una cuenta con ese correo.");
+        if (!usuario) {
+            alert("❌ No existe una cuenta con ese correo. Verifica que esté bien escrito.");
+            console.log("Correo buscado:", email);
+            console.log("Correos registrados:", todos.map(u => u.email));
             return;
         }
         
         // Generar token
         const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         
-        // Guardar token en la base de datos
-        await pb.collection('usuarios').update(user.id, {
+        // Guardar token
+        await pb.collection('usuarios').update(usuario.id, {
             resetToken: token,
             resetTokenExpires: new Date(Date.now() + 3600000).toISOString()
         });
         
-        // Enlace de restablecimiento
-        const resetLink = `${window.location.origin}/restablecer.html?token=${token}&email=${user.email}`;
+        // Enlace de recuperación
+        const resetLink = `${window.location.origin}/restablecer.html?token=${token}&email=${encodeURIComponent(usuario.email)}`;
         
-        // Enviar correo
-        await fetch('https://formsubmit.co/ajax/tuemail@gmail.com', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                email: user.email,
-                subject: '🔐 Recuperación de contraseña - SHATTS',
-                message: `Haz clic en el siguiente enlace para restablecer tu contraseña:\n\n${resetLink}\n\nEl enlace expira en 1 hora.\n\nSi no solicitaste esto, ignora este mensaje.`,
-                _captcha: 'false'
-            })
-        });
+        // Mostrar el enlace directamente (para probar)
+        console.log("🔗 Enlace de recuperación:", resetLink);
         
-        alert(`📧 Se ha enviado un enlace de recuperación a ${user.email}. Revisa tu bandeja de entrada (y spam).`);
+        // Opcional: abrir el enlace en una nueva pestaña para probar
+        if (confirm("¿Quieres abrir el enlace de recuperación ahora? (Solo para probar)")) {
+            window.open(resetLink, '_blank');
+        } else {
+            alert(`🔗 Copia este enlace para recuperar tu cuenta:\n\n${resetLink}\n\n(Expira en 1 hora)`);
+        }
         
     } catch(e) {
-        console.error(e);
-        alert("❌ Error al procesar la solicitud. Intenta más tarde.");
+        console.error("Error en recuperación:", e);
+        alert("❌ Error al procesar la solicitud: " + e.message);
     }
 }
-
     </script>
 </body>
 </html>
