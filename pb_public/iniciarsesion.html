@@ -935,14 +935,14 @@ async function recuperarPassword() {
     if (!email) return;
     
     try {
-        // Buscar usuario por correo (más tolerante)
         const todos = await pb.collection('usuarios').getFullList();
-        const usuario = todos.find(u => u.email.toLowerCase() === email.toLowerCase());
+        console.log("📧 Todos los usuarios:", todos);
+        
+        // Buscar por email (con null check)
+        const usuario = todos.find(u => u.email && u.email.toLowerCase() === email.toLowerCase());
         
         if (!usuario) {
-            alert("❌ No existe una cuenta con ese correo. Verifica que esté bien escrito.");
-            console.log("Correo buscado:", email);
-            console.log("Correos registrados:", todos.map(u => u.email));
+            alert(`❌ El correo "${email}" no está registrado en SHATTS.\n\nCorreos registrados:\n${todos.filter(u => u.email).map(u => u.email).join('\n')}`);
             return;
         }
         
@@ -958,19 +958,17 @@ async function recuperarPassword() {
         // Enlace de recuperación
         const resetLink = `${window.location.origin}/restablecer.html?token=${token}&email=${encodeURIComponent(usuario.email)}`;
         
-        // Mostrar el enlace directamente (para probar)
-        console.log("🔗 Enlace de recuperación:", resetLink);
+        console.log("🔗 Enlace:", resetLink);
         
-        // Opcional: abrir el enlace en una nueva pestaña para probar
-        if (confirm("¿Quieres abrir el enlace de recuperación ahora? (Solo para probar)")) {
+        if (confirm("¿Quieres abrir el enlace de recuperación ahora?")) {
             window.open(resetLink, '_blank');
         } else {
-            alert(`🔗 Copia este enlace para recuperar tu cuenta:\n\n${resetLink}\n\n(Expira en 1 hora)`);
+            alert(`🔗 Enlace: ${resetLink}`);
         }
         
     } catch(e) {
-        console.error("Error en recuperación:", e);
-        alert("❌ Error al procesar la solicitud: " + e.message);
+        console.error("Error:", e);
+        alert("❌ Error: " + e.message);
     }
 }
     </script>
