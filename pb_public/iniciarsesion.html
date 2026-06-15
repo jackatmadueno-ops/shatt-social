@@ -935,14 +935,12 @@ async function recuperarPassword() {
     if (!email) return;
     
     try {
-        const todos = await pb.collection('usuarios').getFullList();
-        console.log("📧 Todos los usuarios:", todos);
-        
-        // Buscar por email (con null check)
-        const usuario = todos.find(u => u.email && u.email.toLowerCase() === email.toLowerCase());
+        // Buscar usuario por email
+        const usuarios = await pb.collection('usuarios').getFullList();
+        const usuario = usuarios.find(u => u.email === email);
         
         if (!usuario) {
-            alert(`❌ El correo "${email}" no está registrado en SHATTS.\n\nCorreos registrados:\n${todos.filter(u => u.email).map(u => u.email).join('\n')}`);
+            alert(`❌ El correo "${email}" no está registrado.`);
             return;
         }
         
@@ -958,12 +956,14 @@ async function recuperarPassword() {
         // Enlace de recuperación
         const resetLink = `${window.location.origin}/restablecer.html?token=${token}&email=${encodeURIComponent(usuario.email)}`;
         
+        // Mostrar enlace (para pruebas)
         console.log("🔗 Enlace:", resetLink);
         
-        if (confirm("¿Quieres abrir el enlace de recuperación ahora?")) {
+        // Preguntar si quiere abrirlo
+        if (confirm("🔗 ¿Quieres abrir el enlace de recuperación ahora?")) {
             window.open(resetLink, '_blank');
         } else {
-            alert(`🔗 Enlace: ${resetLink}`);
+            alert(`🔗 Copia este enlace:\n\n${resetLink}\n\n(Expira en 1 hora)`);
         }
         
     } catch(e) {
