@@ -14,7 +14,7 @@
         
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            background: linear-gradient(135deg, #0f0c29 0%, #1a1a2e 50%, #16213e 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -61,8 +61,8 @@
         
         /* Header */
         .admin-header {
-            background: rgba(255,255,255,0.95);
-            border-radius: 28px;
+            background: rgba(255,255,255,0.96);
+            border-radius: 24px;
             padding: 20px 32px;
             margin-bottom: 24px;
             display: flex;
@@ -72,9 +72,10 @@
             gap: 15px;
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
         }
         .logo h1 { font-size: 24px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .logo small { font-size: 12px; color: #666; }
+        .logo small { font-size: 12px; color: #6b7280; }
         .logout-btn { background: #ef4444; color: white; border: none; padding: 10px 24px; border-radius: 40px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
         .logout-btn:hover { background: #dc2626; transform: translateY(-2px); }
         
@@ -86,8 +87,8 @@
             margin-bottom: 24px;
         }
         .stat-card {
-            background: rgba(255,255,255,0.95);
-            border-radius: 24px;
+            background: rgba(255,255,255,0.96);
+            border-radius: 20px;
             padding: 20px;
             text-align: center;
             cursor: pointer;
@@ -95,7 +96,7 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.2);
         }
-        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -12px rgba(0,0,0,0.2); background: white; }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 24px -12px rgba(0,0,0,0.2); background: white; }
         .stat-icon { font-size: 38px; margin-bottom: 10px; }
         .stat-number { font-size: 34px; font-weight: 700; color: #1f2937; }
         .stat-label { font-size: 12px; color: #6b7280; margin-top: 6px; font-weight: 500; }
@@ -108,10 +109,11 @@
             margin-bottom: 24px;
         }
         .chart-card {
-            background: rgba(255,255,255,0.95);
-            border-radius: 24px;
+            background: rgba(255,255,255,0.96);
+            border-radius: 20px;
             padding: 20px;
             backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
         }
         .chart-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; color: #1e293b; display: flex; align-items: center; gap: 8px; }
         canvas { max-height: 220px; width: 100%; }
@@ -122,7 +124,7 @@
             gap: 10px;
             margin-bottom: 24px;
             flex-wrap: wrap;
-            background: rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.3);
             padding: 8px;
             border-radius: 60px;
         }
@@ -137,17 +139,18 @@
             color: white;
             transition: all 0.2s;
         }
-        .tab-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-1px); }
+        .tab-btn:hover { background: rgba(255,255,255,0.15); transform: translateY(-1px); }
         .tab-btn.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; box-shadow: 0 4px 12px rgba(102,126,234,0.3); }
         
         /* Panels */
         .panel {
             display: none;
-            background: rgba(255,255,255,0.95);
-            border-radius: 28px;
+            background: rgba(255,255,255,0.96);
+            border-radius: 24px;
             padding: 24px;
             backdrop-filter: blur(10px);
             animation: fadeIn 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
         }
         .panel.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -193,24 +196,24 @@
         }
         .refresh-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
         
-        /* Table Container */
+        /* Tables */
         .table-container {
             overflow-x: auto;
-            border-radius: 20px;
+            border-radius: 16px;
             border: 1px solid #e5e7eb;
             background: white;
         }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
         th {
             text-align: left;
-            padding: 16px 16px;
+            padding: 14px 16px;
             background: #f8fafc;
             font-weight: 600;
             color: #1e293b;
             border-bottom: 1px solid #e2e8f0;
             font-size: 13px;
         }
-        td { padding: 14px 16px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: middle; }
+        td { padding: 12px 16px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: middle; }
         tr:last-child td { border-bottom: none; }
         tr:hover td { background: #f8fafc; }
         
@@ -226,14 +229,13 @@
         .badge.offline { background: #f1f5f9; color: #64748b; }
         .badge-pendiente { background: #fed7aa; color: #9a3412; }
         .badge-revisado { background: #d1fae5; color: #065f46; }
-        .badge-reportado { background: #fee2e2; color: #dc2626; }
         
         /* Action Buttons */
         .action-group { display: flex; gap: 8px; flex-wrap: wrap; }
         .action-btn {
             padding: 6px 14px;
             border: none;
-            border-radius: 40px;
+            border-radius: 30px;
             cursor: pointer;
             font-size: 11px;
             font-weight: 500;
@@ -250,7 +252,7 @@
         .action-btn.unblock { background: #22c55e; color: white; }
         .action-btn.unblock:hover { background: #16a34a; transform: scale(1.02); }
         
-        /* Card style for reports/postits/diarios */
+        /* Cards for reports/diarios/postits */
         .card-grid {
             display: flex;
             flex-direction: column;
@@ -258,7 +260,7 @@
         }
         .report-card, .diario-card, .postit-card {
             background: white;
-            border-radius: 20px;
+            border-radius: 16px;
             padding: 20px;
             transition: all 0.2s;
             border: 1px solid #e5e7eb;
@@ -273,9 +275,7 @@
             transform: translateY(-2px);
             border-color: #6366f1;
         }
-        .report-info, .diario-info, .postit-info {
-            flex: 1;
-        }
+        .report-info, .diario-info, .postit-info { flex: 1; }
         .report-header, .diario-header, .postit-header {
             display: flex;
             align-items: center;
@@ -283,59 +283,14 @@
             margin-bottom: 8px;
             flex-wrap: wrap;
         }
-        .report-badge, .diario-badge {
-            font-size: 11px;
-            font-weight: 600;
-            padding: 4px 12px;
-            border-radius: 60px;
-        }
-        .report-motivo {
-            font-weight: 600;
-            color: #1f2937;
-            margin-bottom: 8px;
-        }
-        .report-detail {
-            font-size: 12px;
-            color: #6b7280;
-            margin-top: 6px;
-        }
-        .report-users {
-            display: flex;
-            gap: 16px;
-            margin-top: 8px;
-            flex-wrap: wrap;
-        }
-        .report-user {
-            font-size: 12px;
-            background: #f3f4f6;
-            padding: 4px 12px;
-            border-radius: 60px;
-        }
-        .diario-stats {
-            display: flex;
-            gap: 16px;
-            margin-top: 8px;
-            flex-wrap: wrap;
-        }
-        .diario-stat {
-            font-size: 12px;
-            color: #6b7280;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .postit-content {
-            font-size: 13px;
-            color: #374151;
-            margin-bottom: 6px;
-        }
-        .postit-meta {
-            font-size: 11px;
-            color: #9ca3af;
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
+        .report-motivo { font-weight: 600; color: #1f2937; margin-bottom: 8px; }
+        .report-detail { font-size: 12px; color: #6b7280; margin-top: 6px; }
+        .report-users { display: flex; gap: 16px; margin-top: 8px; flex-wrap: wrap; }
+        .report-user { font-size: 12px; background: #f3f4f6; padding: 4px 12px; border-radius: 60px; }
+        .diario-stats { display: flex; gap: 16px; margin-top: 8px; flex-wrap: wrap; }
+        .diario-stat { font-size: 12px; color: #6b7280; display: flex; align-items: center; gap: 6px; }
+        .postit-content { font-size: 13px; color: #374151; margin-bottom: 6px; }
+        .postit-meta { font-size: 11px; color: #9ca3af; display: flex; gap: 16px; flex-wrap: wrap; }
         
         /* Modal */
         .modal {
@@ -354,7 +309,7 @@
         .modal.show { display: flex; }
         .modal-content {
             background: white;
-            border-radius: 28px;
+            border-radius: 24px;
             max-width: 550px;
             width: 90%;
             max-height: 85vh;
@@ -366,14 +321,14 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             padding: 20px 24px;
             color: white;
-            border-radius: 28px 28px 0 0;
+            border-radius: 24px 24px 0 0;
         }
         .modal-header h3 { font-size: 18px; }
         .modal-body { padding: 24px; }
         .modal-footer {
             padding: 16px 24px;
             background: #f8fafc;
-            border-radius: 0 0 28px 28px;
+            border-radius: 0 0 24px 24px;
             display: flex;
             justify-content: flex-end;
         }
@@ -445,7 +400,7 @@
         <!-- Panel Usuarios -->
         <div id="panelUsuarios" class="panel">
             <div class="filters">
-                <input type="text" id="searchUsuarios" class="search-input" placeholder="🔍 Buscar usuario...">
+                <input type="text" id="searchUsuarios" class="search-input" placeholder="🔍 Buscar...">
                 <select id="filterUsuariosEstado" class="filter-select"><option value="todos">Todos</option><option value="online">🟢 En línea</option><option value="offline">⚫ Desconectados</option></select>
                 <button class="refresh-btn" onclick="cargarUsuarios()">🔄 Actualizar</button>
             </div>
@@ -459,10 +414,10 @@
                 <select id="filterPostsTipo" class="filter-select"><option value="todos">Todos</option><option value="texto">📝 Texto</option><option value="imagen">📷 Imagen</option><option value="audio">🎤 Audio</option></select>
                 <button class="refresh-btn" onclick="cargarPublicaciones()">🔄 Actualizar</button>
             </div>
-            <div class="table-container"></td><thead><tr><th>Fecha</th><th>Autor</th><th>Contenido</th><th>⭐</th><th>💬</th><th>Acciones</th></td></thead><tbody id="publicacionesBody"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Fecha</th><th>Autor</th><th>Contenido</th><th>⭐</th><th>💬</th><th>Acciones</th></td></thead><tbody id="publicacionesBody"></tbody></table></div>
         </div>
 
-        <!-- Panel Reportes (card view) -->
+        <!-- Panel Reportes -->
         <div id="panelReportes" class="panel">
             <div class="filters">
                 <input type="text" id="searchReportes" class="search-input" placeholder="🔍 Buscar...">
@@ -493,7 +448,7 @@
         <!-- Panel Bloqueados -->
         <div id="panelBloqueados" class="panel">
             <button class="refresh-btn" onclick="cargarBloqueados()">🔄 Actualizar</button>
-            <div class="table-container"></table><thead><tr><th>Usuario</th><th>Email</th><th>Bloqueado por</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody id="bloqueadosBody"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Usuario</th><th>Email</th><th>Bloqueado por</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody id="bloqueadosBody"></tbody></table></div>
         </div>
     </div>
 
@@ -712,7 +667,7 @@
                     const [uid, count] = topUsers[i];
                     const user = todosUsuarios.find(u => u.id === uid);
                     const nombre = user?.nick || user?.email?.split('@')[0] || uid.slice(0,6);
-                    html += `<tr><td style="width:40px;">${i+1}</td><td><strong>@${escapeHtml(nombre)}</strong></td><td>${count}</td><td>${user?.seguidores || 0}</td></tr>`;
+                    html += `<td><td style="width:40px;">${i+1}</td>}<td><strong>@${escapeHtml(nombre)}</strong></td><td>${count}</td><td>${user?.seguidores || 0}</td></tr>`;
                 }
                 topBody.innerHTML = html;
             }
@@ -773,13 +728,13 @@
                 return;
             }
             tbody.innerHTML = todasPublicaciones.map(p => {
-                const preview = p.texto ? p.texto.substring(0, 50) + (p.texto.length > 50 ? '...' : '') : (p.imagen ? '📷 Imagen' : (p.audio ? '🎤 Audio' : ''));
+                const preview = p.texto ? p.texto.substring(0, 60) + (p.texto.length > 60 ? '...' : '') : (p.imagen ? '📷 Imagen' : (p.audio ? '🎤 Audio' : ''));
                 return `
                 <tr>
                     <td style="white-space: nowrap;">${new Date(p.created).toLocaleString()}</td>
                     <td><strong>@${escapeHtml(p.autorNick)}</strong></td>
-                    <td>${escapeHtml(preview)}</span></td>
-                    <td>⭐ ${(p.rating || 0).toFixed(1)}</span></td>
+                    <td>${escapeHtml(preview)}</td>
+                    <td>⭐ ${(p.rating || 0).toFixed(1)}</td>
                     <td>${p.comments?.length || 0}</td>
                     <td class="action-group"><button class="action-btn view" onclick="verPublicacion('${p.id}')">👁️</button><button class="action-btn delete" onclick="eliminarPublicacion('${p.id}')">🗑️</button></td>
                 </tr>
@@ -791,14 +746,14 @@
             const container = document.getElementById('reportesBody');
             if (!container) return;
             if (reportes.length === 0) {
-                container.innerHTML = '<div style="text-align:center; padding:40px; color:#888;">📭 No hay reportes en la base de datos</div>';
+                container.innerHTML = '<div style="text-align:center; padding:40px; color:#888;">📭 No hay reportes</div>';
                 return;
             }
             container.innerHTML = reportes.map(r => `
                 <div class="report-card">
                     <div class="report-info">
                         <div class="report-header">
-                            <span class="report-badge ${r.estado === 'pendiente' ? 'badge-pendiente' : 'badge-revisado'}">${r.estado === 'pendiente' ? '⏳ Pendiente' : '✅ Revisado'}</span>
+                            <span class="${r.estado === 'pendiente' ? 'badge-pendiente' : 'badge-revisado'}" style="display:inline-block; padding:4px 12px; border-radius:60px; font-size:11px; font-weight:600; background:${r.estado === 'pendiente' ? '#fed7aa' : '#d1fae5'}; color:${r.estado === 'pendiente' ? '#9a3412' : '#065f46'}">${r.estado === 'pendiente' ? '⏳ Pendiente' : '✅ Revisado'}</span>
                             <span style="font-size:12px; color:#888;">📅 ${new Date(r.created).toLocaleString()}</span>
                         </div>
                         <div class="report-motivo">⚠️ ${escapeHtml(r.motivo)}</div>
@@ -810,8 +765,8 @@
                     </div>
                     <div class="action-group">
                         <button class="action-btn view" onclick="verDetalleReporte('${r.id}')">👁️ Ver</button>
-                        ${r.estado === 'pendiente' ? `<button class="action-btn check" onclick="cambiarEstadoReporte('${r.id}', 'revisado')">✅ Marcar</button>` : ''}
-                        <button class="action-btn block" onclick="bloquearUsuario('${r.reportadoId}')">🚫 Bloquear</button>
+                        ${r.estado === 'pendiente' ? `<button class="action-btn check" onclick="cambiarEstadoReporte('${r.id}', 'revisado')">✅</button>` : ''}
+                        <button class="action-btn block" onclick="bloquearUsuario('${r.reportadoId}')">🚫</button>
                     </div>
                 </div>
             `).join('');
@@ -821,7 +776,7 @@
             const container = document.getElementById('diariosBody');
             if (!container) return;
             if (diarios.length === 0) {
-                container.innerHTML = '<div style="text-align:center; padding:40px; color:#888;">📭 No hay diarios creados</div>';
+                container.innerHTML = '<div style="text-align:center; padding:40px; color:#888;">📭 No hay diarios</div>';
                 return;
             }
             container.innerHTML = diarios.map(d => `
@@ -837,9 +792,7 @@
                         </div>
                         <div style="font-size:13px; color:#374151; margin-top:6px;">📔 ${escapeHtml(d.titulo)}</div>
                     </div>
-                    <div class="action-group">
-                        <button class="action-btn view" onclick="verDiario('${d.usuarioId}')">👁️ Ver diario</button>
-                    </div>
+                    <div class="action-group"><button class="action-btn view" onclick="verDiario('${d.usuarioId}')">👁️ Ver</button></div>
                 </div>
             `).join('');
         }
@@ -859,13 +812,9 @@
                             <span style="font-size:11px; color:#888;">📅 ${new Date(p.created).toLocaleString()}</span>
                         </div>
                         <div class="postit-content">📌 "${escapeHtml(p.texto?.substring(0, 100))}${p.texto?.length > 100 ? '...' : ''}"</div>
-                        <div class="postit-meta">
-                            <span>🎯 Para: @${escapeHtml(p.paraUsuario)}</span>
-                        </div>
+                        <div class="postit-meta"><span>🎯 Para: @${escapeHtml(p.paraUsuario)}</span></div>
                     </div>
-                    <div class="action-group">
-                        <button class="action-btn delete" onclick="eliminarPostit('${p.id}')">🗑️ Eliminar</button>
-                    </div>
+                    <div class="action-group"><button class="action-btn delete" onclick="eliminarPostit('${p.id}')">🗑️ Eliminar</button></div>
                 </div>
             `).join('');
         }
@@ -894,7 +843,7 @@
             const modal = document.getElementById('modalDetalle');
             let extra = '';
             if (p.imagen) extra += `<img src="${pb.files.getUrl(p, p.imagen)}" class="post-preview">`;
-            if (p.audio) extra += `<audio src="${pb.files.getUrl(p, p.audio)}" controls class="post-preview" style="width:100%;"></audio>`;
+            if (p.audio) extra += `<audio src="${pb.files.getUrl(p, p.audio)}" controls style="width:100%;"></audio>`;
             document.getElementById('modalBody').innerHTML = `
                 <div class="info-row"><div class="info-label">Autor:</div><div class="info-value">@${escapeHtml(p.autorNick)}</div></div>
                 <div class="info-row"><div class="info-label">Fecha:</div><div class="info-value">${new Date(p.created).toLocaleString()}</div></div>
@@ -911,25 +860,17 @@
             if (!r) return;
             const modal = document.getElementById('modalDetalle');
             document.getElementById('modalBody').innerHTML = `
-                <div class="info-row" style="background:#ffebee; padding:10px; border-radius:12px; margin-bottom:12px;">
-                    <div class="info-label">📢 QUIEN REPORTA:</div>
-                    <div class="info-value"><strong>${escapeHtml(r.reportadoPorNick)}</strong><br><span style="font-size:11px; color:#888;">ID: ${r.reportadoPorId}</span></div>
-                </div>
-                <div class="info-row" style="background:#fff3e0; padding:10px; border-radius:12px; margin-bottom:12px;">
-                    <div class="info-label">⚠️ USUARIO REPORTADO:</div>
-                    <div class="info-value"><strong>@${escapeHtml(r.reportadoNick)}</strong><br><span style="font-size:11px; color:#888;">ID: ${r.reportadoId}</span></div>
-                </div>
+                <div class="info-row" style="background:#ffebee; padding:10px; border-radius:12px; margin-bottom:12px;"><div class="info-label">📢 QUIEN REPORTA:</div><div class="info-value"><strong>${escapeHtml(r.reportadoPorNick)}</strong><br><small>${r.reportadoPorId}</small></div></div>
+                <div class="info-row" style="background:#fff3e0; padding:10px; border-radius:12px; margin-bottom:12px;"><div class="info-label">⚠️ REPORTADO:</div><div class="info-value"><strong>@${escapeHtml(r.reportadoNick)}</strong><br><small>${r.reportadoId}</small></div></div>
                 <div class="info-row"><div class="info-label">📅 Fecha:</div><div class="info-value">${new Date(r.created).toLocaleString()}</div></div>
                 <div class="info-row"><div class="info-label">⚠️ Motivo:</div><div class="info-value"><span style="background:#f44336; color:white; padding:3px 12px; border-radius:20px;">${escapeHtml(r.motivo)}</span></div></div>
                 <div class="info-row"><div class="info-label">📝 Detalle:</div><div class="info-value">${escapeHtml(r.detalle) || 'Sin detalles'}</div></div>
-                <div class="info-row"><div class="info-label">🏷️ Estado:</div><div class="info-value"><span class="badge ${r.estado === 'pendiente' ? 'badge-pendiente' : 'badge-revisado'}">${r.estado === 'pendiente' ? '⏳ Pendiente' : '✅ Revisado'}</span></div></div>
+                <div class="info-row"><div class="info-label">🏷️ Estado:</div><div class="info-value"><span style="display:inline-block; padding:4px 12px; border-radius:60px; font-size:11px; background:${r.estado === 'pendiente' ? '#fed7aa' : '#d1fae5'}; color:${r.estado === 'pendiente' ? '#9a3412' : '#065f46'}">${r.estado === 'pendiente' ? '⏳ Pendiente' : '✅ Revisado'}</span></div></div>
             `;
             modal.classList.add('show');
         };
         
-        window.verDiario = function(uid) {
-            window.open(`diario.html?uid=${uid}`, '_blank');
-        };
+        window.verDiario = function(uid) { window.open(`diario.html?uid=${uid}`, '_blank'); };
         
         window.cambiarEstadoReporte = async function(id, estado) {
             try {
@@ -943,43 +884,21 @@
         
         window.bloquearUsuario = async function(id) {
             if (!confirm('¿Bloquear este usuario?')) return;
-            try {
-                await pb.collection('usuarios').update(id, { bloqueado: true, bloqueadoPor: 'Admin' });
-                mostrarToast(`🚫 Usuario bloqueado`);
-                await cargarUsuarios();
-                await cargarBloqueados();
-                actualizarEstadisticas();
-            } catch(e) { mostrarToast("Error", true); }
+            try { await pb.collection('usuarios').update(id, { bloqueado: true, bloqueadoPor: 'Admin' }); mostrarToast(`🚫 Usuario bloqueado`); await cargarUsuarios(); await cargarBloqueados(); actualizarEstadisticas(); } catch(e) { mostrarToast("Error", true); }
         };
         
         window.desbloquearUsuario = async function(id) {
-            try {
-                await pb.collection('usuarios').update(id, { bloqueado: false, bloqueadoPor: null });
-                mostrarToast(`🔓 Usuario desbloqueado`);
-                await cargarUsuarios();
-                await cargarBloqueados();
-                actualizarEstadisticas();
-            } catch(e) { mostrarToast("Error", true); }
+            try { await pb.collection('usuarios').update(id, { bloqueado: false, bloqueadoPor: null }); mostrarToast(`🔓 Usuario desbloqueado`); await cargarUsuarios(); await cargarBloqueados(); actualizarEstadisticas(); } catch(e) { mostrarToast("Error", true); }
         };
         
         window.eliminarPublicacion = async function(id) {
             if (!confirm('¿Eliminar publicación?')) return;
-            try {
-                await pb.collection('posts').delete(id);
-                mostrarToast('🗑️ Publicación eliminada');
-                await cargarPublicaciones();
-                actualizarGraficos();
-                actualizarDashboardStats();
-            } catch(e) { mostrarToast("Error", true); }
+            try { await pb.collection('posts').delete(id); mostrarToast('🗑️ Publicación eliminada'); await cargarPublicaciones(); actualizarGraficos(); actualizarDashboardStats(); } catch(e) { mostrarToast("Error", true); }
         };
         
         window.eliminarPostit = async function(id) {
             if (!confirm('¿Eliminar post-it?')) return;
-            try {
-                await pb.collection('comentarios_diario').delete(id);
-                mostrarToast('📌 Post-it eliminado');
-                await cargarPostits();
-            } catch(e) { mostrarToast("Error", true); }
+            try { await pb.collection('comentarios_diario').delete(id); mostrarToast('📌 Post-it eliminado'); await cargarPostits(); } catch(e) { mostrarToast("Error", true); }
         };
         
         // ========== TABS ==========
@@ -987,22 +906,12 @@
             const tabs = ['dashboard', 'usuarios', 'publicaciones', 'reportes', 'diarios', 'postits', 'bloqueados'];
             const nombres = ['📊 Dashboard', '👥 Usuarios', '📝 Publicaciones', '📢 Reportes', '📖 Diarios', '📌 Post-its', '🚫 Bloqueados'];
             const tabsContainer = document.getElementById('tabs');
-            if (tabsContainer) {
-                tabsContainer.innerHTML = tabs.map((tab, i) => `<button class="tab-btn ${i === 0 ? 'active' : ''}" data-tab="${tab}" onclick="cambiarTab('${tab}')">${nombres[i]}</button>`).join('');
-            }
+            if (tabsContainer) tabsContainer.innerHTML = tabs.map((tab, i) => `<button class="tab-btn ${i === 0 ? 'active' : ''}" data-tab="${tab}" onclick="cambiarTab('${tab}')">${nombres[i]}</button>`).join('');
         }
         
         window.cambiarTab = function(tab) {
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            const panelMap = {
-                'dashboard': 'panelDashboard',
-                'usuarios': 'panelUsuarios',
-                'publicaciones': 'panelPublicaciones',
-                'reportes': 'panelReportes',
-                'diarios': 'panelDiarios',
-                'postits': 'panelPostits',
-                'bloqueados': 'panelBloqueados'
-            };
+            const panelMap = { 'dashboard':'panelDashboard','usuarios':'panelUsuarios','publicaciones':'panelPublicaciones','reportes':'panelReportes','diarios':'panelDiarios','postits':'panelPostits','bloqueados':'panelBloqueados' };
             const panelId = panelMap[tab];
             if (panelId) document.getElementById(panelId).classList.add('active');
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
