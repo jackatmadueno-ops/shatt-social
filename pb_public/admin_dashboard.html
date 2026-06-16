@@ -8,17 +8,15 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/dayjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/plugin/relativeTime.js"></script>
+    <script>dayjs.extend(window.dayjs_plugin_relativeTime);</script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
             min-height: 100vh;
             padding: 20px;
         }
-        
-        /* Login */
         .login-container {
             background: rgba(255,255,255,0.98);
             border-radius: 32px;
@@ -27,7 +25,6 @@
             text-align: center;
             margin: 100px auto;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
         }
         .login-container h1 { font-size: 28px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
         .login-container p { color: #666; margin-bottom: 24px; font-size: 14px; }
@@ -38,7 +35,6 @@
             border: 2px solid #e5e7eb;
             border-radius: 60px;
             font-size: 16px;
-            transition: all 0.2s;
         }
         .login-container input:focus { outline: none; border-color: #667eea; }
         .login-container button {
@@ -51,15 +47,10 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
         }
-        .login-container button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102,126,234,0.4); }
         .error { color: #ef4444; margin-top: 12px; font-size: 14px; }
         
-        /* Dashboard */
         .dashboard { display: none; max-width: 1600px; margin: 0 auto; }
-        
-        /* Header */
         .admin-header {
             background: rgba(255,255,255,0.95);
             border-radius: 28px;
@@ -70,15 +61,13 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 15px;
-            backdrop-filter: blur(10px);
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
         .logo h1 { font-size: 24px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .logo small { font-size: 12px; color: #666; }
-        .logout-btn { background: #ef4444; color: white; border: none; padding: 10px 24px; border-radius: 40px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
-        .logout-btn:hover { background: #dc2626; transform: translateY(-2px); }
+        .logout-btn { background: #ef4444; color: white; border: none; padding: 10px 24px; border-radius: 40px; cursor: pointer; font-weight: 600; }
+        .logout-btn:hover { background: #dc2626; }
         
-        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -92,14 +81,12 @@
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
-            backdrop-filter: blur(10px);
         }
         .stat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -12px rgba(0,0,0,0.2); }
         .stat-icon { font-size: 36px; margin-bottom: 8px; }
         .stat-number { font-size: 32px; font-weight: 700; color: #1f2937; }
         .stat-label { font-size: 12px; color: #6b7280; margin-top: 4px; }
         
-        /* Charts */
         .charts-row {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -110,12 +97,10 @@
             background: rgba(255,255,255,0.95);
             border-radius: 24px;
             padding: 20px;
-            backdrop-filter: blur(10px);
         }
         .chart-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; color: #1e293b; }
         canvas { max-height: 220px; width: 100%; }
         
-        /* Tabs */
         .tabs {
             display: flex;
             gap: 8px;
@@ -137,21 +122,18 @@
             transition: all 0.2s;
         }
         .tab-btn:hover { background: rgba(255,255,255,0.2); }
-        .tab-btn.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; box-shadow: 0 4px 12px rgba(102,126,234,0.3); }
+        .tab-btn.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
         
-        /* Panels */
         .panel {
             display: none;
             background: rgba(255,255,255,0.95);
             border-radius: 28px;
             padding: 24px;
-            backdrop-filter: blur(10px);
             animation: fadeIn 0.3s ease;
         }
         .panel.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Filters */
         .filters {
             display: flex;
             gap: 12px;
@@ -165,7 +147,6 @@
             border-radius: 60px;
             font-size: 14px;
             min-width: 200px;
-            transition: all 0.2s;
         }
         .search-input:focus { outline: none; border-color: #667eea; }
         .filter-select {
@@ -184,25 +165,15 @@
             border-radius: 60px;
             cursor: pointer;
             font-weight: 500;
-            transition: all 0.2s;
         }
-        .refresh-btn:hover { background: #059669; transform: translateY(-2px); }
+        .refresh-btn:hover { background: #059669; }
         
-        /* Tables */
         .table-container { overflow-x: auto; border-radius: 16px; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th {
-            text-align: left;
-            padding: 14px 12px;
-            background: #f8fafc;
-            font-weight: 600;
-            color: #1e293b;
-            border-bottom: 2px solid #e2e8f0;
-        }
+        th { text-align: left; padding: 14px 12px; background: #f8fafc; font-weight: 600; color: #1e293b; border-bottom: 2px solid #e2e8f0; }
         td { padding: 12px; border-bottom: 1px solid #f1f5f9; color: #334155; }
         tr:hover td { background: #f8fafc; }
         
-        /* Badges */
         .badge {
             display: inline-block;
             padding: 4px 12px;
@@ -215,7 +186,6 @@
         .badge.pendiente { background: #fed7aa; color: #9a3412; }
         .badge.revisado { background: #d1fae5; color: #065f46; }
         
-        /* Actions */
         .action-group { display: flex; gap: 6px; flex-wrap: wrap; }
         .action-btn {
             padding: 6px 12px;
@@ -227,17 +197,16 @@
             transition: all 0.2s;
         }
         .action-btn.view { background: #6366f1; color: white; }
-        .action-btn.view:hover { background: #4f46e5; transform: scale(1.02); }
+        .action-btn.view:hover { background: #4f46e5; }
         .action-btn.block { background: #ef4444; color: white; }
-        .action-btn.block:hover { background: #dc2626; transform: scale(1.02); }
+        .action-btn.block:hover { background: #dc2626; }
         .action-btn.check { background: #10b981; color: white; }
-        .action-btn.check:hover { background: #059669; transform: scale(1.02); }
+        .action-btn.check:hover { background: #059669; }
         .action-btn.delete { background: #f97316; color: white; }
-        .action-btn.delete:hover { background: #ea580c; transform: scale(1.02); }
+        .action-btn.delete:hover { background: #ea580c; }
         .action-btn.unblock { background: #22c55e; color: white; }
-        .action-btn.unblock:hover { background: #16a34a; transform: scale(1.02); }
+        .action-btn.unblock:hover { background: #16a34a; }
         
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -331,36 +300,32 @@
 
         <div class="tabs" id="tabs"></div>
 
-        <!-- Panel Dashboard -->
         <div id="panelDashboard" class="panel">
             <div class="stats-grid" id="dashboardStats" style="grid-template-columns: repeat(4,1fr);"></div>
             <h3 style="margin: 20px 0 15px;">🏆 Top 5 usuarios más activos</h3>
-            <div class="table-container"><table><thead><tr><th>#</th><th>Usuario</th><th>Publicaciones</th><th>Seguidores</th></tr></thead><tbody id="topUsuariosBody"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>#</th><th>Usuario</th><th>Publicaciones</th><th>Seguidores</th></tr></thead><tbody id="topUsuariosBody"></tbody></table></div>
             <h3 style="margin: 20px 0 15px;">📋 Últimos reportes</h3>
             <div class="table-container"><tr><thead><tr><th>Fecha</th><th>Reportó</th><th>Reportado</th><th>Motivo</th><th>Estado</th></tr></thead><tbody id="ultimosReportesBody"></tbody></table></div>
         </div>
 
-        <!-- Panel Usuarios -->
         <div id="panelUsuarios" class="panel">
             <div class="filters">
                 <input type="text" id="searchUsuarios" class="search-input" placeholder="🔍 Buscar...">
                 <select id="filterUsuariosEstado" class="filter-select"><option value="todos">Todos</option><option value="online">🟢 En línea</option><option value="offline">⚫ Desconectados</option></select>
                 <button class="refresh-btn" onclick="cargarUsuarios()">🔄 Actualizar</button>
             </div>
-            <div class="table-container"><tr><thead><tr><th>Usuario</th><th>Email</th><th>Estado</th><th>Registro</th><th>Posts</th><th>Acciones</th></tr></thead><tbody id="usuariosBody"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Usuario</th><th>Email</th><th>Estado</th><th>Registro</th><th>Posts</th><th>Acciones</th></tr></thead><tbody id="usuariosBody"></tbody></table></div>
         </div>
 
-        <!-- Panel Publicaciones -->
         <div id="panelPublicaciones" class="panel">
             <div class="filters">
                 <input type="text" id="searchPosts" class="search-input" placeholder="🔍 Buscar...">
                 <select id="filterPostsTipo" class="filter-select"><option value="todos">Todos</option><option value="texto">📝 Texto</option><option value="imagen">📷 Imagen</option><option value="audio">🎤 Audio</option></select>
                 <button class="refresh-btn" onclick="cargarPublicaciones()">🔄 Actualizar</button>
             </div>
-            <div class="table-container"></table><thead><tr><th>Fecha</th><th>Autor</th><th>Contenido</th><th>⭐</th><th>💬</th><th>Acciones</th></tr></thead><tbody id="publicacionesBody"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Fecha</th><th>Autor</th><th>Contenido</th><th>⭐</th><th>💬</th><th>Acciones</th></tr></thead><tbody id="publicacionesBody"></tbody></table></div>
         </div>
 
-        <!-- Panel Reportes -->
         <div id="panelReportes" class="panel">
             <div class="filters">
                 <input type="text" id="searchReportes" class="search-input" placeholder="🔍 Buscar...">
@@ -370,28 +335,25 @@
             <div class="table-container"><tr><thead><tr><th>Fecha</th><th>📢 Reportó</th><th>⚠️ Reportado</th><th>Motivo</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="reportesBody"></tbody></table></div>
         </div>
 
-        <!-- Panel Diarios -->
         <div id="panelDiarios" class="panel">
             <div class="filters">
                 <input type="text" id="searchDiarios" class="search-input" placeholder="🔍 Buscar...">
                 <button class="refresh-btn" onclick="cargarDiarios()">🔄 Actualizar</button>
             </div>
-            <div class="table-container"></table><thead><tr><th>Usuario</th><th>Diario</th><th>Páginas</th><th>Post-its</th><th>Acciones</th></tr></thead><tbody id="diariosBody"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Usuario</th><th>Diario</th><th>Páginas</th><th>Post-its</th><th>Acciones</th></td></thead><tbody id="diariosBody"></tbody></table></div>
         </div>
 
-        <!-- Panel Post-its -->
         <div id="panelPostits" class="panel">
             <div class="filters">
                 <input type="text" id="searchPostits" class="search-input" placeholder="🔍 Buscar...">
                 <button class="refresh-btn" onclick="cargarPostits()">🔄 Actualizar</button>
             </div>
-            <div class="table-container"><tr><thead><tr><th>Fecha</th><th>De</th><th>Para</th><th>Contenido</th><th>Acciones</th></tr></thead><tbody id="postitsBody"></tbody></table></div>
+            <div class="table-container"></table><thead><tr><th>Fecha</th><th>De</th><th>Para</th><th>Contenido</th><th>Acciones</th></tr></thead><tbody id="postitsBody"></tbody></table></div>
         </div>
 
-        <!-- Panel Bloqueados -->
         <div id="panelBloqueados" class="panel">
             <button class="refresh-btn" onclick="cargarBloqueados()">🔄 Actualizar</button>
-            <div class="table-container"></td><thead><tr><th>Usuario</th><th>Email</th><th>Bloqueado por</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody id="bloqueadosBody"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Usuario</th><th>Email</th><th>Bloqueado por</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody id="bloqueadosBody"></tbody></table></div>
         </div>
     </div>
 
@@ -420,7 +382,7 @@
         let charts = {};
         
         // ========== LOGIN ==========
-        async function verificarPassword() {
+        window.verificarPassword = async function() {
             const pass = document.getElementById('adminPassword').value;
             if (pass === ADMIN_PASSWORD) {
                 document.getElementById('loginScreen').style.display = 'none';
@@ -429,13 +391,13 @@
             } else {
                 document.getElementById('loginError').textContent = '❌ Contraseña incorrecta';
             }
-        }
+        };
         
-        function cerrarSesion() {
+        window.cerrarSesion = function() {
             document.getElementById('loginScreen').style.display = 'block';
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('adminPassword').value = '';
-        }
+        };
         
         async function inicializarDashboard() {
             mostrarToast('🔄 Cargando datos...');
@@ -551,13 +513,13 @@
                 const tbody = document.getElementById('bloqueadosBody');
                 if (!tbody) return;
                 if (bloqueados.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">🚫 No hay usuarios bloqueados<\/td><\/tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">🚫 No hay usuarios bloqueados</td></tr>';
                     return;
                 }
                 tbody.innerHTML = bloqueados.map(u => `
                     <tr>
                         <td><strong>@${escapeHtml(u.nick || u.email.split('@')[0])}</strong><br><small>${u.id}</small></td>
-                        <td>${escapeHtml(u.email)}</span></td>
+                        <td>${escapeHtml(u.email)}</td>
                         <td>${escapeHtml(u.bloqueadoPor || 'Admin')}</td>
                         <td>${u.updated ? new Date(u.updated).toLocaleDateString() : '-'}</td>
                         <td class="action-group"><button class="action-btn unblock" onclick="desbloquearUsuario('${u.id}')">🔓 Desbloquear</button></td>
@@ -603,7 +565,7 @@
             const topUsers = Object.entries(userPosts).sort((a,b) => b[1] - a[1]).slice(0,5);
             const topBody = document.getElementById('topUsuariosBody');
             if (topUsers.length === 0) {
-                topBody.innerHTML = '<tr><td colspan="4">Sin datos<\/td><\/tr>';
+                topBody.innerHTML = '<tr><td colspan="4">Sin datos</td></tr>';
             } else {
                 let html = '';
                 for (let i = 0; i < topUsers.length; i++) {
@@ -618,13 +580,13 @@
             
             const ultimosBody = document.getElementById('ultimosReportesBody');
             if (reportes.length === 0) {
-                ultimosBody.innerHTML = '<tr><td colspan="5">Sin reportes<\/td><\/tr>';
+                ultimosBody.innerHTML = '<tr><td colspan="5">Sin reportes</td></tr>';
             } else {
                 ultimosBody.innerHTML = reportes.slice(0,5).map(r => `
                     <tr>
                         <td style="white-space: nowrap;">${new Date(r.created).toLocaleString()}</td>
                         <td><strong>${escapeHtml(r.reportadoPorNick)}</strong></td>
-                        <td>@${escapeHtml(r.reportadoNick)}</span></td>
+                        <td>@${escapeHtml(r.reportadoNick)}</td>
                         <td><span style="background:#f44336; color:white; padding:2px 8px; border-radius:20px;">${escapeHtml(r.motivo)}</span></td>
                         <td><span class="badge ${r.estado}">${r.estado === 'pendiente' ? '⏳ Pendiente' : '✅ Revisado'}</span></td>
                     </tr>
@@ -664,7 +626,7 @@
             const tbody = document.getElementById('usuariosBody');
             if (!tbody) return;
             if (todosUsuarios.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6">No hay usuarios<\/td><\/tr>';
+                tbody.innerHTML = '<tr><td colspan="6">No hay usuarios</td></tr>';
                 return;
             }
             tbody.innerHTML = todosUsuarios.map(u => `
@@ -696,7 +658,7 @@
                     <td>⭐ ${(p.rating || 0).toFixed(1)}</span></td>
                     <td>${p.comments?.length || 0}</td>
                     <td class="action-group"><button class="action-btn view" onclick="verPublicacion('${p.id}')">👁️</button><button class="action-btn delete" onclick="eliminarPublicacion('${p.id}')">🗑️</button></td>
-                </tr>
+                </table>
                 `;
             }).join('');
         }
@@ -728,7 +690,7 @@
             const tbody = document.getElementById('diariosBody');
             if (!tbody) return;
             if (diarios.length === 0) {
-                tbody.innerHTML = '<td><td colspan="5">No hay diarios<\/td><\/tr>';
+                tbody.innerHTML = '<tr><td colspan="5">No hay diarios<\/td><\/tr>';
                 return;
             }
             tbody.innerHTML = diarios.map(d => `
