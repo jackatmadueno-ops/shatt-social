@@ -277,138 +277,67 @@
             <button class="logout-btn" onclick="cerrarSesion()">🚪 Cerrar sesión</button>
         </div>
 
-        <!-- Estadísticas principales -->
         <div class="stats-grid" id="statsGrid"></div>
 
-        <!-- Gráficos -->
         <div class="charts-row">
-            <div class="chart-card">
-                <h3>📊 Publicaciones por día (últimos 7 días)</h3>
-                <canvas id="postsChart"></canvas>
-            </div>
-            <div class="chart-card">
-                <h3>📢 Reportes por motivo</h3>
-                <canvas id="reportesChart"></canvas>
-            </div>
+            <div class="chart-card"><h3>📊 Publicaciones por día</h3><canvas id="postsChart"></canvas></div>
+            <div class="chart-card"><h3>📢 Reportes por motivo</h3><canvas id="reportesChart"></canvas></div>
         </div>
 
-        <!-- Tabs -->
         <div class="tabs" id="tabs"></div>
 
-        <!-- Panel Dashboard -->
         <div id="panelDashboard" class="panel">
             <div class="stats-grid" id="dashboardStats" style="grid-template-columns: repeat(4,1fr);"></div>
-            <h3 style="margin: 15px 0 10px;">🏆 Top 5 usuarios más activos</h3>
-            <div class="table-container">
-                <table>
-                    <thead><tr><th>#</th><th>Usuario</th><th>Publicaciones</th><th>Seguidores</th></tr></thead>
-                    <tbody id="topUsuariosBody"></tbody>
-                </table>
-            </div>
-            <h3 style="margin: 15px 0 10px;">📋 Últimos reportes</h3>
-            <div class="table-container">
-                <table>
-                    <thead><tr><th>Fecha</th><th>Reportó</th><th>Reportado</th><th>Motivo</th><th>Estado</th></tr></thead>
-                    <tbody id="ultimosReportesBody"></tbody>
-                </table>
-            </div>
+            <h3>🏆 Top 5 usuarios</h3>
+            <div class="table-container"><table><thead><tr><th>#</th><th>Usuario</th><th>Publicaciones</th><th>Seguidores</th></tr></thead><tbody id="topUsuariosBody"></tbody></table></div>
+            <h3>📋 Últimos reportes</h3>
+            <div class="table-container"><tr><thead><tr><th>Fecha</th><th>Reportó</th><th>Reportado</th><th>Motivo</th><th>Estado</th></tr></thead><tbody id="ultimosReportesBody"></tbody></table></div>
         </div>
 
-        <!-- Panel Usuarios -->
         <div id="panelUsuarios" class="panel">
             <div class="filters">
-                <input type="text" id="searchUsuarios" class="search-input" placeholder="🔍 Buscar usuario...">
+                <input type="text" id="searchUsuarios" class="search-input" placeholder="🔍 Buscar...">
                 <select id="filterUsuariosEstado" class="filter-select"><option value="todos">Todos</option><option value="online">🟢 En línea</option><option value="offline">⚫ Desconectados</option></select>
                 <button class="refresh-btn" onclick="cargarUsuarios()">🔄 Actualizar</button>
             </div>
-            <div class="table-container">
-                <table>
-                    <thead><tr><th>Usuario</th><th>Email</th><th>Estado</th><th>Registro</th><th>Posts</th><th>Acciones</th></tr></thead>
-                    <tbody id="usuariosBody"><tr><td colspan="6">Cargando...</td></tr></tbody>
-                </table>
-            </div>
+            <div class="table-container"><tr><thead><tr><th>Usuario</th><th>Email</th><th>Estado</th><th>Registro</th><th>Posts</th><th>Acciones</th></tr></thead><tbody id="usuariosBody"><tr><td colspan="6">Cargando...</td></tr></tbody></table></div>
         </div>
 
-        <!-- Panel Publicaciones -->
         <div id="panelPublicaciones" class="panel">
             <div class="filters">
                 <input type="text" id="searchPosts" class="search-input" placeholder="🔍 Buscar...">
                 <select id="filterPostsTipo" class="filter-select"><option value="todos">Todos</option><option value="texto">📝 Texto</option><option value="imagen">📷 Imagen</option><option value="audio">🎤 Audio</option></select>
                 <button class="refresh-btn" onclick="cargarPublicaciones()">🔄 Actualizar</button>
             </div>
-            <div class="table-container">
-                <table>
-                    <thead><tr><th>Fecha</th><th>Autor</th><th>Contenido</th><th>⭐</th><th>💬</th><th>Acciones</th></tr></thead>
-                    <tbody id="publicacionesBody"><tr><td colspan="6">Cargando...</td></tr></tbody>
-                </table>
-            </div>
+            <div class="table-container"><tr><thead><tr><th>Fecha</th><th>Autor</th><th>Contenido</th><th>⭐</th><th>💬</th><th>Acciones</th></tr></thead><tbody id="publicacionesBody"><tr><td colspan="6">Cargando...</td></tr></tbody></table></div>
         </div>
 
-        <!-- Panel Reportes -->
         <div id="panelReportes" class="panel">
             <div class="filters">
                 <input type="text" id="searchReportes" class="search-input" placeholder="🔍 Buscar...">
                 <select id="filterReportesEstado" class="filter-select"><option value="todos">Todos</option><option value="pendiente">⏳ Pendientes</option><option value="revisado">✅ Revisados</option></select>
                 <button class="refresh-btn" onclick="cargarReportes()">🔄 Actualizar</button>
             </div>
-            <div class="table-container">
-                <table>
-                    <thead><tr><th>Fecha</th><th>📢 Reportó</th><th>⚠️ Reportado</th><th>Motivo</th><th>Estado</th><th>Acciones</th></tr></thead>
-                    <tbody id="reportesBody"><tr><td colspan="6">Cargando...</td></tr></tbody>
-                </table>
-            </div>
+            <div class="table-container"><tr><thead><tr><th>Fecha</th><th>📢 Reportó</th><th>⚠️ Reportado</th><th>Motivo</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="reportesBody"><tr><td colspan="6">Cargando...</td></tr></tbody></table></div>
         </div>
 
-        <!-- Panel Diarios -->
         <div id="panelDiarios" class="panel">
-            <div class="filters">
-                <input type="text" id="searchDiarios" class="search-input" placeholder="🔍 Buscar usuario...">
-                <button class="refresh-btn" onclick="cargarDiarios()">🔄 Actualizar</button>
-            </div>
-            <div class="table-container">
-                <table>
-                    <thead><tr><th>Usuario</th><th>Diario</th><th>Páginas</th><th>Post-its</th><th>Acciones</th></tr></thead>
-                    <tbody id="diariosBody"><tr><td colspan="5">Cargando...</td></tr></tbody>
-                </table>
-            </div>
+            <div class="filters"><input type="text" id="searchDiarios" class="search-input" placeholder="🔍 Buscar..."><button class="refresh-btn" onclick="cargarDiarios()">🔄 Actualizar</button></div>
+            <div class="table-container"><table><thead><tr><th>Usuario</th><th>Diario</th><th>Páginas</th><th>Post-its</th><th>Acciones</th></tr></thead><tbody id="diariosBody"></tbody></table></div>
         </div>
 
-        <!-- Panel Post-its -->
         <div id="panelPostits" class="panel">
-            <div class="filters">
-                <input type="text" id="searchPostits" class="search-input" placeholder="🔍 Buscar...">
-                <button class="refresh-btn" onclick="cargarPostits()">🔄 Actualizar</button>
-            </div>
-            <div class="table-container">
-                <table>
-                    <thead><tr><th>Fecha</th><th>De</th><th>Para</th><th>Contenido</th><th>Acciones</th></tr></thead>
-                    <tbody id="postitsBody"><tr><td colspan="5">Cargando...</td></tr></tbody>
-                </table>
-            </div>
+            <div class="filters"><input type="text" id="searchPostits" class="search-input" placeholder="🔍 Buscar..."><button class="refresh-btn" onclick="cargarPostits()">🔄 Actualizar</button></div>
+            <div class="table-container"><table><thead><tr><th>Fecha</th><th>De</th><th>Para</th><th>Contenido</th><th>Acciones</th></tr></thead><tbody id="postitsBody"></tbody></table></div>
         </div>
 
-        <!-- Panel Bloqueados -->
         <div id="panelBloqueados" class="panel">
-            <div class="filters">
-                <button class="refresh-btn" onclick="cargarBloqueados()">🔄 Actualizar</button>
-            </div>
-            <div class="table-container">
-                <table>
-                    <thead><tr><th>Usuario</th><th>Email</th><th>Bloqueado por</th><th>Fecha</th><th>Acciones</th></tr></thead>
-                    <tbody id="bloqueadosBody"><tr><td colspan="5">Cargando...</td></tr></tbody>
-                </table>
-            </div>
+            <button class="refresh-btn" onclick="cargarBloqueados()">🔄 Actualizar</button>
+            <div class="table-container"><table><thead><tr><th>Usuario</th><th>Email</th><th>Bloqueado por</th><th>Acciones</th></tr></thead><tbody id="bloqueadosBody"></tbody></table></div>
         </div>
     </div>
 
-    <div id="modalDetalle" class="modal">
-        <div class="modal-content">
-            <div class="modal-header"><h3>📋 Detalle completo</h3></div>
-            <div class="modal-body" id="modalBody"></div>
-            <div class="modal-footer"><button class="action-btn view" onclick="cerrarModal()">Cerrar</button></div>
-        </div>
-    </div>
-
+    <div id="modalDetalle" class="modal"><div class="modal-content"><div class="modal-header"><h3>📋 Detalle</h3></div><div class="modal-body" id="modalBody"></div><div class="modal-footer"><button class="action-btn view" onclick="cerrarModal()">Cerrar</button></div></div></div>
     <div id="toast" class="toast"></div>
 
     <script>
@@ -498,12 +427,9 @@
         async function cargarReportes() {
             try {
                 reportes = await pb.collection('reportes_usuarios').getFullList({ sort: '-created' });
-                console.log(`✅ ${reportes.length} reportes cargados`);
                 renderizarTablaReportes();
-            } catch(e) { 
-                console.error("Error reportes:", e);
-                mostrarToast("Error cargando reportes", true);
-            }
+                console.log(`✅ ${reportes.length} reportes`);
+            } catch(e) { console.error(e); mostrarToast("Error reportes", true); }
         }
         
         async function cargarDiarios() {
@@ -511,17 +437,14 @@
                 const diariosList = await pb.collection('diarios').getFullList();
                 const tbody = document.getElementById('diariosBody');
                 if (!tbody) return;
-                
                 if (diariosList.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5">📭 No hay diarios creados</td></tr>';
+                    tbody.innerHTML = '<td><td colspan="5">No hay diarios<\/td><\/tr>';
                     return;
                 }
-                
                 let html = '';
                 for (const d of diariosList) {
                     try {
                         const user = await pb.collection('usuarios').getOne(d.usuario);
-                        const userNick = user.nick || user.email.split('@')[0];
                         const paginas = await pb.collection('paginas_diario').getFullList({ filter: `diarioId = "${d.id}"` });
                         let postitsCount = 0;
                         for (const pagina of paginas) {
@@ -529,20 +452,17 @@
                             postitsCount += comentarios.totalItems;
                         }
                         html += `<tr>
-                            <td><strong>@${escapeHtml(userNick)}</strong><br><small>${d.usuario}</small></td>
+                            <td><strong>@${escapeHtml(user.nick || user.email.split('@')[0])}</strong><br><small>${d.usuario}</small></td>
                             <td>${escapeHtml(d.titulo || 'Mi Bitácora')}</td>
                             <td>${paginas.length}</td>
                             <td>${postitsCount}</td>
-                            <td><button class="action-btn view" onclick="verDiario('${d.usuario}')">👁️ Ver</button></td>
+                            <td><button class="action-btn view" onclick="verDiario('${d.usuario}')">👁️</button></td>
                         </tr>`;
                     } catch(e) { console.error(e); }
                 }
-                tbody.innerHTML = html || '<tr><td colspan="5">Error al cargar</td></tr>';
-                console.log(`✅ ${diariosList.length} diarios cargados`);
-            } catch(e) { 
-                console.error(e);
-                document.getElementById('diariosBody').innerHTML = '<tr><td colspan="5">❌ Error al cargar diarios</td></tr>';
-            }
+                tbody.innerHTML = html || '<tr><td colspan="5">Error<\/td><\/tr>';
+                console.log(`✅ ${diariosList.length} diarios`);
+            } catch(e) { console.error(e); }
         }
         
         async function cargarPostits() {
@@ -550,12 +470,10 @@
                 const postitsList = await pb.collection('comentarios_diario').getFullList({ sort: '-created' });
                 const tbody = document.getElementById('postitsBody');
                 if (!tbody) return;
-                
                 if (postitsList.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5">📭 No hay post-its</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5">No hay post-its<\/td><\/tr>';
                     return;
                 }
-                
                 let html = '';
                 for (const p of postitsList) {
                     let paraUsuario = 'Desconocido';
@@ -565,39 +483,30 @@
                         const user = await pb.collection('usuarios').getOne(diario.usuario);
                         paraUsuario = user.nick || user.email.split('@')[0];
                     } catch(e) {}
-                    
                     html += `<tr>
                         <td style="white-space: nowrap;">${new Date(p.created).toLocaleString()}</td>
-                        <td><strong>${escapeHtml(p.userNick)}</strong></td>
-                        <td>@${escapeHtml(paraUsuario)}</td>
-                        <td>${escapeHtml(p.texto?.substring(0, 60))}${p.texto?.length > 60 ? '...' : ''}</td>
+                        <td>${escapeHtml(p.userNick)}</td><td>@${escapeHtml(paraUsuario)}</td>
+                        <td>${escapeHtml(p.texto?.substring(0, 60))}</td>
                         <td><button class="action-btn delete" onclick="eliminarPostit('${p.id}')">🗑️</button></td>
                     </tr>`;
                 }
                 tbody.innerHTML = html;
-                console.log(`✅ ${postitsList.length} post-its cargados`);
-            } catch(e) { 
-                console.error(e);
-                document.getElementById('postitsBody').innerHTML = '<tr><td colspan="5">❌ Error al cargar post-its</td></tr>';
-            }
+                console.log(`✅ ${postitsList.length} post-its`);
+            } catch(e) { console.error(e); }
         }
         
         async function cargarBloqueados() {
             try {
                 const bloqueados = todosUsuarios.filter(u => u.bloqueado === true);
                 const tbody = document.getElementById('bloqueadosBody');
-                if (!tbody) return;
-                
                 if (bloqueados.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5">🚫 No hay usuarios bloqueados</td></tr>';
+                    tbody.innerHTML = '<td><td colspan="4">No hay bloqueados<\/td><\/tr>';
                     return;
                 }
                 tbody.innerHTML = bloqueados.map(u => `
                     <tr>
                         <td><strong>@${escapeHtml(u.nick || u.email.split('@')[0])}</strong><br><small>${u.id}</small></td>
-                        <td>${escapeHtml(u.email)}</td>
-                        <td>${escapeHtml(u.bloqueadoPor || 'Admin')}</td>
-                        <td>${u.updated ? new Date(u.updated).toLocaleDateString() : '-'}</td>
+                        <td>${escapeHtml(u.email)}</td><td>${escapeHtml(u.bloqueadoPor || 'Admin')}</td>
                         <td><button class="action-btn unblock" onclick="desbloquearUsuario('${u.id}')">🔓 Desbloquear</button></td>
                     </tr>
                 `).join('');
@@ -628,49 +537,46 @@
             const ratingPromedio = todasPublicaciones.reduce((sum, p) => sum + (p.rating || 0), 0) / (todasPublicaciones.length || 1);
             
             document.getElementById('dashboardStats').innerHTML = `
-                <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-number">${ratingPromedio.toFixed(1)}</div><div class="stat-label">Rating promedio</div></div>
+                <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-number">${ratingPromedio.toFixed(1)}</div><div class="stat-label">Rating</div></div>
                 <div class="stat-card"><div class="stat-icon">💬</div><div class="stat-number">${totalComentarios}</div><div class="stat-label">Comentarios</div></div>
                 <div class="stat-card"><div class="stat-icon">🎤</div><div class="stat-number">${totalAudios}</div><div class="stat-label">Audios</div></div>
                 <div class="stat-card"><div class="stat-icon">📷</div><div class="stat-number">${totalImagenes}</div><div class="stat-label">Imágenes</div></div>
             `;
             
-            // Top usuarios
             const userPosts = {};
             todasPublicaciones.forEach(p => { userPosts[p.usuario] = (userPosts[p.usuario] || 0) + 1; });
             const topUsers = Object.entries(userPosts).sort((a,b) => b[1] - a[1]).slice(0,5);
             const topBody = document.getElementById('topUsuariosBody');
             if (topUsers.length === 0) {
-                topBody.innerHTML = '<tr><td colspan="4">Sin datos</td></tr>';
+                topBody.innerHTML = '<tr><td colspan="4">Sin datos</td><\/tr>';
             } else {
                 let html = '';
                 for (let i = 0; i < topUsers.length; i++) {
                     const [uid, count] = topUsers[i];
                     const user = todosUsuarios.find(u => u.id === uid);
                     const nombre = user?.nick || user?.email?.split('@')[0] || uid.slice(0,6);
-                    html += `<tr><td>${i+1}</td><td><strong>@${escapeHtml(nombre)}</strong></td><td>${count}</td><td>${user?.seguidores || 0}</td></tr>`;
+                    html += `<tr><td style="width:40px;">${i+1}</td><td><strong>@${escapeHtml(nombre)}</strong></td><td>${count}</td><td>${user?.seguidores || 0}</td></tr>`;
                 }
                 topBody.innerHTML = html;
             }
             
-            // Últimos reportes
             const ultimosBody = document.getElementById('ultimosReportesBody');
             if (reportes.length === 0) {
-                ultimosBody.innerHTML = '<tr><td colspan="5">Sin reportes</td></tr>';
+                ultimosBody.innerHTML = '<tr><td colspan="5">Sin reportes</td><\/tr>';
             } else {
                 ultimosBody.innerHTML = reportes.slice(0,5).map(r => `
                     <tr>
                         <td style="white-space: nowrap;">${new Date(r.created).toLocaleString()}</td>
                         <td><strong>${escapeHtml(r.reportadoPorNick)}</strong></td>
                         <td>@${escapeHtml(r.reportadoNick)}</td>
-                        <td><span style="background:#f44336; color:white; padding:2px 8px; border-radius:20px; font-size:11px;">${escapeHtml(r.motivo)}</span></td>
+                        <td><span style="background:#f44336; color:white; padding:2px 8px; border-radius:20px;">${escapeHtml(r.motivo)}</span></td>
                         <td><span class="badge ${r.estado}">${r.estado === 'pendiente' ? '⏳ Pendiente' : '✅ Revisado'}</span></td>
-                    </tr>
+                    </table>
                 `).join('');
             }
         }
         
         function actualizarGraficos() {
-            // Gráfico de publicaciones por día
             const ultimos7Dias = [];
             const postsPorDia = [];
             for (let i = 6; i >= 0; i--) {
@@ -687,7 +593,6 @@
                 options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top' } } }
             });
             
-            // Gráfico de reportes por motivo
             const motivos = {};
             reportes.forEach(r => { motivos[r.motivo] = (motivos[r.motivo] || 0) + 1; });
             if (charts.reportes) charts.reportes.destroy();
@@ -708,17 +613,17 @@
             
             const tbody = document.getElementById('usuariosBody');
             if (filtrados.length === 0) {
-                tbody.innerHTML = '<td><td colspan="6">No hay usuarios<\/td><\/tr>';
+                tbody.innerHTML = '<tr><td colspan="6">No hay usuarios</td><\/tr>';
                 return;
             }
             tbody.innerHTML = filtrados.map(u => `
                 <tr>
-                    <td><strong>@${escapeHtml(u.nick || u.email.split('@')[0])}</strong><br><small style="color:#888;">${u.id}</small></td>
-                    <td>${escapeHtml(u.email)}</span></td>
+                    <td><strong>@${escapeHtml(u.nick || u.email.split('@')[0])}</strong><br><small>${u.id}</small></td>
+                    <td>${escapeHtml(u.email) || '-'}</td>
                     <td><span class="badge ${u.online ? 'online' : 'offline'}">${u.online ? '🟢 En línea' : '⚫ Desconectado'}</span></td>
-                    <td>${new Date(u.created).toLocaleDateString()}</span></td>
+                    <td>${new Date(u.created).toLocaleDateString()}</td>
                     <td>${u.postsCount || 0}</td>
-                    <td><button class="action-btn view" onclick="verUsuario('${u.id}')">👁️ Ver</button><button class="action-btn block" onclick="bloquearUsuario('${u.id}')">🚫 Bloquear</button></td>
+                    <td class="action-group"><button class="action-btn view" onclick="verUsuario('${u.id}')">👁️</button><button class="action-btn block" onclick="bloquearUsuario('${u.id}')">🚫</button></td>
                 </tr>
             `).join('');
         }
@@ -734,7 +639,7 @@
             
             const tbody = document.getElementById('publicacionesBody');
             if (filtrados.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6">No hay publicaciones<\/td><\/tr>';
+                tbody.innerHTML = '<td><td colspan="6">No hay publicaciones<\/td><\/tr>';
                 return;
             }
             tbody.innerHTML = filtrados.map(p => {
@@ -746,31 +651,32 @@
                         <td>${escapeHtml(preview)}</span></td>
                         <td>⭐ ${(p.rating || 0).toFixed(1)}</span></td>
                         <td>${p.comments?.length || 0}</td>
-                        <td><button class="action-btn view" onclick="verPublicacion('${p.id}')">👁️</button><button class="action-btn delete" onclick="eliminarPublicacion('${p.id}')">🗑️</button></td>
+                        <td class="action-group"><button class="action-btn view" onclick="verPublicacion('${p.id}')">👁️</button><button class="action-btn delete" onclick="eliminarPublicacion('${p.id}')">🗑️</button></td>
                     </tr>
                 `;
             }).join('');
         }
         
         function renderizarTablaReportes() {
+            const busqueda = document.getElementById('searchReportes')?.value.toLowerCase() || '';
+            const estadoFiltro = document.getElementById('filterReportesEstado')?.value || 'todos';
+            let filtrados = [...reportes];
+            if (estadoFiltro !== 'todos') filtrados = filtrados.filter(r => r.estado === estadoFiltro);
+            if (busqueda) filtrados = filtrados.filter(r => r.reportadoNick?.toLowerCase().includes(busqueda) || r.reportadoPorNick?.toLowerCase().includes(busqueda));
+            
             const tbody = document.getElementById('reportesBody');
-            if (!tbody) return;
-            if (reportes.length === 0) {
-                tbody.innerHTML = '<td><td colspan="6" style="text-align:center;">📭 No hay reportes en la base de datos<\/td><\/tr>';
+            if (filtrados.length === 0) {
+                tbody.innerHTML = '<td><td colspan="6">No hay reportes<\/td><\/tr>';
                 return;
             }
-            tbody.innerHTML = reportes.map(r => `
+            tbody.innerHTML = filtrados.map(r => `
                 <tr>
                     <td style="white-space: nowrap;">${new Date(r.created).toLocaleString()}</td>
-                    <td style="background:#ffebee;"><strong>📢 ${escapeHtml(r.reportadoPorNick)}</strong><br><small style="color:#888;">${r.reportadoPorId}</small></span></td>
-                    <td style="background:#fff3e0;"><strong>⚠️ @${escapeHtml(r.reportadoNick)}</strong><br><small style="color:#888;">${r.reportadoId}</small></span></td>
-                    <td><span style="background:#f44336; color:white; padding:2px 10px; border-radius:20px; font-size:11px; display:inline-block;">${escapeHtml(r.motivo)}</span></span></td>
-                    <td><span class="badge ${r.estado}">${r.estado === 'pendiente' ? '⏳ Pendiente' : '✅ Revisado'}</span></span></td>
-                    <td>
-                        <button class="action-btn view" onclick="verDetalleReporte('${r.id}')">👁️</button>
-                        ${r.estado === 'pendiente' ? `<button class="action-btn check" onclick="cambiarEstadoReporte('${r.id}', 'revisado')">✅</button>` : ''}
-                        <button class="action-btn block" onclick="bloquearUsuario('${r.reportadoId}')">🚫</button>
-                     </span>
+                    <td style="background:#ffebee;"><strong>📢 ${escapeHtml(r.reportadoPorNick)}</strong><br><small>${r.reportadoPorId}</small></span></td>
+                    <td style="background:#fff3e0;"><strong>⚠️ @${escapeHtml(r.reportadoNick)}</strong><br><small>${r.reportadoId}</small></span></td>
+                    <td><span style="background:#f44336; color:white; padding:2px 8px; border-radius:20px;">${escapeHtml(r.motivo)}</span></td>
+                    <td><span class="badge ${r.estado}">${r.estado === 'pendiente' ? '⏳ Pendiente' : '✅ Revisado'}</span></td>
+                    <td class="action-group"><button class="action-btn view" onclick="verDetalleReporte('${r.id}')">👁️</button>${r.estado === 'pendiente' ? `<button class="action-btn check" onclick="cambiarEstadoReporte('${r.id}', 'revisado')">✅</button>` : ''}<button class="action-btn block" onclick="bloquearUsuario('${r.reportadoId}')">🚫</button></td>
                 </tr>
             `).join('');
         }
@@ -779,26 +685,24 @@
         window.verUsuario = async function(id) {
             const u = todosUsuarios.find(u => u.id === id);
             if (!u) return;
-            const modal = document.getElementById('modalDetalle');
             document.getElementById('modalBody').innerHTML = `
                 <div class="info-row"><div class="info-label">ID:</div><div class="info-value">${u.id}</div></div>
                 <div class="info-row"><div class="info-label">Nick:</div><div class="info-value">@${escapeHtml(u.nick || u.email)}</div></div>
-                <div class="info-row"><div class="info-label">Email:</div><div class="info-value">${escapeHtml(u.email)}</div></div>
+                <div class="info-row"><div class="info-label">Email:</div><div class="info-value">${escapeHtml(u.email) || '-'}</div></div>
                 <div class="info-row"><div class="info-label">País:</div><div class="info-value">${u.pais || '-'}</div></div>
                 <div class="info-row"><div class="info-label">Registro:</div><div class="info-value">${new Date(u.created).toLocaleString()}</div></div>
                 <div class="info-row"><div class="info-label">Publicaciones:</div><div class="info-value">${u.postsCount || 0}</div></div>
                 <div class="info-row"><div class="info-label">Seguidores:</div><div class="info-value">${u.seguidores || 0}</div></div>
                 <div class="info-row"><div class="info-label">Bloqueado:</div><div class="info-value">${u.bloqueado ? 'Sí' : 'No'}</div></div>
             `;
-            modal.classList.add('show');
+            document.getElementById('modalDetalle').classList.add('show');
         };
         
         window.verPublicacion = async function(id) {
             const p = todasPublicaciones.find(p => p.id === id);
             if (!p) return;
-            const modal = document.getElementById('modalDetalle');
             let extra = '';
-            if (p.imagen) extra += `<img src="${pb.files.getUrl(p, p.imagen)}" style="max-width:100%; max-height:150px; border-radius:12px; margin:10px 0;">`;
+            if (p.imagen) extra += `<img src="${pb.files.getUrl(p, p.imagen)}" class="post-preview" style="max-width:100%; max-height:150px; border-radius:12px; margin:10px 0;">`;
             if (p.audio) extra += `<audio src="${pb.files.getUrl(p, p.audio)}" controls style="width:100%; margin:10px 0;"></audio>`;
             document.getElementById('modalBody').innerHTML = `
                 <div class="info-row"><div class="info-label">Autor:</div><div class="info-value">@${escapeHtml(p.autorNick)}</div></div>
@@ -808,42 +712,33 @@
                 <div class="info-row"><div class="info-label">Comentarios:</div><div class="info-value">${p.comments?.length || 0}</div></div>
                 ${extra}
             `;
-            modal.classList.add('show');
+            document.getElementById('modalDetalle').classList.add('show');
         };
         
         window.verDetalleReporte = async function(id) {
             const r = reportes.find(r => r.id === id);
             if (!r) return;
-            const modal = document.getElementById('modalDetalle');
             document.getElementById('modalBody').innerHTML = `
-                <div class="info-row" style="background:#ffebee; padding:10px; border-radius:12px; margin-bottom:12px;">
-                    <div class="info-label">📢 QUIEN REPORTA:</div>
-                    <div class="info-value"><strong>${escapeHtml(r.reportadoPorNick)}</strong><br><span style="font-size:11px; color:#888;">ID: ${r.reportadoPorId}</span></div>
-                </div>
-                <div class="info-row" style="background:#fff3e0; padding:10px; border-radius:12px; margin-bottom:12px;">
-                    <div class="info-label">⚠️ USUARIO REPORTADO:</div>
-                    <div class="info-value"><strong>@${escapeHtml(r.reportadoNick)}</strong><br><span style="font-size:11px; color:#888;">ID: ${r.reportadoId}</span></div>
-                </div>
+                <div class="info-row" style="background:#ffebee; padding:10px; border-radius:12px;"><div class="info-label">📢 QUIEN REPORTA:</div><div class="info-value"><strong>${escapeHtml(r.reportadoPorNick)}</strong><br><small>${r.reportadoPorId}</small></div></div>
+                <div class="info-row" style="background:#fff3e0; padding:10px; border-radius:12px;"><div class="info-label">⚠️ REPORTADO:</div><div class="info-value"><strong>@${escapeHtml(r.reportadoNick)}</strong><br><small>${r.reportadoId}</small></div></div>
                 <div class="info-row"><div class="info-label">📅 Fecha:</div><div class="info-value">${new Date(r.created).toLocaleString()}</div></div>
-                <div class="info-row"><div class="info-label">⚠️ Motivo:</div><div class="info-value"><span style="background:#f44336; color:white; padding:3px 12px; border-radius:20px; display:inline-block;">${escapeHtml(r.motivo)}</span></div></div>
-                <div class="info-row"><div class="info-label">📝 Detalle:</div><div class="info-value">${escapeHtml(r.detalle) || 'Sin detalles adicionales'}</div></div>
+                <div class="info-row"><div class="info-label">⚠️ Motivo:</div><div class="info-value"><span style="background:#f44336; color:white; padding:3px 12px; border-radius:20px;">${escapeHtml(r.motivo)}</span></div></div>
+                <div class="info-row"><div class="info-label">📝 Detalle:</div><div class="info-value">${escapeHtml(r.detalle) || 'Sin detalles'}</div></div>
                 <div class="info-row"><div class="info-label">🏷️ Estado:</div><div class="info-value"><span class="badge ${r.estado}">${r.estado === 'pendiente' ? '⏳ Pendiente' : '✅ Revisado'}</span></div></div>
             `;
-            modal.classList.add('show');
+            document.getElementById('modalDetalle').classList.add('show');
         };
         
-        window.verDiario = function(uid) {
-            window.open(`diario.html?uid=${uid}`, '_blank');
-        };
+        window.verDiario = (uid) => window.open(`diario.html?uid=${uid}`, '_blank');
         
         window.cambiarEstadoReporte = async function(id, estado) {
             try {
                 await pb.collection('reportes_usuarios').update(id, { estado });
-                mostrarToast(`✅ Reporte marcado como ${estado === 'revisado' ? 'revisado' : estado}`);
+                mostrarToast(`✅ Reporte marcado como ${estado}`);
                 await cargarReportes();
-                actualizarDashboardStats();
                 actualizarGraficos();
-            } catch(e) { mostrarToast("Error al cambiar estado", true); }
+                actualizarDashboardStats();
+            } catch(e) { mostrarToast("Error", true); }
         };
         
         window.bloquearUsuario = async function(id) {
@@ -854,7 +749,7 @@
                 await cargarUsuarios();
                 await cargarBloqueados();
                 actualizarEstadisticas();
-            } catch(e) { mostrarToast("Error al bloquear", true); }
+            } catch(e) { mostrarToast("Error", true); }
         };
         
         window.desbloquearUsuario = async function(id) {
@@ -864,27 +759,27 @@
                 await cargarUsuarios();
                 await cargarBloqueados();
                 actualizarEstadisticas();
-            } catch(e) { mostrarToast("Error al desbloquear", true); }
+            } catch(e) { mostrarToast("Error", true); }
         };
         
         window.eliminarPublicacion = async function(id) {
-            if (!confirm('¿Eliminar esta publicación permanentemente?')) return;
+            if (!confirm('¿Eliminar publicación?')) return;
             try {
                 await pb.collection('posts').delete(id);
                 mostrarToast('🗑️ Publicación eliminada');
                 await cargarPublicaciones();
-                actualizarDashboardStats();
                 actualizarGraficos();
-            } catch(e) { mostrarToast("Error al eliminar", true); }
+                actualizarDashboardStats();
+            } catch(e) { mostrarToast("Error", true); }
         };
         
         window.eliminarPostit = async function(id) {
-            if (!confirm('¿Eliminar este post-it?')) return;
+            if (!confirm('¿Eliminar post-it?')) return;
             try {
                 await pb.collection('comentarios_diario').delete(id);
                 mostrarToast('📌 Post-it eliminado');
                 await cargarPostits();
-            } catch(e) { mostrarToast("Error al eliminar", true); }
+            } catch(e) { mostrarToast("Error", true); }
         };
         
         // ========== TABS ==========
@@ -909,18 +804,12 @@
                 'bloqueados': 'panelBloqueados'
             };
             const panelId = panelMap[tab];
-            if (panelId) {
-                document.getElementById(panelId).classList.add('active');
-            }
+            if (panelId) document.getElementById(panelId).classList.add('active');
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             const btn = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
             if (btn) btn.classList.add('active');
             if (tab === 'bloqueados') cargarBloqueados();
         };
-        
-        window.filtrarUsuarios = () => renderizarTablaUsuarios();
-        window.filtrarPublicaciones = () => renderizarTablaPublicaciones();
-        window.filtrarReportes = () => renderizarTablaReportes();
         
         window.cerrarModal = () => document.getElementById('modalDetalle').classList.remove('show');
         
