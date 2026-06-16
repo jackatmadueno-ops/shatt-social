@@ -303,9 +303,9 @@
         <div id="panelDashboard" class="panel">
             <div class="stats-grid" id="dashboardStats" style="grid-template-columns: repeat(4,1fr);"></div>
             <h3 style="margin: 20px 0 15px;">🏆 Top 5 usuarios más activos</h3>
-            <div class="table-container"><tr><thead><tr><th>#</th><th>Usuario</th><th>Publicaciones</th><th>Seguidores</th></tr></thead><tbody id="topUsuariosBody"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>#</th><th>Usuario</th><th>Publicaciones</th><th>Seguidores</th></tr></thead><tbody id="topUsuariosBody"></tbody></table></div>
             <h3 style="margin: 20px 0 15px;">📋 Últimos reportes</h3>
-            <div class="table-container"><tr><thead><tr><th>Fecha</th><th>Reportó</th><th>Reportado</th><th>Motivo</th><th>Estado</th></tr></thead><tbody id="ultimosReportesBody"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Fecha</th><th>Reportó</th><th>Reportado</th><th>Motivo</th><th>Estado</th></tr></thead><tbody id="ultimosReportesBody"></tbody></table></div>
         </div>
 
         <div id="panelUsuarios" class="panel">
@@ -314,7 +314,7 @@
                 <select id="filterUsuariosEstado" class="filter-select"><option value="todos">Todos</option><option value="online">🟢 En línea</option><option value="offline">⚫ Desconectados</option></select>
                 <button class="refresh-btn" onclick="cargarUsuarios()">🔄 Actualizar</button>
             </div>
-            <div class="table-container"><table><thead><tr><th>Usuario</th><th>Email</th><th>Estado</th><th>Registro</th><th>Posts</th><th>Acciones</th></tr></thead><tbody id="usuariosBody"></tbody></table></div>
+            <div class="table-container"><table><thead><td><th>Usuario</th><th>Email</th><th>Estado</th><th>Registro</th><th>Posts</th><th>Acciones</th></tr></thead><tbody id="usuariosBody"></tbody></table></div>
         </div>
 
         <div id="panelPublicaciones" class="panel">
@@ -340,7 +340,7 @@
                 <input type="text" id="searchDiarios" class="search-input" placeholder="🔍 Buscar...">
                 <button class="refresh-btn" onclick="cargarDiarios()">🔄 Actualizar</button>
             </div>
-            <div class="table-container"><tr><thead><tr><th>Usuario</th><th>Diario</th><th>Páginas</th><th>Post-its</th><th>Acciones</th></td></thead><tbody id="diariosBody"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Usuario</th><th>Diario</th><th>Páginas</th><th>Post-its</th><th>Acciones</th></tr></thead><tbody id="diariosBody"></tbody></table></div>
         </div>
 
         <div id="panelPostits" class="panel">
@@ -348,12 +348,12 @@
                 <input type="text" id="searchPostits" class="search-input" placeholder="🔍 Buscar...">
                 <button class="refresh-btn" onclick="cargarPostits()">🔄 Actualizar</button>
             </div>
-            <div class="table-container"></table><thead><tr><th>Fecha</th><th>De</th><th>Para</th><th>Contenido</th><th>Acciones</th></tr></thead><tbody id="postitsBody"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Fecha</th><th>De</th><th>Para</th><th>Contenido</th><th>Acciones</th></tr></thead><tbody id="postitsBody"></tbody></table></div>
         </div>
 
         <div id="panelBloqueados" class="panel">
             <button class="refresh-btn" onclick="cargarBloqueados()">🔄 Actualizar</button>
-            <div class="table-container"><table><thead><tr><th>Usuario</th><th>Email</th><th>Bloqueado por</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody id="bloqueadosBody"></tbody></table></div>
+            <div class="table-container"><tr><thead><tr><th>Usuario</th><th>Email</th><th>Bloqueado por</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody id="bloqueadosBody"></tbody></table></div>
         </div>
     </div>
 
@@ -381,30 +381,30 @@
         let postits = [];
         let charts = {};
         
-        // ========== LOGIN ==========
-        window.verificarPassword = async function() {
+        // ========== FUNCIÓN DE LOGIN ==========
+        window.verificarPassword = function() {
             const pass = document.getElementById('adminPassword').value;
             if (pass === ADMIN_PASSWORD) {
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
-                await inicializarDashboard();
+                iniciarDashboard();
             } else {
                 document.getElementById('loginError').textContent = '❌ Contraseña incorrecta';
             }
         };
+        
+        function iniciarDashboard() {
+            mostrarToast('🔄 Cargando datos...');
+            cargarTodosLosDatos();
+            inicializarTabs();
+            setInterval(cargarTodosLosDatos, 30000);
+        }
         
         window.cerrarSesion = function() {
             document.getElementById('loginScreen').style.display = 'block';
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('adminPassword').value = '';
         };
-        
-        async function inicializarDashboard() {
-            mostrarToast('🔄 Cargando datos...');
-            await cargarTodosLosDatos();
-            inicializarTabs();
-            setInterval(cargarTodosLosDatos, 30000);
-        }
         
         async function cargarTodosLosDatos() {
             try {
@@ -513,13 +513,13 @@
                 const tbody = document.getElementById('bloqueadosBody');
                 if (!tbody) return;
                 if (bloqueados.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">🚫 No hay usuarios bloqueados</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">🚫 No hay usuarios bloqueados<\/td><\/tr>';
                     return;
                 }
                 tbody.innerHTML = bloqueados.map(u => `
                     <tr>
                         <td><strong>@${escapeHtml(u.nick || u.email.split('@')[0])}</strong><br><small>${u.id}</small></td>
-                        <td>${escapeHtml(u.email)}</td>
+                        <td>${escapeHtml(u.email)}</span></td>
                         <td>${escapeHtml(u.bloqueadoPor || 'Admin')}</td>
                         <td>${u.updated ? new Date(u.updated).toLocaleDateString() : '-'}</td>
                         <td class="action-group"><button class="action-btn unblock" onclick="desbloquearUsuario('${u.id}')">🔓 Desbloquear</button></td>
@@ -565,22 +565,21 @@
             const topUsers = Object.entries(userPosts).sort((a,b) => b[1] - a[1]).slice(0,5);
             const topBody = document.getElementById('topUsuariosBody');
             if (topUsers.length === 0) {
-                topBody.innerHTML = '<tr><td colspan="4">Sin datos</td></tr>';
+                topBody.innerHTML = '<tr><td colspan="4">Sin datos<\/td><\/tr>';
             } else {
                 let html = '';
                 for (let i = 0; i < topUsers.length; i++) {
                     const [uid, count] = topUsers[i];
                     const user = todosUsuarios.find(u => u.id === uid);
                     const nombre = user?.nick || user?.email?.split('@')[0] || uid.slice(0,6);
-                    const seguidores = await pb.collection('seguidores').getList(1, 1, { filter: `seguido = "${uid}"` });
-                    html += `<tr><td style="width:40px;">${i+1}</td><td><strong>@${escapeHtml(nombre)}</strong></td><td>${count}</td><td>${seguidores.totalItems}</td></tr>`;
+                    html += `<tr><td style="width:40px;">${i+1}</td><td><strong>@${escapeHtml(nombre)}</strong></td><td>${count}</td><td>${user?.seguidores || 0}</td></tr>`;
                 }
                 topBody.innerHTML = html;
             }
             
             const ultimosBody = document.getElementById('ultimosReportesBody');
             if (reportes.length === 0) {
-                ultimosBody.innerHTML = '<tr><td colspan="5">Sin reportes</td></tr>';
+                ultimosBody.innerHTML = '<tr><td colspan="5">Sin reportes<\/td><\/tr>';
             } else {
                 ultimosBody.innerHTML = reportes.slice(0,5).map(r => `
                     <tr>
@@ -626,13 +625,13 @@
             const tbody = document.getElementById('usuariosBody');
             if (!tbody) return;
             if (todosUsuarios.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6">No hay usuarios</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6">No hay usuarios<\/td><\/tr>';
                 return;
             }
             tbody.innerHTML = todosUsuarios.map(u => `
                 <tr>
                     <td><strong>@${escapeHtml(u.nick || u.email.split('@')[0])}</strong><br><small>${u.id}</small></td>
-                    <td>${escapeHtml(u.email) || '-'}</td>
+                    <td>${escapeHtml(u.email) || '-'}</span></td>
                     <td><span class="badge ${u.online ? 'online' : 'offline'}">${u.online ? '🟢 En línea' : '⚫ Desconectado'}</span></td>
                     <td>${new Date(u.created).toLocaleDateString()}</td>
                     <td>${u.postsCount || 0}</td>
@@ -658,7 +657,7 @@
                     <td>⭐ ${(p.rating || 0).toFixed(1)}</span></td>
                     <td>${p.comments?.length || 0}</td>
                     <td class="action-group"><button class="action-btn view" onclick="verPublicacion('${p.id}')">👁️</button><button class="action-btn delete" onclick="eliminarPublicacion('${p.id}')">🗑️</button></td>
-                </table>
+                </tr>
                 `;
             }).join('');
         }
