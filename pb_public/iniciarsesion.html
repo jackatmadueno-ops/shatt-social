@@ -837,37 +837,50 @@
             }
         }
         
-        async function entrar() {
-            const email = document.getElementById('log-email').value;
-            const pass = document.getElementById('log-pass').value;
-            
-            if (!email || !pass) {
-                alert("❌ Completa todos los campos");
-                return;
-            }
-            
-            const btn = document.querySelector('#login-form .btn-access');
-            const originalText = btn.innerText;
-            btn.innerHTML = '<span class="loading-spinner"></span> INGRESANDO...';
-            btn.disabled = true;
-            
-            try {
-                await pb.collection('usuarios').authWithPassword(email, pass);
-                const user = pb.authStore.model;
-                let avatarUrl = '';
-                if (user.pfp) avatarUrl = pb.files.getUrl(user, user.pfp);
-                agregarCuentaGuardada(user.id, user.email, user.nick || user.email.split('@')[0], avatarUrl);
-                localStorage.setItem('pocketbase_auth', JSON.stringify({
-                    token: pb.authStore.token,
-                    model: pb.authStore.model
-                }));
-                window.location.href = "inicio.html";
-            } catch (error) {
-                alert("❌ Email o contraseña incorrectos");
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
+       async function entrar() {
+    const email = document.getElementById('log-email').value;
+    const pass = document.getElementById('log-pass').value;
+    
+    if (!email || !pass) {
+        alert("❌ Completa todos los campos");
+        return;
+    }
+    
+    const btn = document.querySelector('#login-form .btn-access');
+    const originalText = btn.innerText;
+    btn.innerHTML = '<span class="loading-spinner"></span> INGRESANDO...';
+    btn.disabled = true;
+    
+    try {
+        // Primero autenticar
+        await pb.collection('usuarios').authWithPassword(email, pass);
+        const user = pb.authStore.model;
+        
+        // 🔥 VERIFICAR SI EL USUARIO ESTÁ BLOQUEADO
+        if (user.bloqueado === true) {
+            // Cerrar sesión inmediatamente
+            pb.authStore.clear();
+            localStorage.removeItem('pocketbase_auth');
+            alert("🚫 Tu cuenta ha sido bloqueada por el administrador. No puedes acceder a SHATTS.");
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            return;
         }
+        
+        let avatarUrl = '';
+        if (user.pfp) avatarUrl = pb.files.getUrl(user, user.pfp);
+        agregarCuentaGuardada(user.id, user.email, user.nick || user.email.split('@')[0], avatarUrl);
+        localStorage.setItem('pocketbase_auth', JSON.stringify({
+            token: pb.authStore.token,
+            model: pb.authStore.model
+        }));
+        window.location.href = "inicio.html";
+    } catch (error) {
+        alert("❌ Email o contraseña incorrectos");
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
+}
         
         function toggleMode() {
             const login = document.getElementById('login-form');
