@@ -430,8 +430,7 @@
                     🔔
                     <span id="notification-count" class="notification-badge">0</span>
                 </span>
-                <span onclick="abrirPersonalizacion()">🖌️</span>
-                <span onclick="abrirPanelConfiguracion()">⚙️</span>
+                <!-- BROCHA Y ENGRANAJE ELIMINADOS -->
             </div>
         </div>
 
@@ -588,20 +587,18 @@
                     <div id="disp-about" style="font-size: 14px; line-height: 1.5;">Cargando...</div>
                 </div>
                 
+                <!-- INTERESES: SIN PLEGUE (SIEMPRE VISIBLE) -->
                 <div class="panel-retro">
-                    <div class="blurb-title" onclick="toggleCollapsible('intereses-content')">
-                        🎯 Intereses
-                        <span class="toggle-icon" id="intereses-icon">▼</span>
-                    </div>
+                    <div class="blurb-title">🎯 Intereses</div>
                     <div id="intereses-content" class="blurb-content">
                         <div class="info-item"><span class="info-label">General:</span><span class="info-value" id="disp-int-gen">-</span></div>
                         <div class="info-item"><span class="info-label">Música:</span><span class="info-value" id="disp-int-mus">-</span></div>
                     </div>
                 </div>
                 
-                <!-- SECCIÓN DE AMIGOS - SOLO MÓVIL -->
+                <!-- SECCIÓN DE AMIGOS - SOLO MÓVIL (CON PLEGUE) -->
                 <div class="panel-retro friends-section-mobile">
-                    <div class="blurb-title" onclick="toggleCollapsible('amigos-mobile-content')">
+                    <div class="blurb-title" onclick="toggleCollapsible('amigos-mobile-content')" style="cursor:pointer;">
                         👥 Amigos <span id="amigos-mobile-count">(0)</span>
                         <span class="toggle-icon" id="amigos-mobile-icon">▼</span>
                     </div>
@@ -819,12 +816,23 @@ pb.autoCancellation(false);
             const muted = localStorage.getItem('shatt_mute_notifications') === 'true';
             if (muted || para === currentUser?.id) return;
             try {
+                // Obtener el nick del usuario actual
+                const usuarioActual = await pb.collection('usuarios').getOne(currentUser.id);
+                const deNick = usuarioActual.nick || usuarioActual.email?.split('@')[0] || 'Usuario';
+                
                 await pb.collection('notificaciones').create({
-                    para: para, de: currentUser.id, deNick: currentUser.email.split('@')[0],
-                    tipo: tipo, postId: postId, comentario: comentario, leido: false
+                    para: para, 
+                    de: currentUser.id, 
+                    deNick: deNick,
+                    tipo: tipo, 
+                    postId: postId, 
+                    comentario: comentario, 
+                    leido: false
                 });
                 await cargarNotificaciones();
-            } catch (e) {}
+            } catch (e) {
+                console.error("Error creando notificación:", e);
+            }
         }
         
         async function cargarNotificaciones() {
@@ -895,32 +903,35 @@ pb.autoCancellation(false);
     let tipoClass = '';
     let onClickAction = '';
     
+    // Usar el nick del usuario que hizo la acción
+    const nombreUsuario = noti.deNick || 'Usuario';
+    
     if (noti.tipo === 'like') { 
-        texto = `<strong>@${escapeHtml(noti.deNick)}</strong> le gusta tu publicación`;
+        texto = `<strong>${escapeHtml(nombreUsuario)}</strong> le gusta tu publicación`;
         icon = '❤️';
         tipoClass = 'like';
         onClickAction = `marcarNotificacionLeida('${noti.id}', '${noti.postId || ''}')`;
     }
     else if (noti.tipo === 'comentario') { 
-        texto = `<strong>@${escapeHtml(noti.deNick)}</strong> comentó: "${escapeHtml(noti.comentario?.substring(0, 50))}"`;
+        texto = `<strong>${escapeHtml(nombreUsuario)}</strong> comentó: "${escapeHtml(noti.comentario?.substring(0, 50))}"`;
         icon = '💬';
         tipoClass = 'comment';
         onClickAction = `marcarNotificacionLeida('${noti.id}', '${noti.postId || ''}')`;
     }
     else if (noti.tipo === 'seguidor') { 
-        texto = `<strong>@${escapeHtml(noti.deNick)}</strong> comenzó a seguirte`;
+        texto = `<strong>${escapeHtml(nombreUsuario)}</strong> comenzó a seguirte`;
         icon = '👤';
         tipoClass = 'follow';
         onClickAction = `window.location.href='perfil.html?uid=${noti.de}'`;
     }
     else if (noti.tipo === 'compartido') { 
-        texto = `<strong>@${escapeHtml(noti.deNick)}</strong> compartió una publicación contigo`;
+        texto = `<strong>${escapeHtml(nombreUsuario)}</strong> compartió una publicación contigo`;
         icon = '📤';
         tipoClass = 'share';
         onClickAction = `marcarNotificacionLeida('${noti.id}', '${noti.postId || ''}')`;
     }
     else if (noti.tipo === 'postit') { 
-        texto = `<strong>@${escapeHtml(noti.deNick)}</strong> dejó un post-it en tu diario: "${escapeHtml(noti.comentario?.substring(0, 50))}"`;
+        texto = `<strong>${escapeHtml(nombreUsuario)}</strong> dejó un post-it en tu diario: "${escapeHtml(noti.comentario?.substring(0, 50))}"`;
         icon = '📌';
         tipoClass = 'postit';
         onClickAction = `window.location.href='diario.html?uid=${noti.para}'`;
@@ -995,13 +1006,57 @@ pb.autoCancellation(false);
         
         // ========== PERSONALIZACIÓN ==========
         function aplicarDiseno(fondo, opacidad) {
-            if (fondo) {
-                if (fondo.startsWith('url')) { document.body.style.backgroundImage = fondo; document.body.style.backgroundSize = 'cover'; document.body.style.backgroundAttachment = 'fixed'; }
-                else if (fondo.startsWith('linear-gradient')) { document.body.style.background = fondo; document.body.style.backgroundImage = 'none'; }
-                else { document.body.style.background = fondo; document.body.style.backgroundImage = 'none'; }
-            }
-            if (opacidad) document.documentElement.style.setProperty('--panel-opacity', opacidad);
+    try {
+        console.log("🎨 Aplicando diseño:", fondo, opacidad);
+        
+        // Si fondo es null, undefined, "none", "null", o vacío → usar color por defecto
+        if (!fondo || fondo === 'none' || fondo === 'null' || fondo === 'undefined' || fondo === '') {
+            fondo = '#3a6186';
+            console.log("⚠️ Fondo inválido, usando color por defecto:", fondo);
         }
+        
+        if (fondo) {
+            if (fondo.startsWith('url')) {
+                document.body.style.backgroundImage = fondo;
+                document.body.style.backgroundSize = 'cover';
+                document.body.style.backgroundAttachment = 'fixed';
+                document.body.style.backgroundPosition = 'center';
+                document.body.style.backgroundColor = 'transparent';
+            } else if (fondo.startsWith('linear-gradient')) {
+                document.body.style.background = fondo;
+                document.body.style.backgroundImage = 'none';
+            } else {
+                // Color sólido
+                document.body.style.background = fondo;
+                document.body.style.backgroundImage = 'none';
+            }
+        } else {
+            // Fallback: color azul
+            document.body.style.background = '#3a6186';
+            document.body.style.backgroundImage = 'none';
+        }
+        
+        if (opacidad !== undefined && opacidad !== null) {
+            const val = parseFloat(opacidad);
+            if (isNaN(val) || val <= 0) {
+                document.documentElement.style.setProperty('--panel-opacity', '1');
+            } else {
+                document.documentElement.style.setProperty('--panel-opacity', val);
+            }
+        }
+        
+        // Forzar que el cuerpo tenga el color
+        document.body.style.backgroundColor = '#3a6186';
+        
+        console.log("✅ Diseño aplicado correctamente");
+    } catch(e) {
+        console.error("❌ Error aplicando diseño:", e);
+        // Fallback ULTRA seguro
+        document.body.style.background = '#3a6186';
+        document.body.style.backgroundImage = 'none';
+        document.body.style.backgroundColor = '#3a6186';
+    }
+}
         
         async function guardarDisenoGlobal() {
             if (!currentUser) return;
@@ -1013,9 +1068,60 @@ pb.autoCancellation(false);
         }
         
         async function cargarDisenoGuardado() {
-            const user = await pb.collection('usuarios').getOne(currentUser.id);
-            if (user.diseno) { let d = user.diseno; if (typeof d === 'string') d = JSON.parse(d); aplicarDiseno(d.fondo, d.opacidad); }
+    if (!currentUser) return;
+    try {
+        // Intentar cargar desde localStorage
+        let local = localStorage.getItem('shatt_diseno');
+        let fondoAplicado = false;
+        
+        if (local) {
+            try {
+                let d = JSON.parse(local);
+                if (d.fondo && d.fondo !== 'none' && d.fondo !== 'null' && d.fondo !== '') {
+                    aplicarDiseno(d.fondo, d.opacidad || 1);
+                    fondoAplicado = true;
+                    console.log("✅ Diseño aplicado desde localStorage");
+                }
+            } catch(e) {
+                console.warn("Error parseando localStorage:", e);
+            }
         }
+        
+        // Si no se aplicó desde localStorage, cargar desde PocketBase
+        if (!fondoAplicado) {
+            try {
+                let user = await pb.collection('usuarios').getOne(currentUser.id);
+                if (user.diseno && user.diseno.fondo && user.diseno.fondo !== 'none' && user.diseno.fondo !== 'null') {
+                    aplicarDiseno(user.diseno.fondo, user.diseno.opacidad || 1);
+                    fondoAplicado = true;
+                    console.log("✅ Diseño aplicado desde PocketBase");
+                }
+            } catch(e) {
+                console.warn("No se pudo cargar diseño desde PocketBase:", e);
+            }
+        }
+        
+        // Si NO se aplicó ningún diseño, usar el color por defecto
+        if (!fondoAplicado) {
+            console.log("⚠️ No hay diseño guardado, usando color por defecto");
+            aplicarDiseno('#3a6186', 1);
+        }
+        
+        // FORZAR que el cuerpo tenga color (por si acaso)
+        setTimeout(() => {
+            if (document.body.style.background === '' || document.body.style.background === 'none') {
+                document.body.style.background = '#3a6186';
+                document.body.style.backgroundImage = 'none';
+            }
+        }, 100);
+        
+    } catch(e) {
+        console.error("❌ Error cargando diseño:", e);
+        // Fallback ULTRA seguro
+        document.body.style.background = '#3a6186';
+        document.body.style.backgroundImage = 'none';
+    }
+}
         
         function abrirPersonalizacion() { document.getElementById('design-modal').style.display = 'block'; document.getElementById('modal-overlay').style.display = 'block'; }
         function cerrarModalesGlobal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); document.getElementById('modal-overlay').style.display = 'none'; }
@@ -1067,30 +1173,58 @@ pb.autoCancellation(false);
         // ========== CARGAR DATOS DEL PERFIL ==========
         async function configurarBotones(uid) {
             const actionsDiv = document.getElementById('profile-actions');
-            if (!currentUser) { actionsDiv.innerHTML = `<button class="btn-retro" disabled>🔒 Inicia sesión para interactuar</button>`; return; }
-            if (uid === currentUser.id) { window.location.href = "mi-perfil.html"; return; }
+            if (!currentUser) { 
+                actionsDiv.innerHTML = `<button class="btn-retro" disabled style="width:100%;">🔒 Inicia sesión para interactuar</button>`; 
+                return; 
+            }
+            if (uid === currentUser.id) { 
+                window.location.href = "mi-perfil.html"; 
+                return; 
+            }
             try {
                 const sigue = await isSiguiendo(currentUser.id, uid);
                 if (sigue) {
-                    actionsDiv.innerHTML = `<button class="btn-retro" onclick="dejarDeSeguir('${uid}', this)" style="background:#4CAF50; color:white; flex:1;">✓ SIGUIENDO</button><button class="btn-retro message-btn" onclick="enviarMensaje('${uid}')" style="flex:1;">📨 SHATT</button>`;
+                    actionsDiv.innerHTML = `
+                        <button class="btn-retro" onclick="dejarDeSeguir('${uid}', this)" style="background:#4CAF50; color:white; flex:1; border-color:#45a049; border-radius:30px; padding:10px 20px; font-weight:bold; transition:all 0.3s;">✓ SIGUIENDO</button>
+                        <button class="btn-retro" onclick="enviarMensaje('${uid}')" style="background:var(--shatt-blue); color:white; flex:1; border-radius:30px; padding:10px 20px; font-weight:bold; transition:all 0.3s;">📨 SHATT</button>
+                    `;
                 } else {
-                    actionsDiv.innerHTML = `<button class="btn-retro follow-btn" onclick="seguirUsuario('${uid}', this)" style="flex:1;">+ SEGUIR</button><button class="btn-retro message-btn" onclick="enviarMensaje('${uid}')" style="flex:1;">📨 SHATT</button>`;
+                    actionsDiv.innerHTML = `
+                        <button class="btn-retro" onclick="seguirUsuario('${uid}', this)" style="background:#4CAF50; color:white; flex:1; border-color:#45a049; border-radius:30px; padding:10px 20px; font-weight:bold; transition:all 0.3s;">+ SEGUIR</button>
+                        <button class="btn-retro" onclick="enviarMensaje('${uid}')" style="background:var(--shatt-blue); color:white; flex:1; border-radius:30px; padding:10px 20px; font-weight:bold; transition:all 0.3s;">📨 SHATT</button>
+                    `;
                 }
-            } catch (error) { actionsDiv.innerHTML = `<button class="btn-retro" disabled>❌ Error</button>`; }
+            } catch (error) { 
+                actionsDiv.innerHTML = `<button class="btn-retro" disabled style="width:100%;">❌ Error</button>`; 
+            }
         }
         
         async function configurarBotonesMovil(uid) {
             const actionsDiv = document.getElementById('mobile-actions');
-            if (!currentUser) { actionsDiv.innerHTML = `<button class="btn-mobile" disabled>🔒</button>`; return; }
-            if (uid === currentUser.id) { window.location.href = "mi-perfil.html"; return; }
+            if (!currentUser) { 
+                actionsDiv.innerHTML = `<button class="btn-mobile" disabled style="flex:1; padding:10px; border-radius:30px; font-weight:bold; cursor:pointer; background:#888; color:white; border:none;">🔒</button>`; 
+                return; 
+            }
+            if (uid === currentUser.id) { 
+                window.location.href = "mi-perfil.html"; 
+                return; 
+            }
             try {
                 const sigue = await isSiguiendo(currentUser.id, uid);
                 if (sigue) {
-                    actionsDiv.innerHTML = `<button class="btn-mobile follow" onclick="dejarDeSeguir('${uid}', this)">✓ SIGUIENDO</button><button class="btn-mobile message" onclick="enviarMensaje('${uid}')">📨 SHATT</button>`;
+                    actionsDiv.innerHTML = `
+                        <button class="btn-mobile" onclick="dejarDeSeguir('${uid}', this)" style="flex:1; padding:10px; border-radius:30px; font-weight:bold; cursor:pointer; background:#4CAF50; color:white; border:none; transition:all 0.3s;">✓ SIGUIENDO</button>
+                        <button class="btn-mobile" onclick="enviarMensaje('${uid}')" style="flex:1; padding:10px; border-radius:30px; font-weight:bold; cursor:pointer; background:var(--shatt-blue); color:white; border:none; transition:all 0.3s;">📨 SHATT</button>
+                    `;
                 } else {
-                    actionsDiv.innerHTML = `<button class="btn-mobile follow" onclick="seguirUsuario('${uid}', this)">+ SEGUIR</button><button class="btn-mobile message" onclick="enviarMensaje('${uid}')">📨 SHATT</button>`;
+                    actionsDiv.innerHTML = `
+                        <button class="btn-mobile" onclick="seguirUsuario('${uid}', this)" style="flex:1; padding:10px; border-radius:30px; font-weight:bold; cursor:pointer; background:#4CAF50; color:white; border:none; transition:all 0.3s;">+ SEGUIR</button>
+                        <button class="btn-mobile" onclick="enviarMensaje('${uid}')" style="flex:1; padding:10px; border-radius:30px; font-weight:bold; cursor:pointer; background:var(--shatt-blue); color:white; border:none; transition:all 0.3s;">📨 SHATT</button>
+                    `;
                 }
-            } catch (error) { actionsDiv.innerHTML = `<button class="btn-mobile" disabled>❌ Error</button>`; }
+            } catch (error) { 
+                actionsDiv.innerHTML = `<button class="btn-mobile" disabled style="flex:1; padding:10px; border-radius:30px; font-weight:bold; cursor:pointer; background:#888; color:white; border:none;">❌ Error</button>`; 
+            }
         }
         
         async function cargarDatos(uid) {
@@ -1120,16 +1254,27 @@ pb.autoCancellation(false);
                 actualizarContadores(seguidoresCount, seguidosCount);
                 
                 if (user.pfp) { 
-                    const pfpUrl = pb.files.getUrl(user, user.pfp); 
-                    document.getElementById('disp-pfp').innerHTML = `<img src="${pfpUrl}" alt="PFP">`;
-                    document.getElementById('mobile-pfp').innerHTML = `<img src="${pfpUrl}" alt="PFP">`;
+                    const pfpUrl = pb.files.getUrl(user, user.pfp);
+                    const nombreArchivo = user.pfp.toLowerCase();
+                    const esVideo = nombreArchivo.match(/\.(mp4|webm|mov|avi)$/i);
+                    
+                    if (esVideo) {
+                        document.getElementById('disp-pfp').innerHTML = `<video src="${pfpUrl}" style="width:100%; height:100%; object-fit:cover;" muted autoplay loop playsinline></video>`;
+                        document.getElementById('mobile-pfp').innerHTML = `<video src="${pfpUrl}" style="width:100%; height:100%; object-fit:cover;" muted autoplay loop playsinline></video>`;
+                    } else {
+                        document.getElementById('disp-pfp').innerHTML = `<img src="${pfpUrl}" alt="PFP" style="width:100%; height:100%; object-fit:cover;">`;
+                        document.getElementById('mobile-pfp').innerHTML = `<img src="${pfpUrl}" alt="PFP" style="width:100%; height:100%; object-fit:cover;">`;
+                    }
                 } else { 
                     document.getElementById('disp-pfp').innerHTML = '👤';
                     document.getElementById('mobile-pfp').innerHTML = '👤';
                 }
                 await configurarBotones(uid);
                 await configurarBotonesMovil(uid);
-            } catch (error) { document.getElementById('disp-nick').innerText = "Usuario no encontrado"; mostrarToast("Error al cargar el perfil"); }
+            } catch (error) { 
+                document.getElementById('disp-nick').innerText = "Usuario no encontrado"; 
+                mostrarToast("Error al cargar el perfil"); 
+            }
         }
         
         async function cargarAmigos(uid) {
@@ -1193,15 +1338,24 @@ pb.autoCancellation(false);
         
         function mostrarPublicaciones(pubs) { 
             const container = document.getElementById('publicaciones-container'); 
-            if (pubs.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 40px;">📭 No hay publicaciones</div>'; return; } 
+            if (pubs.length === 0) { 
+                container.innerHTML = '<div style="text-align: center; padding: 40px;">📭 No hay publicaciones</div>'; 
+                return; 
+            } 
             let html = ''; 
             pubs.forEach(pub => { 
                 const fecha = pub.created ? dayjs(pub.created).fromNow() : 'Fecha desconocida'; 
                 const autor = pub.expand?.usuario; 
                 const autorNombre = autor?.nick || (autor?.email ? autor.email.split('@')[0] : 'Usuario'); 
                 html += `<div class="publicacion-item" onclick="verPublicacion('${pub.id}')"><div style="font-weight: bold;">@${escapeHtml(autorNombre)}</div><div style="font-size: 12px; margin: var(--spacing-sm) 0;">${escapeHtml(pub.texto ? pub.texto.substring(0, 80) + (pub.texto.length > 80 ? '...' : '') : '')}</div>`; 
-                if (pub.imagen) { const imgUrl = pb.files.getUrl(pub, pub.imagen); html += `<img src="${imgUrl}" onclick="event.stopPropagation(); window.open('${imgUrl}', '_blank')">`; } 
-                if (pub.audio) { const audioUrl = pb.files.getUrl(pub, pub.audio); html += `<audio src="${audioUrl}" controls onclick="event.stopPropagation()"></audio>`; } 
+                if (pub.imagen) { 
+                    const imgUrl = pb.files.getUrl(pub, pub.imagen); 
+                    html += `<img src="${imgUrl}" onclick="event.stopPropagation(); window.open('${imgUrl}', '_blank')" style="max-width:100%; max-height:150px; object-fit:cover; margin-top:var(--spacing-sm); border-radius:var(--border-radius-sm); cursor:pointer;">`; 
+                } 
+                if (pub.audio) { 
+                    const audioUrl = pb.files.getUrl(pub, pub.audio); 
+                    html += `<audio src="${audioUrl}" controls onclick="event.stopPropagation()" style="width:100%; margin-top:var(--spacing-sm);"></audio>`; 
+                } 
                 html += `<div class="publicacion-fecha">${fecha}</div><div style="display:flex; gap:var(--spacing-sm); font-size:11px; color:#666;"><span>⭐ ${(pub.rating || 0).toFixed(1)}</span><span>💬 ${pub.comments?.length || 0}</span></div></div>`; 
             }); 
             container.innerHTML = html; 
@@ -1228,14 +1382,13 @@ pb.autoCancellation(false);
         
         function initCollapsibles() {
             if (window.innerWidth <= 768) {
-                document.getElementById('intereses-content')?.classList.add('collapsed');
+                // Intereses: NO se colapsan (siempre visibles)
+                // Amigos móvil: se colapsan
                 document.getElementById('amigos-mobile-content')?.classList.add('collapsed');
-                if (document.getElementById('intereses-icon')) document.getElementById('intereses-icon').innerHTML = '▶';
                 if (document.getElementById('amigos-mobile-icon')) document.getElementById('amigos-mobile-icon').innerHTML = '▶';
             } else {
-                document.getElementById('intereses-content')?.classList.remove('collapsed');
+                // En PC, los amigos siempre visibles
                 document.getElementById('amigos-mobile-content')?.classList.remove('collapsed');
-                if (document.getElementById('intereses-icon')) document.getElementById('intereses-icon').innerHTML = '▼';
                 if (document.getElementById('amigos-mobile-icon')) document.getElementById('amigos-mobile-icon').innerHTML = '▼';
             }
         }
