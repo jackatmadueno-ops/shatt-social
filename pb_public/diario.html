@@ -23,7 +23,7 @@
         }
 
         body { 
-            background: var(--main-blue); 
+            background: #3a6186 !important; 
             background-size: cover; 
             background-attachment: fixed; 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
@@ -33,7 +33,7 @@
             padding-bottom: 70px;
         }
 
-        body.dark-mode { background: #0f0f1a; }
+        body.dark-mode { background: #0f0f1a !important; }
         body.dark-mode .panel-retro, body.dark-mode .notebook-page { background: rgba(30, 30, 50, 0.95); color: white; border-color: #555; }
         body.dark-mode .navbar-top { background: #2a2a3a; border-color: #555; }
         body.dark-mode .navbar-top a, body.dark-mode .navbar-top span { color: white; }
@@ -83,151 +83,8 @@
         .nav-links a.active { background: var(--shatt-blue); color: white; }
 
         .nav-icons { display: flex; gap: 8px; align-items: center; }
-        .nav-icons span { cursor: pointer; font-size: 20px; padding: 6px; min-width: 36px; text-align: center; border-radius: 50%; position: relative; }
+        .nav-icons span { cursor: pointer; font-size: 20px; padding: 6px; min-width: 36px; text-align: center; border-radius: 50%; }
         .nav-icons span:hover { background: rgba(0,0,0,0.1); transform: scale(1.1); }
-
-        .notification-badge { 
-            position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; display: none; 
-        }
-
-        /* PANEL DE NOTIFICACIONES */
-        .notifications-overlay {
-            position: fixed;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            z-index: 10000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-        .notifications-overlay.active { opacity: 1; visibility: visible; }
-        
-        .notifications-panel {
-            position: fixed;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            width: min(400px, 85%);
-            background: linear-gradient(135deg, #fff 0%, #f5f7fa 100%);
-            box-shadow: -5px 0 30px rgba(0,0,0,0.3);
-            z-index: 10001;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        .notifications-panel.active { transform: translateX(0); }
-        body.dark-mode .notifications-panel { background: linear-gradient(135deg, #1e1e2e 0%, #2a2a3a 100%); color: white; }
-        
-        .notifications-header {
-            background: var(--shatt-blue);
-            color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .close-notif-panel { background: rgba(255,255,255,0.2); border: none; color: white; font-size: 20px; cursor: pointer; padding: 8px 12px; border-radius: 30px; }
-        .mark-all-read { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 6px 12px; border-radius: 20px; font-size: 11px; cursor: pointer; }
-        .notifications-stats { padding: 12px 20px; background: #e8ecf1; font-size: 12px; color: #666; border-bottom: 1px solid #ddd; }
-        .notifications-list { flex: 1; overflow-y: auto; padding: 10px; }
-        .notif-group-title { font-size: 11px; text-transform: uppercase; color: #999; margin-bottom: 10px; padding-left: 10px; }
-        
-        .notif-card {
-            background: white;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            border-left: 3px solid transparent;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        body.dark-mode .notif-card { background: #2a2a3a; color: white; }
-        .notif-card.unread { background: linear-gradient(135deg, #e8f0fe 0%, #ffffff 100%); border-left-color: var(--shatt-blue); }
-        .notif-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
-        .notif-icon.postit { background: rgba(255,193,7,0.15); color: #ffc107; }
-        .notif-icon.like { background: rgba(233,30,99,0.15); color: #e91e63; }
-        .notif-icon.comment { background: rgba(76,175,80,0.15); color: #4caf50; }
-        .notif-icon.follow { background: rgba(33,150,243,0.15); color: #2196f3; }
-        .notif-content { flex: 1; }
-        .notif-text { font-size: 13px; line-height: 1.4; margin-bottom: 4px; }
-        .notif-text strong { color: var(--shatt-blue); }
-        .notif-time { font-size: 10px; color: #999; }
-        .empty-notifications { text-align: center; padding: 60px 20px; color: #999; }
-
-        /* PANEL DE CONFIGURACIÓN */
-        .settings-overlay {
-            position: fixed;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            z-index: 10000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-        .settings-overlay.active { opacity: 1; visibility: visible; }
-        
-        .settings-panel {
-            position: fixed;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            width: min(400px, 85%);
-            background: linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%);
-            color: white;
-            box-shadow: -5px 0 30px rgba(0,0,0,0.3);
-            z-index: 10001;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        .settings-panel.active { transform: translateX(0); }
-        
-        .settings-header {
-            background: var(--shatt-blue);
-            color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .close-settings-panel { background: rgba(255,255,255,0.2); border: none; color: white; font-size: 20px; cursor: pointer; padding: 8px 12px; border-radius: 30px; }
-        .settings-list { flex: 1; overflow-y: auto; padding: 15px; }
-        .settings-section { margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
-        .settings-section-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #5dade2; margin-bottom: 12px; }
-        .settings-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
-        .settings-item-info { flex: 1; }
-        .settings-item-title { font-size: 14px; font-weight: bold; margin-bottom: 4px; }
-        .settings-item-desc { font-size: 11px; opacity: 0.6; }
-        
-        .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: 0.3s; border-radius: 24px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: 0.3s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--shatt-blue); }
-        input:checked + .slider:before { transform: translateX(26px); }
-        
-        .settings-btn { background: rgba(255,255,255,0.15); border: none; padding: 10px 15px; border-radius: 25px; color: white; cursor: pointer; font-size: 13px; width: 100%; text-align: left; margin-bottom: 8px; }
-        .settings-btn.danger { background: rgba(231, 76, 60, 0.3); color: #e74c3c; }
-        .settings-btn:hover { background: rgba(255,255,255,0.25); }
-        .version-info { text-align: center; font-size: 11px; opacity: 0.5; padding: 15px; }
 
         /* MODAL DE BÚSQUEDA */
         .search-modal {
@@ -245,8 +102,12 @@
         .search-modal-header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 60px; position: sticky; top: 0; background: rgba(0,0,0,0.9); z-index: 10; }
         .search-back-btn { background: none; border: none; font-size: 28px; cursor: pointer; color: white; padding: 10px; min-width: 50px; min-height: 50px; border-radius: 50%; }
         .search-modal-input { flex: 1; padding: 15px 20px; font-size: 18px; border: 2px solid var(--shatt-blue); border-radius: 50px; outline: none; background: white; color: #000; }
-        .search-result-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(255,255,255,0.1); margin-bottom: 8px; border-radius: 12px; cursor: pointer; }
+        .search-result-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(255,255,255,0.1); margin-bottom: 8px; border-radius: 12px; cursor: pointer; transition: background 0.2s; }
         .search-result-item:hover { background: rgba(255,255,255,0.2); }
+        .search-result-item .search-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--shatt-blue); }
+        .search-result-item .search-name { font-weight: bold; color: white; }
+        .search-result-item .search-email { font-size: 12px; color: #aaa; }
+        .search-result-item .search-badge { font-size: 10px; background: #f5c518; color: #000; padding: 2px 10px; border-radius: 20px; margin-left: 10px; }
 
         .main-container { display: flex; flex-direction: column; gap: 20px; width: 100%; }
 
@@ -280,8 +141,23 @@
             align-items: center;
             justify-content: center;
             border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s;
         }
+        .pfp-box:hover { transform: scale(1.05); }
         .pfp-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        .author-name-link {
+            text-align: center; 
+            font-weight: bold; 
+            margin: 8px 0; 
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .author-name-link:hover {
+            color: var(--shatt-blue);
+            text-decoration: underline;
+        }
 
         .page-list { list-style: none; padding: 0; }
         .page-item { 
@@ -306,25 +182,47 @@
             background-position: 30px 0, 0 0;
             border: 2px solid #000; 
             min-height: 400px; 
-            padding: 25px 15px 15px 45px; 
+            padding: 20px 15px 15px 35px; 
             position: relative;
             border-radius: var(--border-radius);
             overflow-x: hidden;
         }
-
+        
+        /* Reducir espacio entre fecha y contenido */
+        .diary-date { 
+            font-family: monospace; 
+            font-weight: bold; 
+            color: #d9534f; 
+            margin-bottom: 6px; 
+            font-size: 13px; 
+            display: block;
+        }
+        
+        .diary-content { 
+            font-family: 'Comic Sans MS', cursive; 
+            font-size: 15px; 
+            width: 100%; 
+            min-height: 150px; 
+            border: none; 
+            background: transparent; 
+            resize: vertical; 
+            outline: none; 
+            line-height: 1.6; 
+            margin-top: 0;
+            padding-top: 2px;
+        }
+        
+        /* Reducir espacio de la foto */
         .instant-photo {
-            width: 120px;
+            width: 100px;
             background: #fff; 
-            padding: 6px 6px 20px 6px;
+            padding: 4px 4px 14px 4px;
             border: 1px solid #ddd; 
             box-shadow: 4px 4px 10px rgba(0,0,0,0.2);
             float: right; 
-            margin: 0 0 10px 15px;
+            margin: 0 0 6px 12px;
         }
-        .instant-photo img { width: 100%; height: 90px; object-fit: cover; }
-
-        .diary-date { font-family: monospace; font-weight: bold; color: #d9534f; margin-bottom: 15px; font-size: 13px; }
-        .diary-content { font-family: 'Comic Sans MS', cursive; font-size: 15px; width: 100%; min-height: 180px; border: none; background: transparent; resize: vertical; outline: none; line-height: 1.6; }
+        .instant-photo img { width: 100%; height: 75px; object-fit: cover; }
 
         .postits-grid {
             display: grid;
@@ -361,9 +259,9 @@
 
         .reactions-bar {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             justify-content: center;
-            margin: 15px 0;
+            margin: 12px 0;
             flex-wrap: wrap;
         }
 
@@ -371,9 +269,9 @@
             background: #f0f0f0;
             border: 2px outset #fff;
             border-radius: 40px;
-            padding: 10px 20px;
+            padding: 8px 16px;
             cursor: pointer;
-            font-size: 20px;
+            font-size: 18px;
             transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
@@ -381,7 +279,7 @@
             font-weight: bold;
         }
 
-        .reaction-btn span { font-size: 12px; color: #666; }
+        .reaction-btn span { font-size: 11px; color: #666; }
         .reaction-btn:hover { transform: scale(1.1); background: #ffe0b3; border-color: #ffcc00; }
         .reaction-btn:active { transform: scale(0.95); border-style: inset; }
 
@@ -442,10 +340,29 @@
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #f0f0f0; border: 3px solid #000; padding: 20px; z-index: 5001; width: min(400px, 90%); max-height: 90vh; overflow-y: auto; border-radius: 12px; }
         .preset-bg { width: 45px; height: 45px; border: 2px solid #000; display: inline-block; cursor: pointer; margin: 5px; border-radius: 8px; }
 
-        .friend-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
+        .friend-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s; }
         .friend-item:hover { background: rgba(0,0,0,0.05); }
         .mini-pfp { width: 40px; height: 40px; border: 1px solid #000; overflow: hidden; border-radius: 50%; flex-shrink: 0; }
         .mini-pfp img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* ========== SCROLL EN EXPLORAR DIARIOS (PC) ========== */
+        .friends-scroll {
+            max-height: 350px;
+            overflow-y: auto;
+            margin-top: 8px;
+        }
+        
+        .friends-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .friends-scroll::-webkit-scrollbar-thumb {
+            background: var(--shatt-blue);
+            border-radius: 10px;
+        }
+        .friends-scroll::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 10px;
+        }
 
         .bottom-nav {
             display: none;
@@ -508,16 +425,14 @@
             .navbar-top { padding: 8px 12px; }
             .nav-links { display: none; }
             .bottom-nav { display: flex; }
-            .notebook-page { padding: 20px 12px 12px 35px; }
-            .instant-photo { width: 90px; padding: 4px 4px 16px 4px; }
-            .instant-photo img { height: 70px; }
+            .notebook-page { padding: 16px 10px 10px 28px; }
+            .instant-photo { width: 80px; padding: 3px 3px 12px 3px; }
+            .instant-photo img { height: 60px; }
             .postits-grid { grid-template-columns: 1fr; gap: 12px; }
-            .reaction-btn { padding: 6px 12px; font-size: 16px; }
-            .reaction-btn span { font-size: 10px; }
+            .reaction-btn { padding: 5px 10px; font-size: 14px; }
+            .reaction-btn span { font-size: 9px; }
             .toast { bottom: 70px; }
-            .notifications-panel, .settings-panel { width: 100%; }
             
-            /* Explorar Diarios como carrusel horizontal */
             .sidebar-right {
                 order: -1;
                 margin-bottom: 16px;
@@ -528,52 +443,52 @@
             }
             
             #friends-list {
-                display: flex;
-                flex-direction: row;
-                overflow-x: auto;
-                gap: 12px;
-                padding-bottom: 8px;
-                margin-top: 8px;
+                display: flex !important;
+                flex-direction: row !important;
+                overflow-x: auto !important;
+                gap: 12px !important;
+                padding-bottom: 8px !important;
+                margin-top: 8px !important;
+                flex-wrap: nowrap !important;
+                -webkit-overflow-scrolling: touch;
             }
             
             #friends-list .friend-item {
-                flex: 0 0 auto;
-                width: 130px;
-                flex-direction: column;
-                text-align: center;
-                padding: 12px;
-                border: 1px solid #ccc;
-                border-radius: 16px;
-                background: rgba(255,255,255,0.9);
-                margin-bottom: 0;
+                flex: 0 0 auto !important;
+                width: 130px !important;
+                flex-direction: column !important;
+                text-align: center !important;
+                padding: 12px !important;
+                border: 1px solid #ccc !important;
+                border-radius: 16px !important;
+                background: rgba(255,255,255,0.9) !important;
+                margin-bottom: 0 !important;
             }
             
             body.dark-mode #friends-list .friend-item {
-                background: rgba(30,30,50,0.9);
-                border-color: #444;
+                background: rgba(30,30,50,0.9) !important;
+                border-color: #444 !important;
             }
             
             #friends-list .friend-item .mini-pfp {
-                width: 55px;
-                height: 55px;
-                margin: 0 auto 8px;
+                width: 55px !important;
+                height: 55px !important;
+                margin: 0 auto 8px !important;
             }
             
             #friends-list .friend-item div {
-                font-size: 11px;
-                word-break: break-word;
+                font-size: 11px !important;
+                word-break: break-word !important;
             }
             
             .recent-tag {
-                font-size: 9px;
+                font-size: 9px !important;
             }
             
-            /* En móvil: ocultar formulario normal, mostrar botón flotante */
             #comment-box {
                 display: none !important;
             }
             
-            /* Botón flotante */
             .fab-postit {
                 position: fixed;
                 bottom: 80px;
@@ -603,7 +518,6 @@
                 transform: scale(0.95);
             }
             
-            /* Modal para post-it móvil */
             .modal-overlay-movil {
                 position: fixed;
                 inset: 0;
@@ -638,16 +552,15 @@
         
         @media (max-width: 480px) {
             #friends-list .friend-item {
-                width: 110px;
-                padding: 8px;
+                width: 110px !important;
+                padding: 8px !important;
             }
             #friends-list .friend-item .mini-pfp {
-                width: 45px;
-                height: 45px;
+                width: 45px !important;
+                height: 45px !important;
             }
         }
         
-        /* PC: el botón flotante NO debe mostrarse */
         @media (min-width: 769px) {
             .fab-postit {
                 display: none !important;
@@ -663,6 +576,7 @@
 <body>
 
     <div class="app-wrapper">
+        <!-- NAVBAR SUPERIOR - SOLO LUPA -->
         <div class="navbar-top">
             <a href="inicio.html" class="logo-shatt">Shatt</a>
             <div class="nav-links">
@@ -674,107 +588,16 @@
             </div>
             <div class="nav-icons">
                 <span onclick="abrirBuscadorFullscreen()">🔍</span>
-                <span id="notification-bell" onclick="abrirPanelNotificaciones()">
-                    🔔
-                    <span id="notification-count" class="notification-badge">0</span>
-                </span>
-                <span onclick="abrirPersonalizacion()">🖌️</span>
-                <span onclick="abrirPanelConfiguracion()">⚙️</span>
+                <!-- SOLO LUPA -->
             </div>
         </div>
 
-        <!-- PANEL DE NOTIFICACIONES -->
-        <div id="notifications-overlay" class="notifications-overlay" onclick="cerrarPanelNotificaciones()">
-            <div class="notifications-panel" onclick="event.stopPropagation()">
-                <div class="notifications-header">
-                    <h2><span>🔔</span> Notificaciones</h2>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="mark-all-read" onclick="marcarTodasComoLeidas()">✓ Marcar todo</button>
-                        <button class="close-notif-panel" onclick="cerrarPanelNotificaciones()">✕</button>
-                    </div>
-                </div>
-                <div class="notifications-stats" id="notif-stats">Cargando...</div>
-                <div class="notifications-list" id="notifications-list-modern">
-                    <div class="empty-notifications"><span>📭</span><p>No hay notificaciones</p></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- PANEL DE CONFIGURACIÓN -->
-        <div id="settings-overlay" class="settings-overlay" onclick="cerrarPanelConfiguracion()">
-            <div class="settings-panel" onclick="event.stopPropagation()">
-                <div class="settings-header">
-                    <h2><span>⚙️</span> Configuración</h2>
-                    <button class="close-settings-panel" onclick="cerrarPanelConfiguracion()">✕</button>
-                </div>
-                <div class="settings-list">
-                    <div class="settings-section">
-                        <div class="settings-section-title">🌓 APARIENCIA</div>
-                        <div class="settings-item">
-                            <div class="settings-item-info">
-                                <div class="settings-item-title">Modo oscuro</div>
-                                <div class="settings-item-desc">Cambiar entre tema claro y oscuro</div>
-                            </div>
-                            <label class="switch">
-                                <input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkMode()">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="settings-section">
-                        <div class="settings-section-title">🔔 NOTIFICACIONES</div>
-                        <div class="settings-item">
-                            <div class="settings-item-info">
-                                <div class="settings-item-title">Silenciar todas</div>
-                                <div class="settings-item-desc">No recibir notificaciones</div>
-                            </div>
-                            <label class="switch">
-                                <input type="checkbox" id="mute-notifications" onchange="toggleMuteNotifications()">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="settings-section">
-                        <div class="settings-section-title">🔒 PRIVACIDAD</div>
-                        <div class="settings-item">
-                            <div class="settings-item-info">
-                                <div class="settings-item-title">Perfil privado</div>
-                                <div class="settings-item-desc">Solo seguidores ven tus posts</div>
-                            </div>
-                            <label class="switch">
-                                <input type="checkbox" id="private-profile" onchange="togglePrivateProfile()">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <div class="settings-item">
-                            <div class="settings-item-info">
-                                <div class="settings-item-title">Ocultar estado en línea</div>
-                                <div class="settings-item-desc">No aparecer en línea</div>
-                            </div>
-                            <label class="switch">
-                                <input type="checkbox" id="hide-online-status" onchange="toggleHideOnlineStatus()">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="settings-section">
-                        <div class="settings-section-title">⚡ ACCIONES</div>
-                        <button class="settings-btn danger" onclick="cerrarSesion()">🚪 Cerrar sesión</button>
-                    </div>
-                    <div class="settings-section">
-                        <div class="settings-section-title">ℹ️ ACERCA DE</div>
-                        <div class="version-info">Shatt v3.0 | © 2026</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- MODAL DE BÚSQUEDA -->
+        <!-- MODAL DE BÚSQUEDA MEJORADO -->
         <div id="search-modal" class="search-modal">
             <div class="search-modal-content">
                 <div class="search-modal-header">
                     <button class="search-back-btn" onclick="cerrarBuscadorFullscreen()">←</button>
-                    <input type="text" id="search-modal-input" class="search-modal-input" placeholder="🔎 Buscar usuarios...">
+                    <input type="text" id="search-modal-input" class="search-modal-input" placeholder="🔎 Buscar usuarios por nick o email..." autofocus>
                 </div>
                 <div id="search-results" style="color:white;"></div>
             </div>
@@ -783,12 +606,12 @@
         <div class="main-container">
             <div class="sidebar-left">
                 <div class="panel-retro">
-                    <div class="pfp-box" id="author-pfp">👤</div>
-                    <div style="text-align:center; font-weight:bold; margin:8px 0;" id="author-name"></div>
+                    <div class="pfp-box" id="author-pfp" onclick="irAlPerfilAutor()">👤</div>
+                    <div class="author-name-link" id="author-name" onclick="irAlPerfilAutor()"></div>
                     <hr style="margin: 12px 0;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <b>📖 Páginas</b>
-                        <button id="add-btn-master" style="background:#f5c518; border:1px solid #000; border-radius:50%; width:28px; height:28px; cursor:pointer; font-weight:bold;">+</button>
+                        <button id="add-btn-master" onclick="abrirTituloNuevoModal()" style="background:#f5c518; border:1px solid #000; border-radius:50%; width:28px; height:28px; cursor:pointer; font-weight:bold;">+</button>
                     </div>
                     <ul class="page-list" id="author-pages"></ul>
                     <div id="float-menu" class="floating-menu">
@@ -816,7 +639,7 @@
                         </div>
                         <div class="diary-content" id="diary-text-display" style="white-space: pre-wrap;"></div>
                         <textarea class="diary-content" id="diary-text-edit" style="display:none;"></textarea>
-                        <div style="margin-top:20px; border-top:1px dashed #ccc; padding-top: 10px;">
+                        <div style="margin-top:14px; border-top:1px dashed #ccc; padding-top: 8px;">
                             <b>PD:</b> <input type="text" id="diary-thought" style="border:none; width:80%; background:transparent;" readonly>
                         </div>
                         
@@ -832,7 +655,6 @@
                         <div id="postitsContainer" class="postits-grid"></div>
                     </div>
 
-                    <!-- Formulario normal (visible en PC, oculto en móvil por CSS) -->
                     <div class="comment-section-box" id="comment-box" style="margin-top: 20px;">
                         <b>📌 Dejar un Post-it:</b>
                         <div class="color-palette-grid" id="color-grid"></div>
@@ -845,16 +667,19 @@
             <div class="sidebar-right">
                 <div class="panel-retro">
                     <b>🔍 Explorar Diarios</b>
-                    <div id="friends-list" style="margin-top:12px;"></div>
+                    <!-- CONTENEDOR CON SCROLL EN PC -->
+                    <div class="friends-scroll" id="friends-container">
+                        <div id="friends-list" style="margin-top:8px;"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- BOTÓN FLOTANTE PARA MÓVIL (solo visible en móvil) -->
+    <!-- BOTÓN FLOTANTE PARA MÓVIL -->
     <button class="fab-postit" id="fabPostitBtn" onclick="abrirModalPostitMovil()">📌</button>
 
-    <!-- MODAL PARA POST-IT EN MÓVIL (solo visible en móvil) -->
+    <!-- MODAL PARA POST-IT EN MÓVIL -->
     <div id="modalPostitMovil" class="modal-overlay-movil" onclick="cerrarModalPostitMovil()">
         <div class="modal-content-movil" onclick="event.stopPropagation()">
             <h3>📌 Dejar un Post-it</h3>
@@ -939,13 +764,13 @@
     </div>
 
     <script>
-        // Variables globales (solo una vez)
-let currentUser = null;
-let palabrasFiltro = [];
+        // Variables globales
+        let currentUser = null;
+        let palabrasFiltro = [];
 
-const PB_URL = 'https://shatt-social-production.up.railway.app';
-const pb = new PocketBase(PB_URL);
-pb.autoCancellation(false);
+        const PB_URL = 'https://shatt-social-production.up.railway.app';
+        const pb = new PocketBase(PB_URL);
+        pb.autoCancellation(false);
         
         let currentDiaryUserId = null;
         let currentDiarioId = null;
@@ -956,6 +781,7 @@ pb.autoCancellation(false);
         let menuIdx = null;
         let pendingDeleteId = null;
         let notificacionesCache = [];
+        let autorIdParaPerfil = null;
         
         const extendedColors = [
             '#ffff88', '#ffb3ba', '#ffdfba', '#ffffba', '#baffc9', '#bae1ff',
@@ -983,199 +809,20 @@ pb.autoCancellation(false);
             });
         }
 
-        // ========== NOTIFICACIONES ==========
-        async function crearNotificacionPostit(para, diarioIdVal, paginaIdVal, titulo, texto) {
-            const muted = localStorage.getItem('shatt_mute_notifications') === 'true';
-            if (muted || para === currentUser?.id) return;
-            try {
-                await pb.collection('notificaciones').create({
-                    para: para,
-                    de: currentUser.id,
-                    deNick: currentUser.email.split('@')[0],
-                    tipo: 'postit',
-                    diarioId: diarioIdVal,
-                    paginaId: paginaIdVal,
-                    comentario: texto.substring(0, 100),
-                    leido: false
-                });
-                await cargarNotificaciones();
-            } catch (e) {
-                console.error("Error al crear notificación:", e);
-            }
-        }
-
-        async function cargarNotificaciones() {
-            if (!currentUser) return;
-            try {
-                const notis = await pb.collection('notificaciones').getList(1, 50, { 
-                    filter: `para = "${currentUser.id}"`, 
-                    sort: '-created' 
-                });
-                notificacionesCache = notis.items;
-                const noLeidas = notificacionesCache.filter(n => !n.leido).length;
-                const badge = document.getElementById('notification-count');
-                if (badge) {
-                    badge.textContent = noLeidas;
-                    badge.style.display = noLeidas > 0 ? 'block' : 'none';
-                }
-                if (document.getElementById('notifications-overlay')?.classList.contains('active')) {
-                    renderNotificacionesModernas();
-                }
-            } catch (error) {
-                console.error("Error cargando notificaciones:", error);
-            }
-        }
-
-        function irAlPostit(notificacion) {
-            pb.collection('notificaciones').update(notificacion.id, { leido: true }).catch(e => console.error(e));
-            if (notificacion.comentario) {
-                localStorage.setItem('shatt_highlight_text', notificacion.comentario.substring(0, 50));
-            }
-            if (notificacion.diarioId || notificacion.para) {
-                const uid = notificacion.para;
-                window.location.href = `diario.html?uid=${uid}&highlight=true`;
+        // ========== IR AL PERFIL DEL AUTOR ==========
+        function irAlPerfilAutor() {
+            if (autorIdParaPerfil) {
+                window.location.href = `perfil.html?uid=${autorIdParaPerfil}`;
             } else {
-                window.location.href = `diario.html?highlight=true`;
+                mostrarToast("Cargando información del autor...", true);
             }
         }
 
-        function renderNotificacionesModernas() {
-            const container = document.getElementById('notifications-list-modern');
-            const statsDiv = document.getElementById('notif-stats');
-            if (!container) return;
-            if (!notificacionesCache.length) {
-                container.innerHTML = '<div class="empty-notifications"><span>📭</span><p>No hay notificaciones</p></div>';
-                if (statsDiv) statsDiv.innerHTML = '0 notificaciones';
-                return;
-            }
-            const noLeidas = notificacionesCache.filter(n => !n.leido).length;
-            if (statsDiv) statsDiv.innerHTML = `${notificacionesCache.length} notificaciones · ${noLeidas} no leídas`;
-            
-            container.innerHTML = notificacionesCache.map(noti => {
-                let texto = '', icon = '📌', tipoClass = 'postit';
-                if (noti.tipo === 'postit') {
-                    texto = `<strong>@${escapeHtml(noti.deNick)}</strong> dejó un post-it: "${escapeHtml(noti.comentario?.substring(0, 50))}"`;
-                    icon = '📌';
-                } else if (noti.tipo === 'like') {
-                    texto = `<strong>@${escapeHtml(noti.deNick)}</strong> le gusta tu publicación`;
-                    icon = '❤️';
-                    tipoClass = 'like';
-                } else if (noti.tipo === 'comentario') {
-                    texto = `<strong>@${escapeHtml(noti.deNick)}</strong> comentó: "${escapeHtml(noti.comentario?.substring(0, 50))}"`;
-                    icon = '💬';
-                    tipoClass = 'comment';
-                } else if (noti.tipo === 'seguidor') {
-                    texto = `<strong>@${escapeHtml(noti.deNick)}</strong> comenzó a seguirte`;
-                    icon = '👤';
-                    tipoClass = 'follow';
-                }
-                const notiStr = JSON.stringify(noti).replace(/"/g, '&quot;');
-                return `<div class="notif-card ${noti.leido ? '' : 'unread'}" onclick="irAlPostit(${notiStr})">
-                    <div class="notif-icon ${tipoClass}">${icon}</div>
-                    <div class="notif-content"><div class="notif-text">${texto}</div><div class="notif-time">${dayjs(noti.created).fromNow()}</div></div>
-                </div>`;
-            }).join('');
+        // ========== IR AL DIARIO DESDE BÚSQUEDA ==========
+        function irAlDiario(uid) {
+            cerrarBuscadorFullscreen();
+            window.location.href = `diario.html?uid=${uid}`;
         }
-
-        async function marcarTodasComoLeidas() {
-            const noLeidas = notificacionesCache.filter(n => !n.leido);
-            for (const n of noLeidas) await pb.collection('notificaciones').update(n.id, { leido: true });
-            await cargarNotificaciones();
-            mostrarToast("✅ Todas leídas");
-        }
-
-        function abrirPanelNotificaciones() {
-            const overlay = document.getElementById('notifications-overlay');
-            if (overlay) overlay.classList.add('active');
-            const panel = document.querySelector('.notifications-panel');
-            if (panel) panel.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            renderNotificacionesModernas();
-        }
-
-        function cerrarPanelNotificaciones() {
-            const overlay = document.getElementById('notifications-overlay');
-            if (overlay) overlay.classList.remove('active');
-            const panel = document.querySelector('.notifications-panel');
-            if (panel) panel.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        // ========== CONFIGURACIÓN ==========
-        function abrirPanelConfiguracion() {
-            const overlay = document.getElementById('settings-overlay');
-            if (overlay) overlay.classList.add('active');
-            const panel = document.querySelector('.settings-panel');
-            if (panel) panel.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            cargarConfiguraciones();
-        }
-
-        function cerrarPanelConfiguracion() {
-            const overlay = document.getElementById('settings-overlay');
-            if (overlay) overlay.classList.remove('active');
-            const panel = document.querySelector('.settings-panel');
-            if (panel) panel.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        function cargarConfiguraciones() {
-            const darkToggle = document.getElementById('dark-mode-toggle');
-            if (darkToggle) darkToggle.checked = localStorage.getItem('shatt_dark_mode') === 'true';
-            const muteToggle = document.getElementById('mute-notifications');
-            if (muteToggle) muteToggle.checked = localStorage.getItem('shatt_mute_notifications') === 'true';
-        }
-
-        function toggleDarkMode() {
-            const isDark = document.getElementById('dark-mode-toggle').checked;
-            if (isDark) document.body.classList.add('dark-mode');
-            else document.body.classList.remove('dark-mode');
-            localStorage.setItem('shatt_dark_mode', isDark);
-        }
-
-        function toggleMuteNotifications() { 
-            localStorage.setItem('shatt_mute_notifications', document.getElementById('mute-notifications').checked); 
-        }
-        
-        function togglePrivateProfile() { 
-            localStorage.setItem('shatt_private_profile', document.getElementById('private-profile')?.checked || false); 
-        }
-        
-        function toggleHideOnlineStatus() { 
-            localStorage.setItem('shatt_hide_online', document.getElementById('hide-online-status')?.checked || false); 
-        }
-
-        // ========== BÚSQUEDA ==========
-        function abrirBuscadorFullscreen() {
-            document.getElementById('search-modal').style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            setTimeout(() => document.getElementById('search-modal-input').focus(), 100);
-        }
-
-        function cerrarBuscadorFullscreen() {
-            document.getElementById('search-modal').style.display = 'none';
-            document.body.style.overflow = '';
-        }
-
-        async function ejecutarBusquedaFullscreen(termino) {
-            const resultsDiv = document.getElementById('search-results');
-            if (termino.length < 2) { resultsDiv.innerHTML = '<div style="color:white; text-align:center; padding:20px;">✏️ 2+ caracteres</div>'; return; }
-            resultsDiv.innerHTML = '<div style="color:white; text-align:center; padding:20px;">🔍 Buscando...</div>';
-            const users = await pb.collection('usuarios').getFullList();
-            const termLower = termino.toLowerCase();
-            const resultados = users.filter(u => u.id !== currentUser?.id && ((u.email || '').toLowerCase().includes(termLower) || (u.nick || u.email?.split('@')[0] || '').toLowerCase().includes(termLower)));
-            if (!resultados.length) { resultsDiv.innerHTML = '<div style="color:white; text-align:center; padding:20px;">😕 No encontrados</div>'; return; }
-            resultsDiv.innerHTML = resultados.map(u => {
-                const nombre = u.nick || u.email?.split('@')[0] || 'Usuario';
-                const avatar = u.pfp ? pb.files.getUrl(u, u.pfp) : `https://ui-avatars.com/api/?name=${encodeURIComponent(nombre)}&background=3b5998&color=fff&size=50`;
-                return `<div class="search-result-item" onclick="verPerfil('${u.id}')">
-                    <img src="${avatar}" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">
-                    <div><div style="font-weight:bold; color:white;">@${escapeHtml(nombre)}</div><div style="font-size:12px; color:#aaa;">${escapeHtml(u.email || '')}</div></div>
-                </div>`;
-            }).join('');
-        }
-
-        function verPerfil(uid) { window.location.href = `perfil.html?uid=${uid}`; }
 
         // ========== REACCIONES ==========
         function animarReaccion(btn) {
@@ -1201,7 +848,6 @@ pb.autoCancellation(false);
                     texto: reactionText,
                     color: selectedColor
                 });
-                await crearNotificacionPostit(currentDiaryUserId, currentDiarioId, paginas[currentPaginaIndex].id, paginas[currentPaginaIndex].titulo, reactionText);
                 await loadComentarios(paginas[currentPaginaIndex].id);
                 mostrarToast(`📌 ${reactionText}`);
             } catch(e) { mostrarToast("Error al reaccionar", true); }
@@ -1413,85 +1059,119 @@ pb.autoCancellation(false);
             cerrarModalPostitMovil();
         }
 
-        (async function() {
-            const saved = localStorage.getItem('pocketbase_auth');
-            if (saved) {
-                try { const { token, model } = JSON.parse(saved); pb.authStore.save(token, model); } catch(e) {}
-            }
-            if (!pb.authStore.isValid) {
-                window.location.href = "iniciarsesion.html";
-                return;
-            }
-            currentUser = pb.authStore.model;
-            const urlParams = new URLSearchParams(window.location.search);
-            const uid = urlParams.get('uid');
-            currentDiaryUserId = uid && uid !== currentUser.id ? uid : currentUser.id;
-            await cargarDisenoGuardado();
-            await initDiario();
-            await cargarNotificaciones();
-        })();
-
-        async function initDiario() {
-            const grid = document.getElementById('color-grid');
-            grid.innerHTML = '';
-            extendedColors.forEach((c, idx) => {
-                const d = document.createElement('div');
-                d.className = 'color-circle' + (idx === 0 ? ' selected' : '');
-                d.style.background = c;
-                d.onclick = () => { 
-                    selectedColor = c; 
-                    document.querySelectorAll('.color-circle').forEach(el => el.classList.remove('selected'));
-                    d.classList.add('selected');
-                };
-                grid.appendChild(d);
-            });
-            
-            const result = await pb.collection('diarios').getList(1, 1, {
-                filter: `usuario = "${currentDiaryUserId}"`
-            });
-            
-            if (result.items.length > 0) {
-                currentDiarioId = result.items[0].id;
-            } else if (currentDiaryUserId === currentUser.id) {
-                const newDiary = await pb.collection('diarios').create({
-                    usuario: currentUser.id,
-                    titulo: "Mi Bitácora"
+        // ========== EXPLORAR DIARIOS ==========
+        async function loadFriends() {
+            try {
+                const users = await pb.collection('usuarios').getFullList({
+                    filter: `id != "${currentUser.id}"`
                 });
-                currentDiarioId = newDiary.id;
-            }
-            
-            await loadPaginas();
-            await loadUserInfo();
-            await loadFriends();
-            await updateVisibilityByOwner();
-
-            const urlParams = new URLSearchParams(window.location.search);
-            const highlight = urlParams.get('highlight');
-            if (highlight === 'true') {
-                const textoBuscar = localStorage.getItem('shatt_highlight_text');
-                if (textoBuscar) {
-                    setTimeout(() => {
-                        const postits = document.querySelectorAll('.postit');
-                        for (let postit of postits) {
-                            const texto = postit.querySelector('.postit-text')?.innerText;
-                            if (texto && texto.includes(textoBuscar.substring(0, 30))) {
-                                postit.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                postit.classList.add('postit-highlight');
-                                setTimeout(() => postit.classList.remove('postit-highlight'), 2000);
-                                break;
-                            }
-                        }
-                        localStorage.removeItem('shatt_highlight_text');
-                    }, 800);
+                
+                const container = document.getElementById('friends-list');
+                container.innerHTML = '';
+                
+                if (users.length === 0) {
+                    container.innerHTML = '<div style="text-align:center; padding:20px; color:#888;">👥 No hay otros usuarios</div>';
+                    return;
                 }
+                
+                for (const user of users) {
+                    try {
+                        const diarioUser = await pb.collection('diarios').getList(1, 1, { 
+                            filter: `usuario = "${user.id}"` 
+                        });
+                        
+                        const nombre = user.nick || user.email.split('@')[0];
+                        let avatar = user.pfp ? `<img src="${pb.files.getUrl(user, user.pfp)}">` : '👤';
+                        const tieneDiario = diarioUser.totalItems > 0;
+                        
+                        const div = document.createElement('div');
+                        div.className = 'friend-item';
+                        div.onclick = () => window.location.href = `diario.html?uid=${user.id}`;
+                        div.innerHTML = `
+                            <div class="mini-pfp">${avatar}</div>
+                            <div>
+                                <b>@${escapeHtml(nombre)}</b>
+                                <div class="recent-tag" style="font-size:11px; color:#888;">
+                                    ${tieneDiario ? '📖 Ver diario' : '📭 Sin diario'}
+                                </div>
+                            </div>
+                        `;
+                        container.appendChild(div);
+                    } catch(e) {
+                        console.warn("Error cargando usuario:", e);
+                    }
+                }
+            } catch(e) {
+                console.error("Error cargando explorar diarios:", e);
+                document.getElementById('friends-list').innerHTML = '<div style="text-align:center; padding:20px; color:#888;">❌ Error cargando usuarios</div>';
             }
         }
 
+        // ========== BÚSQUEDA MEJORADA ==========
+        function abrirBuscadorFullscreen() {
+            document.getElementById('search-modal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => document.getElementById('search-modal-input').focus(), 100);
+            document.getElementById('search-results').innerHTML = '<div style="color:#888; text-align:center; padding:20px;">🔍 Escribe para buscar usuarios por nick o email</div>';
+        }
+
+        function cerrarBuscadorFullscreen() {
+            document.getElementById('search-modal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        async function ejecutarBusquedaFullscreen(termino) {
+            const resultsDiv = document.getElementById('search-results');
+            const term = termino.trim().toLowerCase();
+            
+            if (term.length === 0) {
+                resultsDiv.innerHTML = '<div style="color:#888; text-align:center; padding:20px;">🔍 Escribe para buscar usuarios por nick o email</div>';
+                return;
+            }
+            
+            resultsDiv.innerHTML = '<div style="color:white; text-align:center; padding:20px;">🔍 Buscando...</div>';
+            
+            try {
+                const users = await pb.collection('usuarios').getFullList({
+                    filter: `nick ~ "${term}" || email ~ "${term}"`
+                });
+                
+                const resultados = users.filter(u => u.id !== currentUser?.id);
+                
+                if (!resultados.length) {
+                    resultsDiv.innerHTML = `<div style="color:#888; text-align:center; padding:20px;">😕 No se encontraron usuarios con "${escapeHtml(termino)}"</div>`;
+                    return;
+                }
+                
+                resultsDiv.innerHTML = resultados.map(u => {
+                    const nombre = u.nick || u.email?.split('@')[0] || 'Usuario';
+                    const avatar = u.pfp ? pb.files.getUrl(u, u.pfp) : `https://ui-avatars.com/api/?name=${encodeURIComponent(nombre)}&background=3b5998&color=fff&size=50`;
+                    
+                    return `
+                        <div class="search-result-item" onclick="irAlDiario('${u.id}')">
+                            <img src="${avatar}" class="search-avatar" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(nombre)}&background=3b5998&color=fff&size=50'">
+                            <div style="flex:1;">
+                                <div class="search-name">@${escapeHtml(nombre)}</div>
+                                <div class="search-email">${escapeHtml(u.email || '')}</div>
+                            </div>
+                            <span class="search-badge">📖 Diario</span>
+                        </div>
+                    `;
+                }).join('');
+                
+            } catch(e) {
+                console.error("Error en búsqueda:", e);
+                resultsDiv.innerHTML = '<div style="color:#ff8888; text-align:center; padding:20px;">❌ Error al buscar usuarios</div>';
+            }
+        }
+
+        // ========== FUNCIONES DE DIARIO ==========
         async function loadUserInfo() {
             try {
                 const user = await pb.collection('usuarios').getOne(currentDiaryUserId);
                 let nombre = user.nick || user.email.split('@')[0] || "Usuario";
                 document.getElementById('author-name').innerHTML = `@${escapeHtml(nombre)}`;
+                autorIdParaPerfil = currentDiaryUserId;
                 if (user.pfp) {
                     const pfpUrl = pb.files.getUrl(user, user.pfp);
                     document.getElementById('author-pfp').innerHTML = `<img src="${pfpUrl}" alt="PFP">`;
@@ -1669,47 +1349,101 @@ pb.autoCancellation(false);
                     texto: texto,
                     color: selectedColor
                 });
-                await crearNotificacionPostit(currentDiaryUserId, currentDiarioId, paginas[currentPaginaIndex].id, paginas[currentPaginaIndex].titulo, texto);
                 document.getElementById('comment-text').value = '';
                 await loadComentarios(paginas[currentPaginaIndex].id);
                 mostrarToast("📌 Post-it pegado");
             } catch(e) { mostrarToast("Error", true); }
         }
 
-        async function loadFriends() {
-            try {
-                const users = await pb.collection('usuarios').getList(1, 8, { filter: `id != "${currentUser.id}"` });
-                const container = document.getElementById('friends-list');
-                container.innerHTML = '';
-                for (const user of users.items) {
-                    const diarioUser = await pb.collection('diarios').getList(1, 1, { filter: `usuario = "${user.id}"` });
-                    const nombre = user.nick || user.email.split('@')[0];
-                    let avatar = user.pfp ? `<img src="${pb.files.getUrl(user, user.pfp)}">` : '👤';
-                    const div = document.createElement('div');
-                    div.className = 'friend-item';
-                    div.onclick = () => window.location.href = `diario.html?uid=${user.id}`;
-                    div.innerHTML = `<div class="mini-pfp">${avatar}</div><div><b>@${escapeHtml(nombre)}</b><div class="recent-tag" style="font-size:11px; color:#888;">${diarioUser.totalItems ? '📖 Ver diario' : '📭 Sin diario'}</div></div>`;
-                    container.appendChild(div);
-                }
-            } catch(e) {}
+        // ========== FUNCIÓN VACÍA PARA IRALPOSTIT ==========
+        function irAlPostit() {
+            console.log("Notificaciones desactivadas");
+            return;
         }
 
+        // ========== INICIALIZACIÓN ==========
+        (async function() {
+            const saved = localStorage.getItem('pocketbase_auth');
+            if (saved) {
+                try { const { token, model } = JSON.parse(saved); pb.authStore.save(token, model); } catch(e) {}
+            }
+            if (!pb.authStore.isValid) {
+                window.location.href = "iniciarsesion.html";
+                return;
+            }
+            currentUser = pb.authStore.model;
+            const urlParams = new URLSearchParams(window.location.search);
+            const uid = urlParams.get('uid');
+            currentDiaryUserId = uid && uid !== currentUser.id ? uid : currentUser.id;
+            autorIdParaPerfil = currentDiaryUserId;
+            await cargarDisenoGuardado();
+            await initDiario();
+        })();
+
+        async function initDiario() {
+            const grid = document.getElementById('color-grid');
+            grid.innerHTML = '';
+            extendedColors.forEach((c, idx) => {
+                const d = document.createElement('div');
+                d.className = 'color-circle' + (idx === 0 ? ' selected' : '');
+                d.style.background = c;
+                d.onclick = () => { 
+                    selectedColor = c; 
+                    document.querySelectorAll('.color-circle').forEach(el => el.classList.remove('selected'));
+                    d.classList.add('selected');
+                };
+                grid.appendChild(d);
+            });
+            
+            const result = await pb.collection('diarios').getList(1, 1, {
+                filter: `usuario = "${currentDiaryUserId}"`
+            });
+            
+            if (result.items.length > 0) {
+                currentDiarioId = result.items[0].id;
+            } else if (currentDiaryUserId === currentUser.id) {
+                const newDiary = await pb.collection('diarios').create({
+                    usuario: currentUser.id,
+                    titulo: "Mi Bitácora"
+                });
+                currentDiarioId = newDiary.id;
+            }
+            
+            await loadPaginas();
+            await loadUserInfo();
+            await loadFriends();
+            await updateVisibilityByOwner();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const highlight = urlParams.get('highlight');
+            if (highlight === 'true') {
+                const textoBuscar = localStorage.getItem('shatt_highlight_text');
+                if (textoBuscar) {
+                    setTimeout(() => {
+                        const postits = document.querySelectorAll('.postit');
+                        for (let postit of postits) {
+                            const texto = postit.querySelector('.postit-text')?.innerText;
+                            if (texto && texto.includes(textoBuscar.substring(0, 30))) {
+                                postit.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                postit.classList.add('postit-highlight');
+                                setTimeout(() => postit.classList.remove('postit-highlight'), 2000);
+                                break;
+                            }
+                        }
+                        localStorage.removeItem('shatt_highlight_text');
+                    }, 800);
+                }
+            }
+        }
+
+        // Event listener para búsqueda en tiempo real
         document.getElementById('search-modal-input').addEventListener('input', (e) => {
             clearTimeout(window.searchTimeout);
-            window.searchTimeout = setTimeout(() => ejecutarBusquedaFullscreen(e.target.value), 300);
+            window.searchTimeout = setTimeout(() => ejecutarBusquedaFullscreen(e.target.value), 200);
         });
 
         // Exponer funciones globales
         window.irAlPostit = irAlPostit;
-        window.abrirPanelNotificaciones = abrirPanelNotificaciones;
-        window.cerrarPanelNotificaciones = cerrarPanelNotificaciones;
-        window.marcarTodasComoLeidas = marcarTodasComoLeidas;
-        window.abrirPanelConfiguracion = abrirPanelConfiguracion;
-        window.cerrarPanelConfiguracion = cerrarPanelConfiguracion;
-        window.toggleDarkMode = toggleDarkMode;
-        window.toggleMuteNotifications = toggleMuteNotifications;
-        window.togglePrivateProfile = togglePrivateProfile;
-        window.toggleHideOnlineStatus = toggleHideOnlineStatus;
         window.abrirBuscadorFullscreen = abrirBuscadorFullscreen;
         window.cerrarBuscadorFullscreen = cerrarBuscadorFullscreen;
         window.abrirPersonalizacion = abrirPersonalizacion;
@@ -1717,11 +1451,14 @@ pb.autoCancellation(false);
         window.setBgColorGlobal = setBgColorGlobal;
         window.setImageBgGlobal = setImageBgGlobal;
         window.setOpacityGlobal = setOpacityGlobal;
+        window.guardarDisenoGlobal = guardarDisenoGlobal;
         window.cerrarSesion = cerrarSesion;
         window.abrirModalPostit = abrirModalPostit;
         window.cerrarModalPostit = cerrarModalPostit;
         window.verPerfil = verPerfil;
-        window.addNewPage = () => abrirTituloNuevoModal();
+        window.irAlDiario = irAlDiario;
+        window.irAlPerfilAutor = irAlPerfilAutor;
+        window.addNewPage = abrirTituloNuevoModal;
         window.toggleEdit = toggleEdit;
         window.abrirConfirmDelete = abrirConfirmDelete;
         window.confirmDeletePage = confirmDeletePage;
@@ -1734,12 +1471,9 @@ pb.autoCancellation(false);
         window.handleFileSelect = handleFileSelect;
         window.postComment = postComment;
         window.agregarReaccion = agregarReaccion;
-        window.guardarDisenoGlobal = guardarDisenoGlobal;
         window.abrirModalPostitMovil = abrirModalPostitMovil;
         window.cerrarModalPostitMovil = cerrarModalPostitMovil;
         window.publicarPostitMovil = publicarPostitMovil;
-        
-        document.getElementById('add-btn-master').onclick = () => abrirTituloNuevoModal();
     </script>
 </body>
 </html>
