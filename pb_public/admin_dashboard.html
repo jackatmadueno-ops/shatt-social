@@ -11,59 +11,69 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #0f0c29 0%, #1a1a2e 50%, #16213e 100%);
+            background: #0a0a0f;
             min-height: 100vh;
             padding: 20px;
+            color: #e2e8f0;
         }
-        
-        /* Login */
+
+        /* ========== LOGIN ========== */
         .login-container {
-            background: rgba(255,255,255,0.98);
-            border-radius: 32px;
-            padding: 48px 40px;
-            width: 380px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 24px;
+            padding: 56px 44px;
+            width: 400px;
             text-align: center;
-            margin: 100px auto;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            margin: 80px auto;
+            box-shadow: 0 25px 60px -12px rgba(0,0,0,0.8);
+            backdrop-filter: blur(20px);
         }
-        .login-container h1 { font-size: 28px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
-        .login-container p { color: #666; margin-bottom: 28px; font-size: 14px; }
+        .login-container .lock-icon { font-size: 48px; margin-bottom: 12px; }
+        .login-container h1 { font-size: 26px; font-weight: 700; color: #f1f5f9; margin-bottom: 6px; letter-spacing: -0.5px; }
+        .login-container p { color: #94a3b8; margin-bottom: 32px; font-size: 14px; }
         .login-container input {
             width: 100%;
-            padding: 14px 18px;
-            margin: 12px 0;
-            border: 2px solid #e5e7eb;
-            border-radius: 60px;
-            font-size: 16px;
+            padding: 14px 20px;
+            margin: 10px 0;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            font-size: 15px;
+            background: rgba(255,255,255,0.05);
+            color: #f1f5f9;
             transition: all 0.2s;
+            outline: none;
         }
-        .login-container input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+        .login-container input::placeholder { color: #64748b; }
+        .login-container input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
         .login-container button {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
             color: white;
             border: none;
-            border-radius: 60px;
-            font-size: 16px;
+            border-radius: 12px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+            margin-top: 8px;
         }
-        .login-container button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102,126,234,0.4); }
-        .error { color: #ef4444; margin-top: 12px; font-size: 14px; }
-        
-        /* Dashboard */
+        .login-container button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99,102,241,0.3); }
+        .error { color: #f87171; margin-top: 14px; font-size: 13px; }
+
+        /* ========== DASHBOARD ========== */
         .dashboard { display: none; max-width: 1600px; margin: 0 auto; }
-        
+
         /* Header */
         .admin-header {
-            background: rgba(255,255,255,0.96);
-            border-radius: 24px;
-            padding: 20px 32px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 18px 32px;
             margin-bottom: 24px;
             display: flex;
             justify-content: space-between;
@@ -71,227 +81,249 @@
             flex-wrap: wrap;
             gap: 15px;
             backdrop-filter: blur(10px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
         }
-        .logo h1 { font-size: 24px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .logo small { font-size: 12px; color: #6b7280; }
-        .logout-btn { background: #ef4444; color: white; border: none; padding: 10px 24px; border-radius: 40px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
-        .logout-btn:hover { background: #dc2626; transform: translateY(-2px); }
-        
+        .logo h1 { font-size: 22px; font-weight: 700; color: #f1f5f9; letter-spacing: -0.5px; }
+        .logo h1 span { color: #6366f1; }
+        .logo small { font-size: 12px; color: #64748b; display: block; margin-top: 2px; }
+        .header-actions { display: flex; gap: 12px; align-items: center; }
+        .header-actions span { color: #94a3b8; font-size: 13px; }
+        .logout-btn {
+            background: rgba(239,68,68,0.15);
+            color: #f87171;
+            border: 1px solid rgba(239,68,68,0.2);
+            padding: 8px 24px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .logout-btn:hover { background: rgba(239,68,68,0.25); transform: translateY(-1px); }
+
         /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
             margin-bottom: 24px;
         }
         .stat-card {
-            background: rgba(255,255,255,0.96);
-            border-radius: 20px;
-            padding: 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 14px;
+            padding: 18px 16px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
         }
-        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 24px -12px rgba(0,0,0,0.2); background: white; }
-        .stat-icon { font-size: 38px; margin-bottom: 10px; }
-        .stat-number { font-size: 34px; font-weight: 700; color: #1f2937; }
-        .stat-label { font-size: 12px; color: #6b7280; margin-top: 6px; font-weight: 500; }
-        
+        .stat-card:hover { background: rgba(255,255,255,0.06); transform: translateY(-2px); border-color: rgba(99,102,241,0.2); }
+        .stat-icon { font-size: 28px; margin-bottom: 6px; opacity: 0.8; }
+        .stat-number { font-size: 28px; font-weight: 700; color: #f1f5f9; letter-spacing: -0.5px; }
+        .stat-label { font-size: 11px; color: #94a3b8; margin-top: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+
         /* Charts */
         .charts-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 16px;
             margin-bottom: 24px;
         }
         .chart-card {
-            background: rgba(255,255,255,0.96);
-            border-radius: 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 14px;
             padding: 20px;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
         }
-        .chart-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; color: #1e293b; display: flex; align-items: center; gap: 8px; }
-        canvas { max-height: 220px; width: 100%; }
-        
+        .chart-card h3 { font-size: 13px; font-weight: 600; margin-bottom: 14px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
+        canvas { max-height: 200px; width: 100%; }
+
         /* Tabs */
         .tabs {
             display: flex;
-            gap: 10px;
+            gap: 4px;
             margin-bottom: 24px;
             flex-wrap: wrap;
-            background: rgba(0,0,0,0.3);
-            padding: 8px;
-            border-radius: 60px;
+            background: rgba(255,255,255,0.03);
+            padding: 4px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
         .tab-btn {
-            padding: 10px 28px;
+            padding: 8px 22px;
             background: transparent;
             border: none;
-            border-radius: 60px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 500;
             font-size: 13px;
-            color: white;
+            color: #94a3b8;
             transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
         }
-        .tab-btn:hover { background: rgba(255,255,255,0.15); transform: translateY(-1px); }
-        .tab-btn.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; box-shadow: 0 4px 12px rgba(102,126,234,0.3); }
-        
+        .tab-btn:hover { color: #f1f5f9; background: rgba(255,255,255,0.05); }
+        .tab-btn.active { background: #6366f1; color: white; box-shadow: 0 4px 12px rgba(99,102,241,0.2); }
+
         /* Panels */
         .panel {
             display: none;
-            background: rgba(255,255,255,0.96);
-            border-radius: 24px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 14px;
             padding: 24px;
             backdrop-filter: blur(10px);
-            animation: fadeIn 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.2);
+            animation: fadeIn 0.25s ease;
         }
         .panel.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
         /* Filters */
         .filters {
             display: flex;
             gap: 12px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
             align-items: center;
         }
         .search-input {
             flex: 1;
-            padding: 12px 20px;
-            border: 2px solid #e5e7eb;
-            border-radius: 60px;
-            font-size: 14px;
+            padding: 10px 18px;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 40px;
+            font-size: 13px;
             min-width: 200px;
             transition: all 0.2s;
-            background: white;
+            background: rgba(255,255,255,0.05);
+            color: #f1f5f9;
+            outline: none;
+            font-family: 'Inter', sans-serif;
         }
-        .search-input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+        .search-input::placeholder { color: #64748b; }
+        .search-input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
         .filter-select {
-            padding: 12px 20px;
-            border: 2px solid #e5e7eb;
-            border-radius: 60px;
-            background: white;
+            padding: 10px 18px;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 40px;
+            background: rgba(255,255,255,0.05);
+            color: #f1f5f9;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
-            color: #374151;
+            font-family: 'Inter', sans-serif;
+            outline: none;
         }
+        .filter-select option { background: #1a1a2e; color: #f1f5f9; }
         .refresh-btn {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 60px;
+            background: rgba(99,102,241,0.15);
+            color: #818cf8;
+            border: 1px solid rgba(99,102,241,0.15);
+            padding: 10px 24px;
+            border-radius: 40px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 500;
+            font-size: 13px;
             transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
         }
-        .refresh-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
-        
+        .refresh-btn:hover { background: rgba(99,102,241,0.25); transform: translateY(-1px); }
+
         /* Tables */
         .table-container {
             overflow-x: auto;
-            border-radius: 16px;
-            border: 1px solid #e5e7eb;
-            background: white;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.02);
         }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
         th {
             text-align: left;
-            padding: 14px 16px;
-            background: #f8fafc;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.03);
             font-weight: 600;
-            color: #1e293b;
-            border-bottom: 1px solid #e2e8f0;
-            font-size: 13px;
+            color: #94a3b8;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        td { padding: 12px 16px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: middle; }
+        td { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.03); color: #e2e8f0; vertical-align: middle; font-size: 13px; }
         tr:last-child td { border-bottom: none; }
-        tr:hover td { background: #f8fafc; }
-        
+        tr:hover td { background: rgba(255,255,255,0.03); }
+
         /* Badges */
         .badge {
             display: inline-block;
-            padding: 4px 12px;
-            border-radius: 60px;
-            font-size: 11px;
+            padding: 3px 12px;
+            border-radius: 40px;
+            font-size: 10px;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
-        .badge.online { background: #d1fae5; color: #065f46; }
-        .badge.offline { background: #f1f5f9; color: #64748b; }
-        .badge-pendiente { background: #fed7aa; color: #9a3412; }
-        .badge-revisado { background: #d1fae5; color: #065f46; }
-        
+        .badge.online { background: rgba(16,185,129,0.15); color: #6ee7b7; }
+        .badge.offline { background: rgba(100,116,139,0.15); color: #94a3b8; }
+        .badge-pendiente { background: rgba(251,146,60,0.15); color: #fbbf24; }
+        .badge-revisado { background: rgba(16,185,129,0.15); color: #6ee7b7; }
+
         /* Action Buttons */
-        .action-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        .action-group { display: flex; gap: 6px; flex-wrap: wrap; }
         .action-btn {
-            padding: 6px 14px;
+            padding: 5px 14px;
             border: none;
-            border-radius: 30px;
+            border-radius: 20px;
             cursor: pointer;
             font-size: 11px;
             font-weight: 500;
-            transition: all 0.2s;
+            transition: all 0.15s;
+            font-family: 'Inter', sans-serif;
         }
-        .action-btn.view { background: #6366f1; color: white; }
-        .action-btn.view:hover { background: #4f46e5; transform: scale(1.02); }
-        .action-btn.block { background: #ef4444; color: white; }
-        .action-btn.block:hover { background: #dc2626; transform: scale(1.02); }
-        .action-btn.check { background: #10b981; color: white; }
-        .action-btn.check:hover { background: #059669; transform: scale(1.02); }
-        .action-btn.delete { background: #f97316; color: white; }
-        .action-btn.delete:hover { background: #ea580c; transform: scale(1.02); }
-        .action-btn.unblock { background: #22c55e; color: white; }
-        .action-btn.unblock:hover { background: #16a34a; transform: scale(1.02); }
-        
+        .action-btn.view { background: rgba(99,102,241,0.15); color: #818cf8; }
+        .action-btn.view:hover { background: rgba(99,102,241,0.25); }
+        .action-btn.block { background: rgba(239,68,68,0.15); color: #f87171; }
+        .action-btn.block:hover { background: rgba(239,68,68,0.25); }
+        .action-btn.check { background: rgba(16,185,129,0.15); color: #6ee7b7; }
+        .action-btn.check:hover { background: rgba(16,185,129,0.25); }
+        .action-btn.delete { background: rgba(251,146,60,0.15); color: #fbbf24; }
+        .action-btn.delete:hover { background: rgba(251,146,60,0.25); }
+        .action-btn.unblock { background: rgba(16,185,129,0.15); color: #6ee7b7; }
+        .action-btn.unblock:hover { background: rgba(16,185,129,0.25); }
+
         /* Cards for reports/diarios/postits */
-        .card-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
+        .card-grid { display: flex; flex-direction: column; gap: 12px; }
         .report-card, .diario-card, .postit-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 18px 20px;
             transition: all 0.2s;
-            border: 1px solid #e5e7eb;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 16px;
+            gap: 14px;
         }
         .report-card:hover, .diario-card:hover, .postit-card:hover {
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-            transform: translateY(-2px);
-            border-color: #6366f1;
+            background: rgba(255,255,255,0.04);
+            border-color: rgba(99,102,241,0.15);
         }
-        .report-info, .diario-info, .postit-info { flex: 1; }
+        .report-info, .diario-info, .postit-info { flex: 1; min-width: 200px; }
         .report-header, .diario-header, .postit-header {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 8px;
+            gap: 10px;
+            margin-bottom: 6px;
             flex-wrap: wrap;
         }
-        .report-motivo { font-weight: 600; color: #1f2937; margin-bottom: 8px; }
-        .report-detail { font-size: 12px; color: #6b7280; margin-top: 6px; }
-        .report-users { display: flex; gap: 16px; margin-top: 8px; flex-wrap: wrap; }
-        .report-user { font-size: 12px; background: #f3f4f6; padding: 4px 12px; border-radius: 60px; }
-        .diario-stats { display: flex; gap: 16px; margin-top: 8px; flex-wrap: wrap; }
-        .diario-stat { font-size: 12px; color: #6b7280; display: flex; align-items: center; gap: 6px; }
-        .postit-content { font-size: 13px; color: #374151; margin-bottom: 6px; }
-        .postit-meta { font-size: 11px; color: #9ca3af; display: flex; gap: 16px; flex-wrap: wrap; }
-        
+        .report-motivo { font-weight: 600; color: #f1f5f9; margin-bottom: 4px; font-size: 14px; }
+        .report-detail { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+        .report-users { display: flex; gap: 12px; margin-top: 6px; flex-wrap: wrap; }
+        .report-user { font-size: 12px; background: rgba(255,255,255,0.04); padding: 3px 12px; border-radius: 40px; color: #e2e8f0; }
+        .diario-stats { display: flex; gap: 14px; margin-top: 4px; flex-wrap: wrap; }
+        .diario-stat { font-size: 12px; color: #94a3b8; display: flex; align-items: center; gap: 4px; }
+        .postit-content { font-size: 13px; color: #e2e8f0; margin-bottom: 4px; }
+        .postit-meta { font-size: 11px; color: #64748b; display: flex; gap: 14px; flex-wrap: wrap; }
+
         /* Modal */
         .modal {
             display: none;
@@ -300,89 +332,109 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(4px);
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
             z-index: 1000;
             justify-content: center;
             align-items: center;
         }
         .modal.show { display: flex; }
         .modal-content {
-            background: white;
-            border-radius: 24px;
-            max-width: 550px;
-            width: 90%;
+            background: #1a1a2e;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
+            max-width: 540px;
+            width: 92%;
             max-height: 85vh;
             overflow-y: auto;
             animation: modalFadeIn 0.2s ease;
         }
-        @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
         .modal-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 20px 24px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            padding: 18px 24px;
             color: white;
-            border-radius: 24px 24px 0 0;
+            border-radius: 20px 20px 0 0;
         }
-        .modal-header h3 { font-size: 18px; }
+        .modal-header h3 { font-size: 17px; font-weight: 600; }
         .modal-body { padding: 24px; }
         .modal-footer {
-            padding: 16px 24px;
-            background: #f8fafc;
-            border-radius: 0 0 24px 24px;
+            padding: 14px 24px;
+            background: rgba(255,255,255,0.02);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-radius: 0 0 20px 20px;
             display: flex;
             justify-content: flex-end;
         }
-        .info-row { display: flex; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0; }
-        .info-label { width: 110px; font-weight: 600; color: #475569; }
-        .info-value { flex: 1; color: #1e293b; }
-        .post-preview { max-width: 100%; max-height: 150px; border-radius: 12px; margin: 12px 0; }
-        
+        .info-row { display: flex; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .info-label { width: 100px; font-weight: 500; color: #94a3b8; font-size: 13px; }
+        .info-value { flex: 1; color: #f1f5f9; font-size: 13px; word-break: break-word; }
+        .post-preview { max-width: 100%; max-height: 150px; border-radius: 8px; margin: 10px 0; border: 1px solid rgba(255,255,255,0.05); }
+
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
             background: #1e293b;
+            border: 1px solid rgba(251,191,36,0.15);
             color: #fbbf24;
-            padding: 12px 24px;
-            border-radius: 60px;
+            padding: 12px 28px;
+            border-radius: 40px;
             font-size: 13px;
             display: none;
             z-index: 2000;
             font-weight: 500;
+            backdrop-filter: blur(10px);
         }
-        
+
+        /* ========== RESPONSIVE ========== */
         @media (max-width: 768px) {
             body { padding: 12px; }
-            .stat-number { font-size: 24px; }
-            .stat-icon { font-size: 28px; }
-            .tab-btn { padding: 6px 16px; font-size: 12px; }
+            .login-container { width: 100%; padding: 32px 24px; margin: 40px auto; }
+            .stat-number { font-size: 22px; }
+            .tab-btn { padding: 6px 14px; font-size: 12px; }
             .report-card, .diario-card, .postit-card { flex-direction: column; align-items: flex-start; }
             .action-group { margin-top: 8px; }
+            .admin-header { padding: 14px 18px; flex-direction: column; align-items: flex-start; }
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .charts-row { grid-template-columns: 1fr; }
+            .filters { flex-direction: column; align-items: stretch; }
+            .search-input { min-width: auto; }
         }
     </style>
 </head>
 <body>
     <div id="loginScreen" class="login-container">
-        <h1>🔒 SHATTS ADMIN</h1>
-        <p>Panel de control completo</p>
+        <div class="lock-icon">🔐</div>
+        <h1>SHATTS ADMIN</h1>
+        <p>Panel de control · sistema de gestión</p>
         <form onsubmit="event.preventDefault(); verificarPassword()">
             <input type="password" id="adminPassword" placeholder="Contraseña" autocomplete="off">
-            <button type="submit">Acceder</button>
+            <button type="submit">Acceder al panel</button>
         </form>
         <div id="loginError" class="error"></div>
     </div>
 
     <div id="dashboard" class="dashboard">
         <div class="admin-header">
-            <div class="logo"><h1>🔒 SHATTS ADMIN</h1><small>Panel de control</small></div>
-            <button class="logout-btn" onclick="cerrarSesion()">🚪 Cerrar sesión</button>
+            <div class="logo">
+                <h1>🔒 SHATTS <span>ADMIN</span></h1>
+                <small>Panel de control · v3.0</small>
+            </div>
+            <div class="header-actions">
+                <span id="lastUpdateLabel">Última actualización: —</span>
+                <button class="logout-btn" onclick="cerrarSesion()">🚪 Cerrar sesión</button>
+            </div>
         </div>
 
         <div class="stats-grid" id="statsGrid"></div>
 
         <div class="charts-row">
-            <div class="chart-card"><h3><span>📊</span> Publicaciones por día</h3><canvas id="postsChart"></canvas></div>
+            <div class="chart-card"><h3><span>📊</span> Actividad diaria</h3><canvas id="postsChart"></canvas></div>
             <div class="chart-card"><h3><span>📢</span> Reportes por motivo</h3><canvas id="reportesChart"></canvas></div>
         </div>
 
@@ -391,16 +443,16 @@
         <!-- Panel Dashboard -->
         <div id="panelDashboard" class="panel">
             <div class="stats-grid" id="dashboardStats" style="grid-template-columns: repeat(4,1fr);"></div>
-            <h3 style="margin: 20px 0 15px;">🏆 Top 5 usuarios más activos</h3>
+            <h3 style="margin: 20px 0 14px; font-size:15px; color:#f1f5f9;">🏆 Top 5 usuarios más activos</h3>
             <div class="table-container"><table><thead><tr><th>#</th><th>Usuario</th><th>Publicaciones</th><th>Seguidores</th></tr></thead><tbody id="topUsuariosBody"></tbody></table></div>
-            <h3 style="margin: 20px 0 15px;">📋 Últimos reportes</h3>
+            <h3 style="margin: 20px 0 14px; font-size:15px; color:#f1f5f9;">📋 Últimos reportes</h3>
             <div class="card-grid" id="ultimosReportesBody"></div>
         </div>
 
         <!-- Panel Usuarios -->
         <div id="panelUsuarios" class="panel">
             <div class="filters">
-                <input type="text" id="searchUsuarios" class="search-input" placeholder="🔍 Buscar...">
+                <input type="text" id="searchUsuarios" class="search-input" placeholder="🔍 Buscar usuario...">
                 <select id="filterUsuariosEstado" class="filter-select"><option value="todos">Todos</option><option value="online">🟢 En línea</option><option value="offline">⚫ Desconectados</option></select>
                 <button class="refresh-btn" onclick="cargarUsuarios()">🔄 Actualizar</button>
             </div>
@@ -414,7 +466,7 @@
                 <select id="filterPostsTipo" class="filter-select"><option value="todos">Todos</option><option value="texto">📝 Texto</option><option value="imagen">📷 Imagen</option><option value="audio">🎤 Audio</option></select>
                 <button class="refresh-btn" onclick="cargarPublicaciones()">🔄 Actualizar</button>
             </div>
-            <div class="table-container"><table><thead><tr><th>Fecha</th><th>Autor</th><th>Contenido</th><th>⭐</th><th>💬</th><th>Acciones</th></td></thead><tbody id="publicacionesBody"></tbody></table></div>
+            <div class="table-container"><table><thead><tr><th>Fecha</th><th>Autor</th><th>Contenido</th><th>⭐</th><th>💬</th><th>Acciones</th></tr></thead><tbody id="publicacionesBody"></tbody></table></div>
         </div>
 
         <!-- Panel Reportes -->
@@ -447,7 +499,9 @@
 
         <!-- Panel Bloqueados -->
         <div id="panelBloqueados" class="panel">
-            <button class="refresh-btn" onclick="cargarBloqueados()">🔄 Actualizar</button>
+            <div class="filters">
+                <button class="refresh-btn" onclick="cargarBloqueados()">🔄 Actualizar</button>
+            </div>
             <div class="table-container"><table><thead><tr><th>Usuario</th><th>Email</th><th>Bloqueado por</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody id="bloqueadosBody"></tbody></table></div>
         </div>
     </div>
@@ -456,7 +510,7 @@
         <div class="modal-content">
             <div class="modal-header"><h3>📋 Detalle completo</h3></div>
             <div class="modal-body" id="modalBody"></div>
-            <div class="modal-footer"><button class="action-btn view" onclick="cerrarModal()">Cerrar</button></div>
+            <div class="modal-footer"><button class="action-btn view" onclick="cerrarModal()" style="background:rgba(255,255,255,0.05); color:#f1f5f9;">Cerrar</button></div>
         </div>
     </div>
 
@@ -466,16 +520,16 @@
         const PB_URL = 'https://shatt-social-production.up.railway.app';
         const pb = new PocketBase(PB_URL);
         pb.autoCancellation(false);
-        
+
         const ADMIN_PASSWORD = 'shatts123';
-        
+
         let todosUsuarios = [];
         let todasPublicaciones = [];
         let reportes = [];
         let diarios = [];
         let postits = [];
         let charts = {};
-        
+
         // ========== LOGIN ==========
         window.verificarPassword = function() {
             const pass = document.getElementById('adminPassword').value;
@@ -487,20 +541,20 @@
                 document.getElementById('loginError').textContent = '❌ Contraseña incorrecta';
             }
         };
-        
+
         function iniciarDashboard() {
             mostrarToast('🔄 Cargando datos...');
             cargarTodosLosDatos();
             inicializarTabs();
             setInterval(cargarTodosLosDatos, 30000);
         }
-        
+
         window.cerrarSesion = function() {
             document.getElementById('loginScreen').style.display = 'block';
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('adminPassword').value = '';
         };
-        
+
         async function cargarTodosLosDatos() {
             try {
                 await Promise.all([
@@ -513,9 +567,10 @@
                 actualizarEstadisticas();
                 actualizarGraficos();
                 actualizarDashboardStats();
+                document.getElementById('lastUpdateLabel').textContent = `Última actualización: ${new Date().toLocaleTimeString()}`;
             } catch(e) { console.error(e); }
         }
-        
+
         // ========== CARGAR DATOS ==========
         async function cargarUsuarios() {
             try {
@@ -530,10 +585,9 @@
                     u.seguidores = seguidores.totalItems;
                 }
                 renderizarTablaUsuarios();
-                console.log(`✅ ${todosUsuarios.length} usuarios`);
             } catch(e) { console.error(e); mostrarToast("Error usuarios", true); }
         }
-        
+
         async function cargarPublicaciones() {
             try {
                 todasPublicaciones = await pb.collection('posts').getFullList({ sort: '-created' });
@@ -544,18 +598,16 @@
                     } catch(e) { p.autorNick = 'Usuario'; }
                 }
                 renderizarTablaPublicaciones();
-                console.log(`✅ ${todasPublicaciones.length} publicaciones`);
             } catch(e) { console.error(e); }
         }
-        
+
         async function cargarReportes() {
             try {
                 reportes = await pb.collection('reportes_usuarios').getFullList({ sort: '-created' });
                 renderizarTablaReportes();
-                console.log(`✅ ${reportes.length} reportes`);
             } catch(e) { console.error(e); mostrarToast("Error reportes", true); }
         }
-        
+
         async function cargarDiarios() {
             try {
                 const diariosList = await pb.collection('diarios').getFullList();
@@ -581,10 +633,9 @@
                     } catch(e) {}
                 }
                 renderizarTablaDiarios();
-                console.log(`✅ ${diarios.length} diarios`);
             } catch(e) { console.error(e); }
         }
-        
+
         async function cargarPostits() {
             try {
                 postits = await pb.collection('comentarios_diario').getFullList({ sort: '-created' });
@@ -598,31 +649,30 @@
                     } catch(e) { p.paraUsuario = 'Desconocido'; p.paraUsuarioId = ''; }
                 }
                 renderizarTablaPostits();
-                console.log(`✅ ${postits.length} post-its`);
             } catch(e) { console.error(e); }
         }
-        
+
         async function cargarBloqueados() {
             try {
                 const bloqueados = todosUsuarios.filter(u => u.bloqueado === true);
                 const tbody = document.getElementById('bloqueadosBody');
                 if (!tbody) return;
                 if (bloqueados.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">🚫 No hay usuarios bloqueados<\/td><\/tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#64748b;">🚫 No hay usuarios bloqueados</td></tr>';
                     return;
                 }
                 tbody.innerHTML = bloqueados.map(u => `
                     <tr>
-                        <td><strong>@${escapeHtml(u.nick || u.email.split('@')[0])}</strong><br><small>${u.id}</small></td>
-                        <td>${escapeHtml(u.email)}</span></td>
-                        <td>${escapeHtml(u.bloqueadoPor || 'Admin')}</td>
-                        <td>${u.updated ? new Date(u.updated).toLocaleDateString() : '-'}</td>
+                        <td><strong>@${escapeHtml(u.nick || u.email.split('@')[0])}</strong><br><small style="color:#64748b;font-size:10px;">${u.id}</small></td>
+                        <td style="color:#94a3b8;">${escapeHtml(u.email)}</td>
+                        <td style="color:#94a3b8;">${escapeHtml(u.bloqueadoPor || 'Admin')}</td>
+                        <td style="color:#94a3b8;">${u.updated ? new Date(u.updated).toLocaleDateString() : '-'}</td>
                         <td class="action-group"><button class="action-btn unblock" onclick="desbloquearUsuario('${u.id}')">🔓 Desbloquear</button></td>
                     </tr>
                 `).join('');
             } catch(e) { console.error(e); }
         }
-        
+
         // ========== ACTUALIZAR UI ==========
         function actualizarEstadisticas() {
             const stats = [
@@ -641,38 +691,38 @@
                 </div>
             `).join('');
         }
-        
+
         function actualizarDashboardStats() {
             const totalImagenes = todasPublicaciones.filter(p => p.imagen).length;
             const totalAudios = todasPublicaciones.filter(p => p.audio).length;
             const totalComentarios = todasPublicaciones.reduce((sum, p) => sum + (p.comments?.length || 0), 0);
             const ratingPromedio = todasPublicaciones.reduce((sum, p) => sum + (p.rating || 0), 0) / (todasPublicaciones.length || 1);
-            
+
             document.getElementById('dashboardStats').innerHTML = `
                 <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-number">${ratingPromedio.toFixed(1)}</div><div class="stat-label">Rating promedio</div></div>
                 <div class="stat-card"><div class="stat-icon">💬</div><div class="stat-number">${totalComentarios}</div><div class="stat-label">Comentarios</div></div>
                 <div class="stat-card"><div class="stat-icon">🎤</div><div class="stat-number">${totalAudios}</div><div class="stat-label">Audios</div></div>
                 <div class="stat-card"><div class="stat-icon">📷</div><div class="stat-number">${totalImagenes}</div><div class="stat-label">Imágenes</div></div>
             `;
-            
+
             const userPosts = {};
             todasPublicaciones.forEach(p => { userPosts[p.usuario] = (userPosts[p.usuario] || 0) + 1; });
             const topUsers = Object.entries(userPosts).sort((a,b) => b[1] - a[1]).slice(0,5);
             const topBody = document.getElementById('topUsuariosBody');
             if (topUsers.length === 0) {
-                topBody.innerHTML = '<tr><td colspan="4">Sin datos<\/td><\/tr>';
+                topBody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Sin datos</td></tr>';
             } else {
                 let html = '';
                 for (let i = 0; i < topUsers.length; i++) {
                     const [uid, count] = topUsers[i];
                     const user = todosUsuarios.find(u => u.id === uid);
                     const nombre = user?.nick || user?.email?.split('@')[0] || uid.slice(0,6);
-                    html += `<td><td style="width:40px;">${i+1}</td>}<td><strong>@${escapeHtml(nombre)}</strong></td><td>${count}</td><td>${user?.seguidores || 0}</td></tr>`;
+                    html += `<tr><td style="width:40px;color:#64748b;">${i+1}</td><td><strong>@${escapeHtml(nombre)}</strong></td><td>${count}</td><td>${user?.seguidores || 0}</td></tr>`;
                 }
                 topBody.innerHTML = html;
             }
         }
-        
+
         function actualizarGraficos() {
             const ultimos7Dias = [];
             const postsPorDia = [];
@@ -686,54 +736,102 @@
             if (charts.posts) charts.posts.destroy();
             charts.posts = new Chart(document.getElementById('postsChart'), {
                 type: 'bar',
-                data: { labels: ultimos7Dias, datasets: [{ label: 'Publicaciones', data: postsPorDia, backgroundColor: '#6366f1', borderRadius: 8 }] },
-                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top' } } }
+                data: {
+                    labels: ultimos7Dias,
+                    datasets: [{
+                        label: 'Publicaciones',
+                        data: postsPorDia,
+                        backgroundColor: 'rgba(99,102,241,0.6)',
+                        borderColor: '#6366f1',
+                        borderWidth: 1.5,
+                        borderRadius: 4,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#94a3b8' } },
+                        x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } }
+                    }
+                }
             });
-            
+
             const motivos = {};
             reportes.forEach(r => { motivos[r.motivo] = (motivos[r.motivo] || 0) + 1; });
             if (charts.reportes) charts.reportes.destroy();
+            const colors = ['#6366f1', '#8b5cf6', '#a855f7', '#d946ef', '#f43f5e', '#f97316'];
             charts.reportes = new Chart(document.getElementById('reportesChart'), {
                 type: 'doughnut',
-                data: { labels: Object.keys(motivos), datasets: [{ data: Object.values(motivos), backgroundColor: ['#6366f1', '#8b5cf6', '#a855f7', '#d946ef', '#f43f5e', '#f97316'] }] },
-                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'right' } } }
+                data: {
+                    labels: Object.keys(motivos),
+                    datasets: [{
+                        data: Object.values(motivos),
+                        backgroundColor: Object.keys(motivos).map((_, i) => colors[i % colors.length]),
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: { color: '#94a3b8', font: { size: 11 }, boxWidth: 12, padding: 10 }
+                        }
+                    }
+                }
             });
         }
-        
+
         // ========== RENDERIZADO ==========
         function renderizarTablaUsuarios() {
             const tbody = document.getElementById('usuariosBody');
             if (!tbody) return;
-            if (todosUsuarios.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6">No hay usuarios<\/td><\/tr>';
+            const filtroTexto = document.getElementById('searchUsuarios')?.value.toLowerCase() || '';
+            const filtroEstado = document.getElementById('filterUsuariosEstado')?.value || 'todos';
+            let filtrados = todosUsuarios;
+            if (filtroTexto) filtrados = filtrados.filter(u => (u.nick || u.email).toLowerCase().includes(filtroTexto));
+            if (filtroEstado === 'online') filtrados = filtrados.filter(u => u.online);
+            else if (filtroEstado === 'offline') filtrados = filtrados.filter(u => !u.online);
+            if (filtrados.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#64748b;">No hay usuarios</td></tr>';
                 return;
             }
-            tbody.innerHTML = todosUsuarios.map(u => `
+            tbody.innerHTML = filtrados.map(u => `
                 <tr>
-                    <td><strong>@${escapeHtml(u.nick || u.email.split('@')[0])}</strong><br><small>${u.id}</small></td>
-                    <td>${escapeHtml(u.email) || '-'}</td>
+                    <td><strong>@${escapeHtml(u.nick || u.email.split('@')[0])}</strong><br><small style="color:#64748b;font-size:10px;">${u.id}</small></td>
+                    <td style="color:#94a3b8;">${escapeHtml(u.email) || '-'}</td>
                     <td><span class="badge ${u.online ? 'online' : 'offline'}">${u.online ? '🟢 En línea' : '⚫ Desconectado'}</span></td>
-                    <td>${new Date(u.created).toLocaleDateString()}</td>
+                    <td style="color:#94a3b8;">${new Date(u.created).toLocaleDateString()}</td>
                     <td>${u.postsCount || 0}</td>
                     <td class="action-group"><button class="action-btn view" onclick="verUsuario('${u.id}')">👁️</button><button class="action-btn block" onclick="bloquearUsuario('${u.id}')">🚫</button></td>
                 </tr>
             `).join('');
         }
-        
+
         function renderizarTablaPublicaciones() {
             const tbody = document.getElementById('publicacionesBody');
             if (!tbody) return;
-            if (todasPublicaciones.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6">No hay publicaciones<\/td><\/tr>';
+            const filtroTexto = document.getElementById('searchPosts')?.value.toLowerCase() || '';
+            const filtroTipo = document.getElementById('filterPostsTipo')?.value || 'todos';
+            let filtrados = todasPublicaciones;
+            if (filtroTexto) filtrados = filtrados.filter(p => (p.texto || '').toLowerCase().includes(filtroTexto) || (p.autorNick || '').toLowerCase().includes(filtroTexto));
+            if (filtroTipo === 'imagen') filtrados = filtrados.filter(p => p.imagen);
+            else if (filtroTipo === 'audio') filtrados = filtrados.filter(p => p.audio);
+            else if (filtroTipo === 'texto') filtrados = filtrados.filter(p => !p.imagen && !p.audio);
+            if (filtrados.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#64748b;">No hay publicaciones</td></tr>';
                 return;
             }
-            tbody.innerHTML = todasPublicaciones.map(p => {
+            tbody.innerHTML = filtrados.map(p => {
                 const preview = p.texto ? p.texto.substring(0, 60) + (p.texto.length > 60 ? '...' : '') : (p.imagen ? '📷 Imagen' : (p.audio ? '🎤 Audio' : ''));
                 return `
                 <tr>
-                    <td style="white-space: nowrap;">${new Date(p.created).toLocaleString()}</td>
+                    <td style="white-space:nowrap;color:#94a3b8;">${new Date(p.created).toLocaleString()}</td>
                     <td><strong>@${escapeHtml(p.autorNick)}</strong></td>
-                    <td>${escapeHtml(preview)}</td>
+                    <td style="color:#e2e8f0;">${escapeHtml(preview)}</td>
                     <td>⭐ ${(p.rating || 0).toFixed(1)}</td>
                     <td>${p.comments?.length || 0}</td>
                     <td class="action-group"><button class="action-btn view" onclick="verPublicacion('${p.id}')">👁️</button><button class="action-btn delete" onclick="eliminarPublicacion('${p.id}')">🗑️</button></td>
@@ -741,137 +839,148 @@
                 `;
             }).join('');
         }
-        
+
         function renderizarTablaReportes() {
             const container = document.getElementById('reportesBody');
             if (!container) return;
-            if (reportes.length === 0) {
-                container.innerHTML = '<div style="text-align:center; padding:40px; color:#888;">📭 No hay reportes</div>';
+            const filtroTexto = document.getElementById('searchReportes')?.value.toLowerCase() || '';
+            const filtroEstado = document.getElementById('filterReportesEstado')?.value || 'todos';
+            let filtrados = reportes;
+            if (filtroTexto) filtrados = filtrados.filter(r => (r.motivo || '').toLowerCase().includes(filtroTexto) || (r.reportadoNick || '').toLowerCase().includes(filtroTexto));
+            if (filtroEstado !== 'todos') filtrados = filtrados.filter(r => r.estado === filtroEstado);
+            if (filtrados.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:40px; color:#64748b;">📭 No hay reportes</div>';
                 return;
             }
-            container.innerHTML = reportes.map(r => `
+            container.innerHTML = filtrados.map(r => `
                 <div class="report-card">
                     <div class="report-info">
                         <div class="report-header">
-                            <span class="${r.estado === 'pendiente' ? 'badge-pendiente' : 'badge-revisado'}" style="display:inline-block; padding:4px 12px; border-radius:60px; font-size:11px; font-weight:600; background:${r.estado === 'pendiente' ? '#fed7aa' : '#d1fae5'}; color:${r.estado === 'pendiente' ? '#9a3412' : '#065f46'}">${r.estado === 'pendiente' ? '⏳ Pendiente' : '✅ Revisado'}</span>
-                            <span style="font-size:12px; color:#888;">📅 ${new Date(r.created).toLocaleString()}</span>
+                            <span style="display:inline-block; padding:3px 12px; border-radius:40px; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.3px; background:${r.estado === 'pendiente' ? 'rgba(251,146,60,0.15)' : 'rgba(16,185,129,0.15)'}; color:${r.estado === 'pendiente' ? '#fbbf24' : '#6ee7b7'}">${r.estado === 'pendiente' ? '⏳ Pendiente' : '✅ Revisado'}</span>
+                            <span style="font-size:12px; color:#64748b;">📅 ${new Date(r.created).toLocaleString()}</span>
                         </div>
                         <div class="report-motivo">⚠️ ${escapeHtml(r.motivo)}</div>
                         <div class="report-users">
-                            <span class="report-user">📢 Reportó: <strong>${escapeHtml(r.reportadoPorNick)}</strong></span>
-                            <span class="report-user">👤 Reportado: <strong>@${escapeHtml(r.reportadoNick)}</strong></span>
+                            <span class="report-user">📢 Reportó: <strong style="color:#f1f5f9;">${escapeHtml(r.reportadoPorNick)}</strong></span>
+                            <span class="report-user">👤 Reportado: <strong style="color:#f1f5f9;">@${escapeHtml(r.reportadoNick)}</strong></span>
                         </div>
                         ${r.detalle ? `<div class="report-detail">📝 ${escapeHtml(r.detalle)}</div>` : ''}
                     </div>
                     <div class="action-group">
-                        <button class="action-btn view" onclick="verDetalleReporte('${r.id}')">👁️ Ver</button>
+                        <button class="action-btn view" onclick="verDetalleReporte('${r.id}')">👁️</button>
                         ${r.estado === 'pendiente' ? `<button class="action-btn check" onclick="cambiarEstadoReporte('${r.id}', 'revisado')">✅</button>` : ''}
                         <button class="action-btn block" onclick="bloquearUsuario('${r.reportadoId}')">🚫</button>
                     </div>
                 </div>
             `).join('');
         }
-        
+
         function renderizarTablaDiarios() {
             const container = document.getElementById('diariosBody');
             if (!container) return;
-            if (diarios.length === 0) {
-                container.innerHTML = '<div style="text-align:center; padding:40px; color:#888;">📭 No hay diarios</div>';
+            const filtroTexto = document.getElementById('searchDiarios')?.value.toLowerCase() || '';
+            let filtrados = diarios;
+            if (filtroTexto) filtrados = filtrados.filter(d => (d.usuarioNick || '').toLowerCase().includes(filtroTexto) || (d.titulo || '').toLowerCase().includes(filtroTexto));
+            if (filtrados.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:40px; color:#64748b;">📭 No hay diarios</div>';
                 return;
             }
-            container.innerHTML = diarios.map(d => `
+            container.innerHTML = filtrados.map(d => `
                 <div class="diario-card">
                     <div class="diario-info">
                         <div class="diario-header">
-                            <strong>@${escapeHtml(d.usuarioNick)}</strong>
-                            <span style="font-size:11px; color:#888;">📅 ${new Date(d.created).toLocaleDateString()}</span>
+                            <strong style="color:#f1f5f9;">@${escapeHtml(d.usuarioNick)}</strong>
+                            <span style="font-size:11px; color:#64748b;">📅 ${new Date(d.created).toLocaleDateString()}</span>
                         </div>
                         <div class="diario-stats">
                             <span class="diario-stat">📖 ${d.paginasCount} páginas</span>
                             <span class="diario-stat">📌 ${d.postitsCount} post-its</span>
                         </div>
-                        <div style="font-size:13px; color:#374151; margin-top:6px;">📔 ${escapeHtml(d.titulo)}</div>
+                        <div style="font-size:13px; color:#e2e8f0; margin-top:4px;">📔 ${escapeHtml(d.titulo)}</div>
                     </div>
-                    <div class="action-group"><button class="action-btn view" onclick="verDiario('${d.usuarioId}')">👁️ Ver</button></div>
+                    <div class="action-group"><button class="action-btn view" onclick="verDiario('${d.usuarioId}')">👁️</button></div>
                 </div>
             `).join('');
         }
-        
+
         function renderizarTablaPostits() {
             const container = document.getElementById('postitsBody');
             if (!container) return;
-            if (postits.length === 0) {
-                container.innerHTML = '<div style="text-align:center; padding:40px; color:#888;">📌 No hay post-its</div>';
+            const filtroTexto = document.getElementById('searchPostits')?.value.toLowerCase() || '';
+            let filtrados = postits;
+            if (filtroTexto) filtrados = filtrados.filter(p => (p.texto || '').toLowerCase().includes(filtroTexto) || (p.userNick || '').toLowerCase().includes(filtroTexto) || (p.paraUsuario || '').toLowerCase().includes(filtroTexto));
+            if (filtrados.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:40px; color:#64748b;">📌 No hay post-its</div>';
                 return;
             }
-            container.innerHTML = postits.map(p => `
+            container.innerHTML = filtrados.map(p => `
                 <div class="postit-card">
                     <div class="postit-info">
                         <div class="postit-header">
-                            <strong>✏️ ${escapeHtml(p.userNick)}</strong>
-                            <span style="font-size:11px; color:#888;">📅 ${new Date(p.created).toLocaleString()}</span>
+                            <strong style="color:#f1f5f9;">✏️ ${escapeHtml(p.userNick)}</strong>
+                            <span style="font-size:11px; color:#64748b;">📅 ${new Date(p.created).toLocaleString()}</span>
                         </div>
                         <div class="postit-content">📌 "${escapeHtml(p.texto?.substring(0, 100))}${p.texto?.length > 100 ? '...' : ''}"</div>
-                        <div class="postit-meta"><span>🎯 Para: @${escapeHtml(p.paraUsuario)}</span></div>
+                        <div class="postit-meta"><span>🎯 Para: <strong style="color:#e2e8f0;">@${escapeHtml(p.paraUsuario)}</strong></span></div>
                     </div>
-                    <div class="action-group"><button class="action-btn delete" onclick="eliminarPostit('${p.id}')">🗑️ Eliminar</button></div>
+                    <div class="action-group"><button class="action-btn delete" onclick="eliminarPostit('${p.id}')">🗑️</button></div>
                 </div>
             `).join('');
         }
-        
+
         // ========== ACCIONES ==========
         window.verUsuario = async function(id) {
             const u = todosUsuarios.find(u => u.id === id);
             if (!u) return;
             const modal = document.getElementById('modalDetalle');
             document.getElementById('modalBody').innerHTML = `
-                <div class="info-row"><div class="info-label">ID:</div><div class="info-value">${u.id}</div></div>
-                <div class="info-row"><div class="info-label">Nick:</div><div class="info-value">@${escapeHtml(u.nick || u.email)}</div></div>
-                <div class="info-row"><div class="info-label">Email:</div><div class="info-value">${escapeHtml(u.email) || '-'}</div></div>
-                <div class="info-row"><div class="info-label">País:</div><div class="info-value">${u.pais || '-'}</div></div>
-                <div class="info-row"><div class="info-label">Registro:</div><div class="info-value">${new Date(u.created).toLocaleString()}</div></div>
-                <div class="info-row"><div class="info-label">Publicaciones:</div><div class="info-value">${u.postsCount || 0}</div></div>
-                <div class="info-row"><div class="info-label">Seguidores:</div><div class="info-value">${u.seguidores || 0}</div></div>
-                <div class="info-row"><div class="info-label">Bloqueado:</div><div class="info-value">${u.bloqueado ? 'Sí' : 'No'}</div></div>
+                <div class="info-row"><div class="info-label">ID</div><div class="info-value" style="color:#94a3b8;font-size:12px;">${u.id}</div></div>
+                <div class="info-row"><div class="info-label">Nick</div><div class="info-value">@${escapeHtml(u.nick || u.email)}</div></div>
+                <div class="info-row"><div class="info-label">Email</div><div class="info-value" style="color:#94a3b8;">${escapeHtml(u.email) || '-'}</div></div>
+                <div class="info-row"><div class="info-label">País</div><div class="info-value" style="color:#94a3b8;">${u.pais || '-'}</div></div>
+                <div class="info-row"><div class="info-label">Registro</div><div class="info-value" style="color:#94a3b8;">${new Date(u.created).toLocaleString()}</div></div>
+                <div class="info-row"><div class="info-label">Publicaciones</div><div class="info-value">${u.postsCount || 0}</div></div>
+                <div class="info-row"><div class="info-label">Seguidores</div><div class="info-value">${u.seguidores || 0}</div></div>
+                <div class="info-row"><div class="info-label">Bloqueado</div><div class="info-value">${u.bloqueado ? 'Sí' : 'No'}</div></div>
             `;
             modal.classList.add('show');
         };
-        
+
         window.verPublicacion = async function(id) {
             const p = todasPublicaciones.find(p => p.id === id);
             if (!p) return;
             const modal = document.getElementById('modalDetalle');
             let extra = '';
             if (p.imagen) extra += `<img src="${pb.files.getUrl(p, p.imagen)}" class="post-preview">`;
-            if (p.audio) extra += `<audio src="${pb.files.getUrl(p, p.audio)}" controls style="width:100%;"></audio>`;
+            if (p.audio) extra += `<audio src="${pb.files.getUrl(p, p.audio)}" controls style="width:100%;margin-top:8px;border-radius:8px;"></audio>`;
             document.getElementById('modalBody').innerHTML = `
-                <div class="info-row"><div class="info-label">Autor:</div><div class="info-value">@${escapeHtml(p.autorNick)}</div></div>
-                <div class="info-row"><div class="info-label">Fecha:</div><div class="info-value">${new Date(p.created).toLocaleString()}</div></div>
-                <div class="info-row"><div class="info-label">Texto:</div><div class="info-value">${escapeHtml(p.texto || '-')}</div></div>
-                <div class="info-row"><div class="info-label">Rating:</div><div class="info-value">⭐ ${(p.rating || 0).toFixed(1)} (${p.ratingCount || 0} votos)</div></div>
-                <div class="info-row"><div class="info-label">Comentarios:</div><div class="info-value">${p.comments?.length || 0}</div></div>
+                <div class="info-row"><div class="info-label">Autor</div><div class="info-value">@${escapeHtml(p.autorNick)}</div></div>
+                <div class="info-row"><div class="info-label">Fecha</div><div class="info-value" style="color:#94a3b8;">${new Date(p.created).toLocaleString()}</div></div>
+                <div class="info-row"><div class="info-label">Texto</div><div class="info-value">${escapeHtml(p.texto || '-')}</div></div>
+                <div class="info-row"><div class="info-label">Rating</div><div class="info-value">⭐ ${(p.rating || 0).toFixed(1)} (${p.ratingCount || 0} votos)</div></div>
+                <div class="info-row"><div class="info-label">Comentarios</div><div class="info-value">${p.comments?.length || 0}</div></div>
                 ${extra}
             `;
             modal.classList.add('show');
         };
-        
+
         window.verDetalleReporte = async function(id) {
             const r = reportes.find(r => r.id === id);
             if (!r) return;
             const modal = document.getElementById('modalDetalle');
             document.getElementById('modalBody').innerHTML = `
-                <div class="info-row" style="background:#ffebee; padding:10px; border-radius:12px; margin-bottom:12px;"><div class="info-label">📢 QUIEN REPORTA:</div><div class="info-value"><strong>${escapeHtml(r.reportadoPorNick)}</strong><br><small>${r.reportadoPorId}</small></div></div>
-                <div class="info-row" style="background:#fff3e0; padding:10px; border-radius:12px; margin-bottom:12px;"><div class="info-label">⚠️ REPORTADO:</div><div class="info-value"><strong>@${escapeHtml(r.reportadoNick)}</strong><br><small>${r.reportadoId}</small></div></div>
-                <div class="info-row"><div class="info-label">📅 Fecha:</div><div class="info-value">${new Date(r.created).toLocaleString()}</div></div>
-                <div class="info-row"><div class="info-label">⚠️ Motivo:</div><div class="info-value"><span style="background:#f44336; color:white; padding:3px 12px; border-radius:20px;">${escapeHtml(r.motivo)}</span></div></div>
-                <div class="info-row"><div class="info-label">📝 Detalle:</div><div class="info-value">${escapeHtml(r.detalle) || 'Sin detalles'}</div></div>
-                <div class="info-row"><div class="info-label">🏷️ Estado:</div><div class="info-value"><span style="display:inline-block; padding:4px 12px; border-radius:60px; font-size:11px; background:${r.estado === 'pendiente' ? '#fed7aa' : '#d1fae5'}; color:${r.estado === 'pendiente' ? '#9a3412' : '#065f46'}">${r.estado === 'pendiente' ? '⏳ Pendiente' : '✅ Revisado'}</span></div></div>
+                <div class="info-row" style="background:rgba(239,68,68,0.05); padding:10px; border-radius:10px; margin-bottom:12px;"><div class="info-label">📢 Reporta</div><div class="info-value"><strong>${escapeHtml(r.reportadoPorNick)}</strong><br><small style="color:#64748b;">${r.reportadoPorId}</small></div></div>
+                <div class="info-row" style="background:rgba(251,146,60,0.05); padding:10px; border-radius:10px; margin-bottom:12px;"><div class="info-label">⚠️ Reportado</div><div class="info-value"><strong>@${escapeHtml(r.reportadoNick)}</strong><br><small style="color:#64748b;">${r.reportadoId}</small></div></div>
+                <div class="info-row"><div class="info-label">Fecha</div><div class="info-value" style="color:#94a3b8;">${new Date(r.created).toLocaleString()}</div></div>
+                <div class="info-row"><div class="info-label">Motivo</div><div class="info-value"><span style="display:inline-block; padding:3px 12px; border-radius:40px; background:rgba(239,68,68,0.15); color:#f87171; font-size:12px;">${escapeHtml(r.motivo)}</span></div></div>
+                <div class="info-row"><div class="info-label">Detalle</div><div class="info-value" style="color:#94a3b8;">${escapeHtml(r.detalle) || 'Sin detalles'}</div></div>
+                <div class="info-row"><div class="info-label">Estado</div><div class="info-value"><span style="display:inline-block; padding:3px 12px; border-radius:40px; font-size:11px; font-weight:500; background:${r.estado === 'pendiente' ? 'rgba(251,146,60,0.15)' : 'rgba(16,185,129,0.15)'}; color:${r.estado === 'pendiente' ? '#fbbf24' : '#6ee7b7'}">${r.estado === 'pendiente' ? '⏳ Pendiente' : '✅ Revisado'}</span></div></div>
             `;
             modal.classList.add('show');
         };
-        
+
         window.verDiario = function(uid) { window.open(`diario.html?uid=${uid}`, '_blank'); };
-        
+
         window.cambiarEstadoReporte = async function(id, estado) {
             try {
                 await pb.collection('reportes_usuarios').update(id, { estado });
@@ -881,26 +990,26 @@
                 actualizarDashboardStats();
             } catch(e) { mostrarToast("Error", true); }
         };
-        
+
         window.bloquearUsuario = async function(id) {
             if (!confirm('¿Bloquear este usuario?')) return;
             try { await pb.collection('usuarios').update(id, { bloqueado: true, bloqueadoPor: 'Admin' }); mostrarToast(`🚫 Usuario bloqueado`); await cargarUsuarios(); await cargarBloqueados(); actualizarEstadisticas(); } catch(e) { mostrarToast("Error", true); }
         };
-        
+
         window.desbloquearUsuario = async function(id) {
             try { await pb.collection('usuarios').update(id, { bloqueado: false, bloqueadoPor: null }); mostrarToast(`🔓 Usuario desbloqueado`); await cargarUsuarios(); await cargarBloqueados(); actualizarEstadisticas(); } catch(e) { mostrarToast("Error", true); }
         };
-        
+
         window.eliminarPublicacion = async function(id) {
             if (!confirm('¿Eliminar publicación?')) return;
             try { await pb.collection('posts').delete(id); mostrarToast('🗑️ Publicación eliminada'); await cargarPublicaciones(); actualizarGraficos(); actualizarDashboardStats(); } catch(e) { mostrarToast("Error", true); }
         };
-        
+
         window.eliminarPostit = async function(id) {
             if (!confirm('¿Eliminar post-it?')) return;
             try { await pb.collection('comentarios_diario').delete(id); mostrarToast('📌 Post-it eliminado'); await cargarPostits(); } catch(e) { mostrarToast("Error", true); }
         };
-        
+
         // ========== TABS ==========
         function inicializarTabs() {
             const tabs = ['dashboard', 'usuarios', 'publicaciones', 'reportes', 'diarios', 'postits', 'bloqueados'];
@@ -908,7 +1017,7 @@
             const tabsContainer = document.getElementById('tabs');
             if (tabsContainer) tabsContainer.innerHTML = tabs.map((tab, i) => `<button class="tab-btn ${i === 0 ? 'active' : ''}" data-tab="${tab}" onclick="cambiarTab('${tab}')">${nombres[i]}</button>`).join('');
         }
-        
+
         window.cambiarTab = function(tab) {
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             const panelMap = { 'dashboard':'panelDashboard','usuarios':'panelUsuarios','publicaciones':'panelPublicaciones','reportes':'panelReportes','diarios':'panelDiarios','postits':'panelPostits','bloqueados':'panelBloqueados' };
@@ -919,15 +1028,10 @@
             if (btn) btn.classList.add('active');
             if (tab === 'bloqueados') cargarBloqueados();
         };
-        
-        window.filtrarUsuarios = () => renderizarTablaUsuarios();
-        window.filtrarPublicaciones = () => renderizarTablaPublicaciones();
-        window.filtrarReportes = () => renderizarTablaReportes();
-        window.filtrarDiarios = () => renderizarTablaDiarios();
-        window.filtrarPostits = () => renderizarTablaPostits();
-        
+
         window.cerrarModal = () => document.getElementById('modalDetalle').classList.remove('show');
-        
+
+        // Event listeners para filtros
         document.getElementById('searchUsuarios')?.addEventListener('keyup', () => renderizarTablaUsuarios());
         document.getElementById('filterUsuariosEstado')?.addEventListener('change', () => renderizarTablaUsuarios());
         document.getElementById('searchPosts')?.addEventListener('keyup', () => renderizarTablaPublicaciones());
@@ -936,14 +1040,17 @@
         document.getElementById('filterReportesEstado')?.addEventListener('change', () => renderizarTablaReportes());
         document.getElementById('searchDiarios')?.addEventListener('keyup', () => renderizarTablaDiarios());
         document.getElementById('searchPostits')?.addEventListener('keyup', () => renderizarTablaPostits());
-        
+
         function escapeHtml(text) { if (!text) return ''; return text.replace(/[&<>]/g, function(m) { return m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'; }); }
         function mostrarToast(msg, isError = false) {
             const toast = document.getElementById('toast');
-            toast.style.background = isError ? '#3a1a1a' : '#1e293b';
+            toast.style.background = isError ? 'rgba(239,68,68,0.15)' : 'rgba(30,41,59,0.95)';
+            toast.style.color = isError ? '#f87171' : '#fbbf24';
+            toast.style.border = isError ? '1px solid rgba(239,68,68,0.15)' : '1px solid rgba(251,191,36,0.08)';
             toast.textContent = msg;
             toast.style.display = 'block';
-            setTimeout(() => toast.style.display = 'none', 2500);
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => toast.style.display = 'none', 2500);
         }
     </script>
 </body>
