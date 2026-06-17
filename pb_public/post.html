@@ -10,17 +10,33 @@
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/plugin/relativeTime.js"></script>
     <script>dayjs.extend(window.dayjs_plugin_relativeTime);</script>
     
-
     <style>
+        /* ========== ESTILOS ========== */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        :root { --main-blue: #3a6186; --glossy: linear-gradient(180deg, #ffffff 0%, #d1d1d1 100%); --shatt-blue: #3b5998; --panel-opacity: 1; --shadow-sm: 0 2px 8px rgba(0,0,0,0.1); --shadow-md: 0 4px 12px rgba(0,0,0,0.15); --shadow-lg: 0 8px 24px rgba(0,0,0,0.2); --transition: all 0.3s ease; --border-radius: 12px; --border-radius-sm: 8px; --spacing-xs: 4px; --spacing-sm: 8px; --spacing-md: 12px; --spacing-lg: 16px; --spacing-xl: 24px; --star-color: #ddd; --star-active: #ffc107; }
-        body { background: var(--main-blue); background-size: cover; background-attachment: fixed; background-position: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; margin: 0; min-height: 100vh; color: #000; line-height: 1.5; transition: background 0.3s ease; padding-bottom: 70px; }
+        :root { --main-blue: #3a6186; --glossy: linear-gradient(180deg, #ffffff 0%, #d1d1d1 100%); --shatt-blue: #3b5998; --panel-opacity: 1; --shadow-sm: 0 2px 8px rgba(0,0,0,0.1); --shadow-md: 0 4px 12px rgba(0,0,0,0.15); --shadow-lg: 0 8px 24px rgba(0,0,0,0.2); --transition: all 0.3s ease; --border-radius: 12px; --border-radius-sm: 8px; --spacing-xs: 4px; --spacing-sm: 8px; --spacing-md: 12px; --spacing-lg: 16px; --spacing-xl: 24px; --star-color: #ddd; --star-active: #ffc107; --star-hover: #ffdb6e; }
+        
+        /* ========== FONDO DE RESPALDO ========== */
+        body { 
+            background: #3a6186 !important; 
+            background-size: cover; 
+            background-attachment: fixed; 
+            background-position: center; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; 
+            margin: 0; 
+            min-height: 100vh; 
+            color: #000; 
+            line-height: 1.5; 
+            transition: background 0.3s ease; 
+            padding-bottom: 70px; 
+        }
+        body.dark-mode { background: #0f0f1a !important; }
+        body.dark-mode .post-detalle, body.dark-mode .comentarios-section { background: rgba(30, 30, 50, 0.95); color: white; border-color: #555; }
+        body.dark-mode .navbar-top { background: #2a2a3a; border-color: #555; }
+        body.dark-mode .navbar-top a, body.dark-mode .navbar-top span { color: white; }
         
         .app-wrapper { max-width: 800px; margin: 0 auto; padding: var(--spacing-md); }
-        .logo-shatt { font-size: 24px; font-weight: bold; color: #fff; text-decoration: none; text-shadow: 2px 2px 0px var(--shatt-blue); white-space: nowrap; transition: var(--transition); }
-        .logo-shatt:hover { text-shadow: 3px 3px 0px var(--shatt-blue); transform: translateY(-2px); }
         
-        /* ========== NAVBAR SUPERIOR (COMPACTO) ========== */
+        /* ========== NAVBAR SUPERIOR ========== */
         .navbar-top {
             background: var(--glossy);
             border: 2px solid #666;
@@ -37,6 +53,9 @@
             z-index: 100;
         }
         
+        .logo-shatt { font-size: 24px; font-weight: bold; color: #fff; text-decoration: none; text-shadow: 2px 2px 0px var(--shatt-blue); white-space: nowrap; transition: var(--transition); }
+        .logo-shatt:hover { text-shadow: 3px 3px 0px var(--shatt-blue); transform: translateY(-2px); }
+        
         .nav-links {
             display: flex;
             flex-wrap: nowrap;
@@ -46,43 +65,15 @@
             border-radius: 40px;
         }
         
-        .nav-links a { 
-            text-decoration: none; 
-            color: #000; 
-            font-weight: bold; 
-            padding: 6px 14px; 
-            font-size: 13px;
-            white-space: nowrap;
-            border-radius: 30px;
-            transition: var(--transition);
-        }
-        
+        .nav-links a { text-decoration: none; color: #000; font-weight: bold; padding: 6px 14px; font-size: 13px; white-space: nowrap; border-radius: 30px; transition: var(--transition); }
         .nav-links a:hover { color: var(--shatt-blue); background: rgba(59,89,152,0.1); }
         .nav-links a.active { background: var(--shatt-blue); color: white; }
         
-        .nav-icons { 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            flex-wrap: nowrap;
-        }
-        
-        .nav-icons > * { 
-            cursor: pointer; 
-            font-size: 18px; 
-            transition: var(--transition); 
-            padding: 6px;
-            min-width: 36px;
-            min-height: 36px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-        }
-        
+        .nav-icons { display: flex; align-items: center; gap: 10px; flex-wrap: nowrap; }
+        .nav-icons > * { cursor: pointer; font-size: 18px; transition: var(--transition); padding: 6px; min-width: 36px; min-height: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; }
         .nav-icons > *:hover { transform: scale(1.1); background: rgba(255,255,255,0.3); }
         
-        /* ========== BARRA INFERIOR (SOLO MÓVIL) ========== */
+        /* ========== BARRA INFERIOR MÓVIL ========== */
         .bottom-nav {
             display: none;
             position: fixed;
@@ -111,11 +102,9 @@
             border-radius: 30px;
             transition: var(--transition);
         }
-        
         .bottom-nav-item span:first-child { font-size: 20px; }
         .bottom-nav-item span:last-child { font-size: 9px; }
         .bottom-nav-item.active { background: var(--shatt-blue); color: white; }
-        .bottom-nav-item:hover { background: rgba(0,0,0,0.05); }
         
         /* ========== POST DETALLE ========== */
         .post-detalle {
@@ -153,47 +142,30 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
+            cursor: pointer;
         }
-        
-        .post-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .post-avatar img { width: 100%; height: 100%; object-fit: cover; }
         
         .post-user-name {
             font-weight: bold;
             font-size: 16px;
+            cursor: pointer;
         }
+        .post-user-name:hover { text-decoration: underline; }
         
         .post-user-status {
             font-size: 12px;
             color: #666;
+            font-weight: normal;
         }
         
-        .post-date {
-            font-size: 11px;
-            color: #888;
-        }
+        .post-date { font-size: 11px; color: #888; }
+        .post-texto { font-size: 16px; line-height: 1.6; margin-bottom: var(--spacing-lg); white-space: pre-wrap; }
         
-        .post-texto {
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: var(--spacing-lg);
-            white-space: pre-wrap;
-        }
-        
-        .post-imagen img {
-            max-width: 100%;
-            border-radius: var(--border-radius-sm);
-            margin: var(--spacing-md) 0;
-            cursor: pointer;
-        }
-        
-        .post-audio audio {
-            width: 100%;
-            margin: var(--spacing-md) 0;
-        }
+        .post-imagen { margin: var(--spacing-md) -20px; cursor: pointer; }
+        .post-imagen img { width: 100%; max-height: 500px; object-fit: contain; background: #f0f2f5; display: block; border-radius: 16px; }
+        .post-audio audio { width: 100%; margin: var(--spacing-md) 0; border-radius: 40px; }
         
         .interaction-bar {
             display: flex;
@@ -206,29 +178,11 @@
             gap: var(--spacing-md);
         }
         
-        .star-rating {
-            display: inline-flex;
-            gap: 8px;
-            align-items: center;
-        }
-        
-        .star-rating .star {
-            font-size: 28px;
-            cursor: pointer;
-            color: var(--star-color);
-            transition: all 0.2s;
-        }
-        
+        .star-rating { display: inline-flex; gap: 8px; align-items: center; }
+        .star-rating .star { font-size: 28px; cursor: pointer; color: var(--star-color); transition: all 0.2s; }
         .star-rating .star:hover { transform: scale(1.2); }
         .star-rating .star.active { color: var(--star-active); text-shadow: 0 0 5px rgba(255,193,7,0.5); }
-        
-        .rating-info {
-            font-size: 13px;
-            color: #666;
-            background: rgba(0,0,0,0.05);
-            padding: 4px 12px;
-            border-radius: 20px;
-        }
+        .rating-info { font-size: 13px; color: #666; background: rgba(0,0,0,0.05); padding: 4px 12px; border-radius: 20px; }
         
         .volver-btn {
             background: var(--shatt-blue);
@@ -240,7 +194,10 @@
             font-weight: bold;
             display: inline-block;
             margin-bottom: var(--spacing-lg);
+            border: none;
+            cursor: pointer;
         }
+        .volver-btn:hover { background: #2d4a7a; transform: translateY(-1px); }
         
         /* ========== COMENTARIOS ========== */
         .comentarios-section {
@@ -255,32 +212,11 @@
             padding-bottom: var(--spacing-lg);
             border-bottom: 1px solid #eee;
         }
+        .comentario-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         
-        .comentario-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-        
-        .comentario-user {
-            cursor: pointer;
-            color: var(--shatt-blue);
-            text-decoration: underline;
-            font-weight: bold;
-            font-size: 13px;
-        }
-        
-        .comentario-texto {
-            margin-top: 6px;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-        
-        .comentario-fecha {
-            font-size: 10px;
-            color: #888;
-            margin-top: 6px;
-        }
+        .comentario-user { cursor: pointer; color: var(--shatt-blue); text-decoration: underline; font-weight: bold; font-size: 13px; }
+        .comentario-texto { margin-top: 6px; font-size: 14px; line-height: 1.5; }
+        .comentario-fecha { font-size: 10px; color: #888; margin-top: 6px; }
         
         .comentario-input-area {
             display: flex;
@@ -288,7 +224,6 @@
             margin-top: var(--spacing-lg);
             flex-wrap: wrap;
         }
-        
         .comentario-input {
             flex: 1;
             padding: 12px;
@@ -296,44 +231,38 @@
             border-radius: 30px;
             font-size: 14px;
             outline: none;
+            min-width: 150px;
         }
+        .comentario-input:focus { border-color: var(--shatt-blue); }
         
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: #888;
-        }
-        
-        .btn-retro {
-            background: #e0e0e0;
-            border: 2px outset #fff;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-weight: bold;
-            border-radius: 30px;
-            transition: var(--transition);
-        }
-        
+        .empty-state { text-align: center; padding: 40px; color: #888; }
+        .btn-retro { background: #e0e0e0; border: 2px outset #fff; padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 30px; transition: var(--transition); }
+        .btn-retro:hover { background: #d0d0d0; transform: translateY(-1px); }
         .btn-retro:active { transform: translate(1px, 1px); border-style: inset; }
         
-        #custom-toast {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.85);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-size: 14px;
-            z-index: 10000;
+        #custom-toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: white; padding: 12px 24px; border-radius: 50px; font-size: 14px; z-index: 10000; display: none; max-width: 90%; text-align: center; }
+        
+        /* ========== MODAL DE IMAGEN ZOOM ========== */
+        .image-viewer-modal {
             display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
         }
+        .image-viewer-modal.show { display: flex; }
+        .image-viewer-content { position: relative; max-width: 95%; max-height: 95%; display: flex; justify-content: center; align-items: center; }
+        .image-viewer-content img { max-width: 100%; max-height: 100%; object-fit: contain; cursor: zoom-in; }
+        .image-viewer-content img.zoomed { cursor: zoom-out; transform: scale(2); }
+        .image-viewer-close { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.7); color: white; border: none; border-radius: 50%; width: 44px; height: 44px; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10001; }
+        .image-viewer-close:hover { background: rgba(0,0,0,0.9); }
         
-        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 5000; backdrop-filter: blur(3px); }
-        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #f0f0f0; border: 3px solid #000; padding: 20px; z-index: 5001; width: min(450px, 90%); max-height: 90vh; overflow-y: auto; border-radius: 12px; color: #000; }
-        .preset-bg { width: 45px; height: 45px; border: 2px solid #000; display: inline-block; cursor: pointer; margin: 5px; border-radius: 8px; }
-        
+        /* ========== RESPONSIVE ========== */
         @media (max-width: 768px) {
             .nav-links { display: none !important; }
             .bottom-nav { display: flex; }
@@ -341,11 +270,16 @@
             .logo-shatt { font-size: 18px; }
             .nav-icons > * { font-size: 16px; padding: 4px; min-width: 32px; min-height: 32px; }
             .post-detalle { padding: var(--spacing-lg); }
+            .post-imagen { margin: var(--spacing-md) -16px; }
             .star-rating .star { font-size: 24px; }
             #custom-toast { bottom: 70px; }
         }
-
-        
+        @media (max-width: 480px) {
+            .bottom-nav-item { padding: 4px 8px; }
+            .bottom-nav-item span:first-child { font-size: 18px; }
+            .bottom-nav-item span:last-child { font-size: 8px; }
+            .post-avatar { width: 40px; height: 40px; }
+        }
     </style>
 </head>
 <body>
@@ -361,16 +295,15 @@
                 <a href="shatts.html">shatts</a>
             </div>
             <div class="nav-icons">
-                <span onclick="abrirPersonalizacion()">🖌️</span>
-                <span onclick="cerrarSesion()">🚪</span>
+                <!-- Sin brocha ni puerta -->
             </div>
         </div>
 
         <!-- CONTENIDO PRINCIPAL -->
-        <a href="javascript:history.back()" class="volver-btn">← Volver</a>
+        <button onclick="history.back()" class="volver-btn">← Volver</button>
         
         <div id="postContent" class="post-detalle">
-            <div style="text-align: center; padding: 40px;">Cargando publicación...</div>
+            <div class="empty-state">⏳ Cargando publicación...</div>
         </div>
 
         <div id="comentariosSection" class="comentarios-section" style="display: none;">
@@ -391,83 +324,226 @@
         <a href="shatts.html" class="bottom-nav-item"><span>💬</span><span>Shatts</span></a>
     </div>
 
-    <div id="modal-overlay" class="overlay" onclick="cerrarModalesGlobal()"></div>
-    <div id="design-modal" class="modal">
-        <h3>🎨 Personalizar Shatt</h3>
-        <div><label>🎨 Colores predefinidos:</label><div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
-            <div class="preset-bg" style="background:#3a6186;" onclick="setBgColorGlobal('#3a6186')"></div>
-            <div class="preset-bg" style="background:#ff99cc;" onclick="setBgColorGlobal('#ff99cc')"></div>
-            <div class="preset-bg" style="background:#000;" onclick="setBgColorGlobal('#000')"></div>
-            <div class="preset-bg" style="background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);" onclick="setBgColorGlobal('linear-gradient(135deg, #667eea 0%, #764ba2 100%)')"></div>
-            <div class="preset-bg" style="background:linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" onclick="setBgColorGlobal('linear-gradient(135deg, #f093fb 0%, #f5576c 100%)')"></div>
-        </div></div>
-        <div style="margin-top: 15px;"><label>🎨 Color personalizado:</label><input type="color" id="custom-color-global" onchange="setBgColorGlobal(this.value)" style="width:100%; margin-top:5px;"></div>
-        <div style="margin-top: 15px;"><label>🖼️ Imagen de fondo:</label><input type="file" id="bg-image-global" accept="image/*" onchange="setImageBgGlobal(this)" style="margin-top:5px;"></div>
-        <div style="margin-top: 15px;"><label>🔆 Transparencia de paneles:</label>
-            <div style="display:flex; gap: 10px; margin-top:5px;"><input type="range" id="opacity-slider-global" min="0.1" max="1" step="0.1" value="1" oninput="setOpacityGlobal(this.value)" style="flex:1;"><span id="opacity-value-global">100%</span></div>
+    <!-- MODAL ZOOM IMAGEN -->
+    <div id="imageViewerModal" class="image-viewer-modal">
+        <button class="image-viewer-close" onclick="cerrarImageViewer()">✕</button>
+        <div class="image-viewer-content">
+            <img id="imageViewerImg" src="" alt="Imagen" onclick="toggleZoom()">
         </div>
-        <div style="margin-top: 20px;"><button class="btn-retro" onclick="guardarDisenoGlobal()" style="background:#4CAF50; color:white;">💾 GUARDAR</button>
-        <button class="btn-retro" onclick="cerrarModalesGlobal()" style="margin-top:10px;">❌ CERRAR</button></div>
     </div>
 
     <div id="custom-toast"></div>
 
     <script>
-        // Variables globales (solo una vez)
-let currentUser = null;
-let palabrasFiltro = [];
-
-const PB_URL = 'https://shatt-social-production.up.railway.app';
-const pb = new PocketBase(PB_URL);
-pb.autoCancellation(false);
-        
-        
+        // ========== VARIABLES GLOBALES ==========
+        let currentUser = null;
         let currentPost = null;
         let postId = null;
+        let zoomLevel = 1;
+        let currentZoomImage = null;
+
+        const PB_URL = 'https://shatt-social-production.up.railway.app';
+        const pb = new PocketBase(PB_URL);
+        pb.autoCancellation(false);
         
-        const urlParams = new URLSearchParams(window.location.search);
-        postId = urlParams.get('id');
-        
+        // ========== OBTENER ID DEL POST DESDE LA URL ==========
+        function getPostIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+
+        // ========== TOAST ==========
         function mostrarToast(msg) {
             const t = document.getElementById('custom-toast');
             t.textContent = msg;
             t.style.display = 'block';
             setTimeout(() => t.style.display = 'none', 2500);
         }
-        
+
         function escapeHtml(text) {
             if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
-        
-        // ========== PERSONALIZACIÓN ==========
-        function aplicarDiseno(fondo, opacidad) {
-            if (fondo) {
-                if (fondo.startsWith('url')) {
-                    document.body.style.backgroundImage = fondo;
-                    document.body.style.backgroundSize = 'cover';
-                    document.body.style.backgroundAttachment = 'fixed';
-                    document.body.style.backgroundPosition = 'center';
-                    document.body.style.backgroundColor = 'transparent';
-                } else if (fondo.startsWith('linear-gradient')) {
-                    document.body.style.background = fondo;
-                    document.body.style.backgroundImage = 'none';
-                } else {
-                    document.body.style.background = fondo;
-                    document.body.style.backgroundImage = 'none';
-                }
+
+        // ========== ZOOM IMAGEN ==========
+        function abrirImageViewer(url) {
+            const modal = document.getElementById('imageViewerModal');
+            const img = document.getElementById('imageViewerImg');
+            img.src = url;
+            img.classList.remove('zoomed');
+            zoomLevel = 1;
+            img.style.transform = 'scale(1)';
+            modal.classList.add('show');
+            currentZoomImage = img;
+        }
+
+        function cerrarImageViewer() {
+            const modal = document.getElementById('imageViewerModal');
+            modal.classList.remove('show');
+            if (currentZoomImage) {
+                currentZoomImage.style.transform = 'scale(1)';
+                currentZoomImage.classList.remove('zoomed');
+                currentZoomImage = null;
             }
-            if (opacidad !== undefined && opacidad !== null) {
-                document.documentElement.style.setProperty('--panel-opacity', opacidad);
-                const slider = document.getElementById('opacity-slider-global');
-                if (slider) slider.value = opacidad;
-                const opacityValue = document.getElementById('opacity-value-global');
-                if (opacityValue) opacityValue.textContent = Math.round(opacidad * 100) + '%';
+            zoomLevel = 1;
+        }
+
+        function toggleZoom() {
+            const img = document.getElementById('imageViewerImg');
+            if (zoomLevel === 1) {
+                zoomLevel = 2;
+                img.classList.add('zoomed');
+                img.style.transform = 'scale(2)';
+            } else {
+                zoomLevel = 1;
+                img.classList.remove('zoomed');
+                img.style.transform = 'scale(1)';
             }
         }
-        
+
+        // ========== FUNCIONES DE DISEÑO (DEFINIDAS ANTES DE USARSE) ==========
+        function aplicarDiseno(fondo, opacidad) {
+            try {
+                console.log("🎨 Aplicando diseño:", fondo, opacidad);
+                
+                // Si fondo es null, undefined, "none", "null", o vacío → usar color por defecto
+                if (!fondo || fondo === 'none' || fondo === 'null' || fondo === 'undefined' || fondo === '') {
+                    fondo = '#3a6186';
+                    console.log("⚠️ Fondo inválido, usando color por defecto:", fondo);
+                }
+                
+                if (fondo) {
+                    if (fondo.startsWith('url')) {
+                        document.body.style.backgroundImage = fondo;
+                        document.body.style.backgroundSize = 'cover';
+                        document.body.style.backgroundAttachment = 'fixed';
+                        document.body.style.backgroundPosition = 'center';
+                        document.body.style.backgroundColor = 'transparent';
+                    } else if (fondo.startsWith('linear-gradient')) {
+                        document.body.style.background = fondo;
+                        document.body.style.backgroundImage = 'none';
+                    } else {
+                        document.body.style.background = fondo;
+                        document.body.style.backgroundImage = 'none';
+                    }
+                } else {
+                    // Fallback: color azul
+                    document.body.style.background = '#3a6186';
+                    document.body.style.backgroundImage = 'none';
+                }
+                
+                if (opacidad !== undefined && opacidad !== null) {
+                    const val = parseFloat(opacidad);
+                    if (isNaN(val) || val <= 0) {
+                        document.documentElement.style.setProperty('--panel-opacity', '1');
+                    } else {
+                        document.documentElement.style.setProperty('--panel-opacity', val);
+                    }
+                }
+                
+                // Forzar que el cuerpo tenga el color
+                document.body.style.backgroundColor = '#3a6186';
+                
+                console.log("✅ Diseño aplicado correctamente");
+            } catch(e) {
+                console.error("❌ Error aplicando diseño:", e);
+                document.body.style.background = '#3a6186';
+                document.body.style.backgroundImage = 'none';
+                document.body.style.backgroundColor = '#3a6186';
+            }
+        }
+
+        async function cargarDisenoGuardado() {
+            if (!currentUser) return;
+            try {
+                let fondoAplicado = false;
+                
+                // 1. Intentar cargar desde localStorage
+                let local = localStorage.getItem('shatt_diseno');
+                if (local) {
+                    try {
+                        let d = JSON.parse(local);
+                        if (d.fondo && d.fondo !== 'none' && d.fondo !== 'null' && d.fondo !== '') {
+                            aplicarDiseno(d.fondo, d.opacidad || 1);
+                            fondoAplicado = true;
+                            console.log("✅ Diseño aplicado desde localStorage");
+                        }
+                    } catch(e) {
+                        console.warn("Error parseando localStorage:", e);
+                    }
+                }
+                
+                // 2. Si no se aplicó desde localStorage, cargar desde PocketBase
+                if (!fondoAplicado) {
+                    try {
+                        let user = await pb.collection('usuarios').getOne(currentUser.id);
+                        if (user.diseno && user.diseno.fondo && user.diseno.fondo !== 'none' && user.diseno.fondo !== 'null') {
+                            aplicarDiseno(user.diseno.fondo, user.diseno.opacidad || 1);
+                            fondoAplicado = true;
+                            console.log("✅ Diseño aplicado desde PocketBase");
+                        }
+                    } catch(e) {
+                        console.warn("No se pudo cargar diseño desde PocketBase:", e);
+                    }
+                }
+                
+                // 3. Si NO se aplicó ningún diseño, usar el color por defecto
+                if (!fondoAplicado) {
+                    console.log("⚠️ No hay diseño guardado, usando color por defecto");
+                    aplicarDiseno('#3a6186', 1);
+                }
+                
+                // 4. Verificar modo oscuro
+                if (localStorage.getItem('shatt_darkmode') === 'true') {
+                    document.body.classList.add('dark-mode');
+                }
+                
+                // 5. FORZAR que el cuerpo tenga color (por si acaso)
+                setTimeout(() => {
+                    if (document.body.style.background === '' || document.body.style.background === 'none') {
+                        document.body.style.background = '#3a6186';
+                        document.body.style.backgroundImage = 'none';
+                    }
+                }, 100);
+                
+            } catch(e) {
+                console.error("❌ Error cargando diseño:", e);
+                document.body.style.background = '#3a6186';
+                document.body.style.backgroundImage = 'none';
+            }
+        }
+
+        function verPerfil(uid) {
+            window.location.href = `perfil.html?uid=${uid}`;
+        }
+
+        // ========== FUNCIONES DE PERSONALIZACIÓN ==========
+        function setBgColorGlobal(color) {
+            document.body.style.background = color;
+            document.body.style.backgroundImage = 'none';
+            if (currentUser) guardarDisenoGlobal();
+        }
+
+        function setImageBgGlobal(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.body.style.backgroundImage = `url(${e.target.result})`;
+                    document.body.style.backgroundSize = 'cover';
+                    document.body.style.backgroundAttachment = 'fixed';
+                    if (currentUser) guardarDisenoGlobal();
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function setOpacityGlobal(val) {
+            document.documentElement.style.setProperty('--panel-opacity', val);
+            if (currentUser) guardarDisenoGlobal();
+        }
+
         async function guardarDisenoGlobal() {
             if (!currentUser) { mostrarToast("No hay usuario logueado"); return; }
             let fondoActual = document.body.style.backgroundImage || document.body.style.background || '#3a6186';
@@ -476,94 +552,84 @@ pb.autoCancellation(false);
                 await pb.collection('usuarios').update(currentUser.id, { diseno: { fondo: fondoActual, opacidad } });
                 localStorage.setItem('shatt_diseno', JSON.stringify({ fondo: fondoActual, opacidad }));
                 mostrarToast("✅ Diseño guardado");
-                cerrarModalesGlobal();
-            } catch(e) { mostrarToast("Error al guardar"); }
+            } catch(e) { console.error("Error guardando diseño:", e); }
         }
-        
-        async function cargarDisenoGuardado() {
-            if (!currentUser) return;
-            try {
-                let local = localStorage.getItem('shatt_diseno');
-                if (local) { let d = JSON.parse(local); aplicarDiseno(d.fondo, d.opacidad); }
-                let user = await pb.collection('usuarios').getOne(currentUser.id);
-                if (user.diseno) aplicarDiseno(user.diseno.fondo, user.diseno.opacidad);
-            } catch(e) {}
-        }
-        
-        function abrirPersonalizacion() {
-            document.getElementById('design-modal').style.display = 'block';
-            document.getElementById('modal-overlay').style.display = 'block';
-        }
-        
-        function cerrarModalesGlobal() {
-            document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
-            document.getElementById('modal-overlay').style.display = 'none';
-        }
-        
-        function setBgColorGlobal(c) {
-            document.body.style.background = c;
-            document.body.style.backgroundImage = 'none';
-        }
-        
-        function setImageBgGlobal(input) {
-            if (input.files && input.files[0]) {
-                let r = new FileReader();
-                r.onload = (e) => { document.body.style.backgroundImage = `url(${e.target.result})`; document.body.style.backgroundSize = 'cover'; };
-                r.readAsDataURL(input.files[0]);
-            }
-        }
-        
-        function setOpacityGlobal(v) {
-            document.documentElement.style.setProperty('--panel-opacity', v);
-            document.getElementById('opacity-value-global').innerText = Math.round(v * 100) + '%';
-        }
-        
-        function cerrarSesion() {
-            pb.authStore.clear();
-            localStorage.removeItem('pocketbase_auth');
-            window.location.href = "iniciarsesion.html";
-        }
-        
-        // ========== AUTENTICACIÓN ==========
+
+        // ========== AUTENTICACIÓN Y CARGA ==========
         (async function() {
-            const saved = localStorage.getItem('pocketbase_auth');
-            if (saved) {
-                try {
-                    const { token, model } = JSON.parse(saved);
-                    pb.authStore.save(token, model);
-                } catch(e) {}
-            }
-            if (!pb.authStore.isValid || !pb.authStore.model) {
-                window.location.href = "iniciarsesion.html";
-                return;
-            }
-            currentUser = pb.authStore.model;
-            await cargarDisenoGuardado();
+            // 1. Obtener ID del post
+            postId = getPostIdFromUrl();
+            console.log("📌 Post ID:", postId);
             
             if (!postId) {
                 document.getElementById('postContent').innerHTML = '<div class="empty-state">❌ No se especificó ninguna publicación</div>';
                 return;
             }
+
+            // 2. Autenticar usuario
+            const saved = localStorage.getItem('pocketbase_auth');
+            if (saved) {
+                try {
+                    const { token, model } = JSON.parse(saved);
+                    pb.authStore.save(token, model);
+                } catch(e) {
+                    console.error("Error cargando sesión:", e);
+                }
+            }
             
+            if (!pb.authStore.isValid || !pb.authStore.model) {
+                window.location.href = "iniciarsesion.html";
+                return;
+            }
+            
+            currentUser = pb.authStore.model;
+            console.log("👤 Usuario:", currentUser.email);
+            
+            // 3. ⭐ APLICAR DISEÑO GUARDADO ANTES DE MOSTRAR EL POST ⭐
+            await cargarDisenoGuardado();
+            
+            // 4. Verificar modo oscuro
+            if (localStorage.getItem('shatt_darkmode') === 'true') {
+                document.body.classList.add('dark-mode');
+            }
+            
+            // 5. Cargar el post
             await cargarPost();
         })();
-        
+
         // ========== CARGAR POST ==========
         async function cargarPost() {
+            const container = document.getElementById('postContent');
+            container.innerHTML = '<div class="empty-state">⏳ Cargando publicación...</div>';
+            
             try {
+                console.log("🔍 Buscando post con ID:", postId);
+                
                 const post = await pb.collection('posts').getOne(postId, {
                     expand: 'usuario'
                 });
+                
+                console.log("✅ Post encontrado:", post);
                 currentPost = post;
                 renderizarPost(post);
+                
+                // Cargar comentarios
                 await cargarComentarios();
                 document.getElementById('comentariosSection').style.display = 'block';
+                
             } catch(e) {
-                console.error(e);
-                document.getElementById('postContent').innerHTML = '<div class="empty-state">❌ Publicación no encontrada</div>';
+                console.error("❌ Error cargando post:", e);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        ❌ Publicación no encontrada<br>
+                        <small style="color:#888; font-size:12px;">ID: ${postId}</small>
+                        <br><br>
+                        <button onclick="window.location.href='inicio.html'" class="volver-btn" style="background:var(--shatt-blue); color:white; padding:10px 20px; border:none; border-radius:30px; cursor:pointer;">Ir al inicio</button>
+                    </div>
+                `;
             }
         }
-        
+
         function renderizarPost(post) {
             const autor = post.expand?.usuario;
             let autorNombre = 'Usuario';
@@ -585,7 +651,10 @@ pb.autoCancellation(false);
             
             let imagenHtml = '';
             if (post.imagen) {
-                try { imagenHtml = `<div class="post-imagen"><img src="${pb.files.getUrl(post, post.imagen)}" onclick="window.open('${pb.files.getUrl(post, post.imagen)}', '_blank')"></div>`; } catch(e) {}
+                try { 
+                    const imgUrl = pb.files.getUrl(post, post.imagen);
+                    imagenHtml = `<div class="post-imagen" onclick="abrirImageViewer('${imgUrl}')"><img src="${imgUrl}" loading="lazy"></div>`; 
+                } catch(e) {}
             }
             
             let audioHtml = '';
@@ -600,16 +669,17 @@ pb.autoCancellation(false);
                 estrellasHTML += `<span class="star ${i <= Math.round(ratingValue) ? 'active' : ''}" onclick="ratePost(${i})">★</span>`;
             }
             
+            const statusHtml = post.status ? `<span class="post-user-status">· ${escapeHtml(post.status)}</span>` : '';
+            
             document.getElementById('postContent').innerHTML = `
                 <div class="post-header">
                     <div class="post-user-info">
-                        <div class="post-avatar">${autorAvatar || '👤'}</div>
+                        <div class="post-avatar" onclick="verPerfil('${autorId}')">${autorAvatar || '👤'}</div>
                         <div>
-                            <div class="post-user-name" onclick="verPerfil('${autorId}')" style="cursor:pointer;">@${escapeHtml(autorNombre)}</div>
-                            ${post.status ? `<div class="post-user-status">- ${escapeHtml(post.status)}</div>` : ''}
+                            <div class="post-user-name" onclick="verPerfil('${autorId}')">@${escapeHtml(autorNombre)} ${statusHtml}</div>
+                            <div class="post-date">${fechaTexto}</div>
                         </div>
                     </div>
-                    <div class="post-date">${fechaTexto}</div>
                 </div>
                 <div class="post-texto">${escapeHtml(post.texto || '')}</div>
                 ${imagenHtml}
@@ -622,8 +692,8 @@ pb.autoCancellation(false);
                 </div>
             `;
         }
-        
-        // ========== VOTAR ==========
+
+        // ========== VOTAR (ESTRELLAS) ==========
         async function ratePost(stars) {
             if (!currentUser) return mostrarToast("Debes iniciar sesión");
             if (!currentPost) return;
@@ -662,10 +732,11 @@ pb.autoCancellation(false);
                 mostrarToast("⭐ Voto registrado");
                 
             } catch(e) {
+                console.error("Error al votar:", e);
                 mostrarToast("Error al votar");
             }
         }
-        
+
         // ========== COMENTARIOS ==========
         async function cargarComentarios() {
             if (!currentPost) return;
@@ -685,52 +756,50 @@ pb.autoCancellation(false);
                 </div>
             `).join('');
         }
-        
+
         async function enviarComentario() {
-    if (!currentUser) return mostrarToast("Debes iniciar sesión");
-    if (!currentPost) return;
-    
-    const input = document.getElementById('comentarioInput');
-    const texto = input.value.trim();
-    if (!texto) return;
-    
-    try {
-        const comments = currentPost.comments || [];
-        
-        // 🔧 USAR NICKNAME EN LUGAR DE EMAIL
-        const userNick = currentUser.nick || currentUser.email.split('@')[0];
-        
-        const newComment = {
-            userNick: userNick,
-            userId: currentUser.id,
-            text: texto,
-            createdAt: new Date().toISOString()
-        };
-        comments.push(newComment);
-        await pb.collection('posts').update(currentPost.id, { comments: comments });
-        currentPost.comments = comments;
-        input.value = '';
-        await cargarComentarios();
-        mostrarToast("💬 Comentario enviado");
-    } catch(e) {
-        mostrarToast("Error al comentar");
-    }
-}
-        
-        function verPerfil(uid) {
-            window.location.href = `perfil.html?uid=${uid}`;
+            if (!currentUser) return mostrarToast("Debes iniciar sesión");
+            if (!currentPost) return;
+            
+            const input = document.getElementById('comentarioInput');
+            const texto = input.value.trim();
+            if (!texto) return;
+            
+            try {
+                const comments = currentPost.comments || [];
+                const userNick = currentUser.nick || currentUser.email.split('@')[0];
+                
+                const newComment = {
+                    userNick: userNick,
+                    userId: currentUser.id,
+                    text: texto,
+                    createdAt: new Date().toISOString()
+                };
+                comments.push(newComment);
+                await pb.collection('posts').update(currentPost.id, { comments: comments });
+                currentPost.comments = comments;
+                input.value = '';
+                await cargarComentarios();
+                mostrarToast("💬 Comentario enviado");
+            } catch(e) {
+                console.error("Error al comentar:", e);
+                mostrarToast("Error al comentar");
+            }
         }
-        
-        window.abrirPersonalizacion = abrirPersonalizacion;
-        window.guardarDisenoGlobal = guardarDisenoGlobal;
-        window.cerrarModalesGlobal = cerrarModalesGlobal;
-        window.setBgColorGlobal = setBgColorGlobal;
-        window.setImageBgGlobal = setImageBgGlobal;
-        window.setOpacityGlobal = setOpacityGlobal;
-        window.cerrarSesion = cerrarSesion;
+
+        // ========== EXPOSICIÓN GLOBAL ==========
         window.ratePost = ratePost;
         window.enviarComentario = enviarComentario;
         window.verPerfil = verPerfil;
+        window.abrirImageViewer = abrirImageViewer;
+        window.cerrarImageViewer = cerrarImageViewer;
+        window.toggleZoom = toggleZoom;
+        window.setBgColorGlobal = setBgColorGlobal;
+        window.setImageBgGlobal = setImageBgGlobal;
+        window.setOpacityGlobal = setOpacityGlobal;
+        window.guardarDisenoGlobal = guardarDisenoGlobal;
+        window.cargarDisenoGuardado = cargarDisenoGuardado;
+        window.aplicarDiseno = aplicarDiseno;
     </script>
 </body>
 </html>
