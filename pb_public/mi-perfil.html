@@ -10,18 +10,33 @@
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/plugin/relativeTime.js"></script>
     <script>dayjs.extend(window.dayjs_plugin_relativeTime);</script>
     
-
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         :root { --main-blue: #3a6186; --glossy: linear-gradient(180deg, #ffffff 0%, #d1d1d1 100%); --shatt-blue: #3b5998; --panel-opacity: 1; --shadow-sm: 0 2px 8px rgba(0,0,0,0.1); --shadow-md: 0 4px 12px rgba(0,0,0,0.15); --shadow-lg: 0 8px 24px rgba(0,0,0,0.2); --transition: all 0.3s ease; --border-radius: 12px; --border-radius-sm: 8px; --spacing-xs: 4px; --spacing-sm: 8px; --spacing-md: 12px; --spacing-lg: 16px; --spacing-xl: 24px; }
-        body { background: var(--main-blue); background-size: cover; background-attachment: fixed; background-position: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; margin: 0; min-height: 100vh; color: #000; line-height: 1.5; transition: background 0.3s ease; padding-bottom: 70px; }
         
-        body.dark-mode { background: #0f0f1a; }
+        /* ========== FONDO AZUL POR DEFECTO ========== */
+        body { 
+            background: #3a6186 !important; 
+            background-size: cover; 
+            background-attachment: fixed; 
+            background-position: center; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; 
+            margin: 0; 
+            min-height: 100vh; 
+            color: #000; 
+            line-height: 1.5; 
+            transition: background 0.3s ease; 
+            padding-bottom: 70px; 
+        }
+        
+        body.dark-mode { background: #0f0f1a !important; }
         body.dark-mode .panel-retro, body.dark-mode .profile-mobile-card { background: rgba(30, 30, 50, 0.95); color: white; border-color: #555; }
         body.dark-mode .navbar-top { background: #2a2a3a; border-color: #555; }
         body.dark-mode .navbar-top a, body.dark-mode .navbar-top span { color: white; }
         body.dark-mode .btn-retro { background: #444; color: white; border-color: #666; }
         body.dark-mode .info-item { border-bottom-color: #444; }
+        body.dark-mode .btn-edit-profile { background: #2d6a4f; }
+        body.dark-mode .btn-messages { background: #1e3a5f; }
         
         .app-wrapper { max-width: 1200px; margin: 0 auto; padding: var(--spacing-md); }
         .logo-shatt { font-size: 24px; font-weight: bold; color: #fff; text-decoration: none; text-shadow: 2px 2px 0px var(--shatt-blue); white-space: nowrap; transition: var(--transition); }
@@ -303,14 +318,96 @@
         .stat-number { font-size: 22px; font-weight: bold; color: var(--shatt-blue); line-height: 1.2; }
         .stat-label { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
         
-        .blurb-title { background: rgba(213, 225, 239, 0.8); padding: var(--spacing-md); font-weight: bold; border: 1px solid #3a6186; margin-bottom: var(--spacing-md); font-size: 13px; text-align: center; border-radius: var(--border-radius-sm); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .blurb-title { background: rgba(213, 225, 239, 0.8); padding: var(--spacing-md); font-weight: bold; border: 1px solid #3a6186; margin-bottom: var(--spacing-md); font-size: 13px; text-align: center; border-radius: var(--border-radius-sm); }
         .blurb-content { display: block; }
-        .blurb-content.collapsed { display: none; }
         
         .btn-retro { background: #e0e0e0; border: 2px outset #fff; padding: var(--spacing-md) var(--spacing-lg); cursor: pointer; font-weight: bold; text-decoration: none; color: black; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; border-radius: var(--border-radius-sm); transition: var(--transition); text-align: center; min-height: 44px; }
         .btn-retro:hover { background: #d0d0d0; transform: translateY(-1px); }
         .btn-retro:active { border-style: inset; transform: translateY(2px); }
-        .btn-container { display: flex; gap: var(--spacing-sm); margin-top: var(--spacing-lg); flex-wrap: wrap; }
+        
+        /* ========== BOTONES MEJORADOS ========== */
+        .btn-container {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+        
+        .btn-edit-profile {
+            flex: 2;
+            background: linear-gradient(135deg, #2d6a4f, #1b4332);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3);
+        }
+        .btn-edit-profile:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(45, 106, 79, 0.4);
+        }
+        .btn-edit-profile:active { transform: translateY(0); }
+        
+        .btn-messages {
+            flex: 1;
+            background: linear-gradient(135deg, #1e3a5f, #0f2a44);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(30, 58, 95, 0.3);
+        }
+        .btn-messages:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(30, 58, 95, 0.4);
+        }
+        .btn-messages:active { transform: translateY(0); }
+        
+        /* Versión móvil */
+        .btn-mobile-container {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .btn-mobile {
+            flex: 1;
+            padding: 12px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 13px;
+        }
+        .btn-mobile.edit {
+            background: linear-gradient(135deg, #2d6a4f, #1b4332);
+            color: white;
+            box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3);
+        }
+        .btn-mobile.edit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(45, 106, 79, 0.4); }
+        .btn-mobile.messages {
+            background: linear-gradient(135deg, #1e3a5f, #0f2a44);
+            color: white;
+            box-shadow: 0 4px 15px rgba(30, 58, 95, 0.3);
+        }
+        .btn-mobile.messages:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(30, 58, 95, 0.4); }
         
         .info-item { display: flex; margin-bottom: var(--spacing-sm); border-bottom: 1px solid #eee; padding-bottom: var(--spacing-xs); flex-wrap: wrap; }
         .info-label { font-weight: bold; width: 80px; color: #3a6186; }
@@ -352,10 +449,8 @@
         .profile-mobile-card .stat-mobile { text-align: center; cursor: pointer; }
         .profile-mobile-card .stat-number-mobile { font-size: 20px; font-weight: bold; color: var(--shatt-blue); }
         .profile-mobile-card .stat-label-mobile { font-size: 10px; color: #666; }
-        .profile-mobile-card .btn-mobile-container { display: flex; gap: 10px; margin: 15px 0; }
-        .profile-mobile-card .btn-mobile { flex: 1; padding: 10px; border-radius: 30px; font-weight: bold; cursor: pointer; background: var(--shatt-blue); color: white; border: none; }
-        .profile-mobile-card .btn-mobile.edit { background: #4CAF50; }
         .profile-mobile-card .info-mobile { margin-top: 15px; text-align: left; border-top: 1px solid #ccc; padding-top: 15px; }
+        .profile-mobile-card .info-mobile div { padding: 4px 0; border-bottom: 1px solid #eee; font-size: 13px; }
         
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 5000; backdrop-filter: blur(3px); }
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #f0f0f0; border: 3px solid #000; padding: var(--spacing-xl); z-index: 5001; width: min(500px, 90%); max-height: 90vh; overflow-y: auto; border-radius: var(--border-radius); }
@@ -386,25 +481,15 @@
             .info-label { width: 100%; margin-bottom: var(--spacing-xs); }
             #custom-toast { white-space: normal; font-size: 12px; bottom: 70px; }
             
-            /* En móvil, mostrar la sección de amigos en el centro */
-            .friends-section-desktop {
-                display: none !important;
-            }
-            .friends-section-mobile {
-                display: block !important;
-            }
+            .friends-section-desktop { display: none !important; }
+            .friends-section-mobile { display: block !important; }
         }
         
         @media (min-width: 769px) {
-            /* En PC, ocultar la sección de amigos del centro y mostrar solo la del lateral */
-            .friends-section-mobile {
-                display: none !important;
-            }
+            .friends-section-mobile { display: none !important; }
         }
         
-        .friends-section-mobile {
-            display: none;
-        }
+        .friends-section-mobile { display: none; }
 
         
     </style>
@@ -427,8 +512,6 @@
                     🔔
                     <span id="notification-count" class="notification-badge">0</span>
                 </span>
-                <span onclick="abrirPersonalizacion()">🖌️</span>
-                <span onclick="abrirPanelConfiguracion()">⚙️</span>
             </div>
         </div>
 
@@ -545,8 +628,8 @@
                 </div>
             </div>
             <div class="btn-mobile-container">
-                <button class="btn-mobile edit" onclick="openEditModal()">✏️ EDITAR</button>
-                <button class="btn-mobile" onclick="abrirMisMensajes()">📨 MENSAJES</button>
+                <button class="btn-mobile edit" onclick="openEditModal()">✏️ Editar Perfil</button>
+                <button class="btn-mobile messages" onclick="abrirMisMensajes()">📨 Mensajes</button>
             </div>
             <div class="info-mobile">
                 <div><b>📍 País:</b> <span id="mobile-pais">-</span></div>
@@ -557,7 +640,7 @@
         </div>
 
         <div class="profile-grid">
-            <!-- Sidebar izquierdo (PC) - Aquí está la sección de amigos SOLO para PC -->
+            <!-- Sidebar izquierdo (PC) -->
             <div class="left-col">
                 <div class="panel-retro">
                     <div class="user-name" id="disp-nick">@Cargando...</div>
@@ -568,8 +651,8 @@
                     <div class="pfp-main" id="disp-pfp">👤</div>
                     <div id="disp-bio" style="text-align: center; font-style: italic;">"..."</div>
                     <div class="btn-container">
-                        <button class="btn-retro" onclick="openEditModal()" style="flex:2;">✏️ EDITAR PERFIL</button>
-                        <button class="btn-retro" onclick="abrirMisMensajes()" style="flex:1;">📨 MIS MENSAJES</button>
+                        <button class="btn-edit-profile" onclick="openEditModal()">✏️ Editar Perfil</button>
+                        <button class="btn-messages" onclick="abrirMisMensajes()">📨 Mensajes</button>
                     </div>
                     <div style="margin-top: var(--spacing-lg); border-top: 1px solid #ccc; padding-top: var(--spacing-md);">
                         <div class="info-item"><span class="info-label">📍 País:</span><span class="info-value" id="disp-pais">-</span></div>
@@ -578,7 +661,7 @@
                         <div class="info-item"><span class="info-label">🍷 Toma:</span><span class="info-value" id="disp-toma">-</span></div>
                     </div>
                 </div>
-                <!-- SECCIÓN DE AMIGOS - SOLO VISIBLE EN PC -->
+                <!-- SECCIÓN DE AMIGOS - SOLO PC -->
                 <div class="panel-retro friends-section-desktop">
                     <div class="blurb-title">👥 Amigos <span id="amigos-count">(0)</span></div>
                     <div id="amigos-container" class="amigos-list"><div style="text-align: center; padding: 20px;">Cargando...</div></div>
@@ -591,22 +674,20 @@
                     <div id="disp-about" style="font-size: 14px; line-height: 1.5;">Cargando...</div>
                 </div>
                 
+                <!-- INTERESES - SIEMPRE VISIBLE (SIN PLEGUE) -->
                 <div class="panel-retro">
-                    <div class="blurb-title" onclick="toggleCollapsible('intereses-content')">
-                        🎯 Intereses
-                        <span class="toggle-icon" id="intereses-icon">▼</span>
-                    </div>
+                    <div class="blurb-title">🎯 Intereses</div>
                     <div id="intereses-content" class="blurb-content">
                         <div class="info-item"><span class="info-label">General:</span><span class="info-value" id="disp-int-gen">-</span></div>
                         <div class="info-item"><span class="info-label">Música:</span><span class="info-value" id="disp-int-mus">-</span></div>
                     </div>
                 </div>
                 
-                <!-- SECCIÓN DE AMIGOS - SOLO VISIBLE EN MÓVIL -->
+                <!-- SECCIÓN DE AMIGOS - SOLO MÓVIL (CON PLEGUE) -->
                 <div class="panel-retro friends-section-mobile">
-                    <div class="blurb-title" onclick="toggleCollapsible('amigos-mobile-content')">
+                    <div class="blurb-title" onclick="toggleCollapsible('amigos-mobile-content')" style="cursor:pointer;">
                         👥 Amigos <span id="amigos-mobile-count">(0)</span>
-                        <span class="toggle-icon" id="amigos-mobile-icon">▼</span>
+                        <span class="toggle-icon" id="amigos-mobile-icon" style="float:right;">▼</span>
                     </div>
                     <div id="amigos-mobile-content" class="blurb-content">
                         <div id="amigos-mobile-container" class="amigos-list"><div style="text-align: center; padding: 20px;">Cargando...</div></div>
@@ -639,31 +720,305 @@
     <div id="modal-overlay" class="overlay" onclick="cerrarModalesGlobal()"></div>
     
     <!-- MODAL EDITAR PERFIL -->
-    <div id="edit-modal" class="modal">
-        <h3>✏️ Editar Perfil</h3>
-        <label>Nick:</label><input type="text" id="in-nick" placeholder="Tu nombre de usuario">
-        <label>Foto de perfil:</label><input type="file" id="f-pfp" accept="image/*">
-        <label>Bio (frase corta):</label><input type="text" id="in-bio" placeholder="Una frase sobre ti">
-        
-        <hr>
-        <h4>📝 Sobre mí</h4>
-        <textarea id="in-about" rows="4" placeholder="Cuéntanos más sobre ti..."></textarea>
-        
-        <hr>
-        <h4>🎯 Intereses</h4>
-        <label>Intereses Generales:</label><input type="text" id="in-int-gen" placeholder="Ej: Tecnología, Deportes, Cine...">
-        <label>Música / Bandas favoritas:</label><input type="text" id="in-int-mus" placeholder="Ej: Rock, Pop, Los Beatles...">
-        
-        <hr>
-        <h4>📋 Información personal</h4>
-        <label>País:</label><input type="text" id="in-pais" placeholder="Ej: Perú">
-        <label>Sexo:</label><select id="in-sexo"><option value="Masculino">Masculino</option><option value="Femenino">Femenino</option><option value="Otro">Otro</option><option value="Prefiero no decir">Prefiero no decir</option></select>
-        <label>Fuma:</label><select id="in-fuma"><option value="No">No</option><option value="Sí">Sí</option><option value="A veces">A veces</option></select>
-        <label>Toma:</label><select id="in-toma"><option value="No">No</option><option value="Sí">Sí</option><option value="A veces">A veces</option></select>
-        
-        <button class="btn-retro" onclick="saveAll()" style="margin-top: var(--spacing-lg); width:100%; background:#4CAF50; color:white;">💾 GUARDAR CAMBIOS</button>
-        <button class="btn-retro" onclick="cerrarModalesGlobal()" style="margin-top: var(--spacing-sm); width:100%;">❌ CERRAR</button>
+
+
+
+
+    <div id="edit-modal" class="modal" style="background: linear-gradient(145deg, #f8f9fa, #e9ecef); padding: 30px; border-radius: 16px;">
+    <h3 style="text-align: center; color: var(--shatt-blue); font-size: 24px; border-bottom: 3px solid var(--shatt-blue); padding-bottom: 15px;">
+        ✏️ Editar Perfil
+    </h3>
+    
+    <!-- Foto de perfil con preview (IMAGEN + VIDEO) -->
+    <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;">
+        <div id="preview-avatar-container" style="position: relative; width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--shatt-blue); overflow: hidden; background: #ddd; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+            <img id="preview-avatar-img" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+            <video id="preview-avatar-video" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;" muted autoplay loop playsinline></video>
+            <span id="preview-avatar-placeholder" style="font-size: 50px; color: #999;">👤</span>
+        </div>
+        <label for="f-pfp" style="background: var(--shatt-blue); color: white; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-size: 13px;">
+            📷 Cambiar foto/video
+        </label>
+        <input type="file" id="f-pfp" accept="image/*,video/*" style="display: none;" onchange="previewPfp(this)">
+        <small style="color: #888; font-size: 11px; margin-top: 5px;">Formatos: JPG, PNG, GIF, WebP, MP4, WebM</small>
     </div>
+    
+    <!-- Campos en grid de 2 columnas -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div>
+            <label>Nick:</label>
+            <input type="text" id="in-nick" placeholder="Tu nombre de usuario" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 10px;">
+        </div>
+        <div>
+            <label>Bio:</label>
+            <input type="text" id="in-bio" placeholder="Una frase sobre ti" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 10px;">
+        </div>
+    </div>
+    
+    <div style="margin-top: 15px;">
+        <label>Sobre mí:</label>
+        <textarea id="in-about" rows="3" placeholder="Cuéntanos más sobre ti..." style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 10px;"></textarea>
+    </div>
+    
+    <hr>
+    
+    <h4>🎯 Intereses</h4>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div>
+            <label>Intereses Generales:</label>
+            <input type="text" id="in-int-gen" placeholder="Ej: Tecnología, Deportes..." style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 10px;">
+        </div>
+        <div>
+            <label>Música favorita:</label>
+            <input type="text" id="in-int-mus" placeholder="Ej: Rock, Pop..." style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 10px;">
+        </div>
+    </div>
+    
+    <hr>
+    
+    <h4>📋 Información personal</h4>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div>
+    <label>País:</label>
+    <select id="in-pais" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 10px;" onchange="mostrarInputPais(this)">
+        <option value="">Selecciona un país</option>
+        <option value="Afganistán">Afganistán</option>
+        <option value="Albania">Albania</option>
+        <option value="Alemania">Alemania</option>
+        <option value="Andorra">Andorra</option>
+        <option value="Angola">Angola</option>
+        <option value="Antigua y Barbuda">Antigua y Barbuda</option>
+        <option value="Arabia Saudita">Arabia Saudita</option>
+        <option value="Argelia">Argelia</option>
+        <option value="Argentina">Argentina</option>
+        <option value="Armenia">Armenia</option>
+        <option value="Australia">Australia</option>
+        <option value="Austria">Austria</option>
+        <option value="Azerbaiyán">Azerbaiyán</option>
+        <option value="Bahamas">Bahamas</option>
+        <option value="Bangladés">Bangladés</option>
+        <option value="Barbados">Barbados</option>
+        <option value="Bélgica">Bélgica</option>
+        <option value="Belice">Belice</option>
+        <option value="Benín">Benín</option>
+        <option value="Bielorrusia">Bielorrusia</option>
+        <option value="Birmania">Birmania</option>
+        <option value="Bolivia">Bolivia</option>
+        <option value="Bosnia y Herzegovina">Bosnia y Herzegovina</option>
+        <option value="Botsuana">Botsuana</option>
+        <option value="Brasil">Brasil</option>
+        <option value="Brunéi">Brunéi</option>
+        <option value="Bulgaria">Bulgaria</option>
+        <option value="Burkina Faso">Burkina Faso</option>
+        <option value="Burundi">Burundi</option>
+        <option value="Bután">Bután</option>
+        <option value="Cabo Verde">Cabo Verde</option>
+        <option value="Camboya">Camboya</option>
+        <option value="Camerún">Camerún</option>
+        <option value="Canadá">Canadá</option>
+        <option value="Catar">Catar</option>
+        <option value="Chad">Chad</option>
+        <option value="Chile">Chile</option>
+        <option value="China">China</option>
+        <option value="Chipre">Chipre</option>
+        <option value="Colombia">Colombia</option>
+        <option value="Comoras">Comoras</option>
+        <option value="Corea del Norte">Corea del Norte</option>
+        <option value="Corea del Sur">Corea del Sur</option>
+        <option value="Costa de Marfil">Costa de Marfil</option>
+        <option value="Costa Rica">Costa Rica</option>
+        <option value="Croacia">Croacia</option>
+        <option value="Cuba">Cuba</option>
+        <option value="Dinamarca">Dinamarca</option>
+        <option value="Dominica">Dominica</option>
+        <option value="Ecuador">Ecuador</option>
+        <option value="Egipto">Egipto</option>
+        <option value="El Salvador">El Salvador</option>
+        <option value="Emiratos Árabes Unidos">Emiratos Árabes Unidos</option>
+        <option value="Eritrea">Eritrea</option>
+        <option value="Eslovaquia">Eslovaquia</option>
+        <option value="Eslovenia">Eslovenia</option>
+        <option value="España">España</option>
+        <option value="Estados Unidos">Estados Unidos</option>
+        <option value="Estonia">Estonia</option>
+        <option value="Esuatini">Esuatini</option>
+        <option value="Etiopía">Etiopía</option>
+        <option value="Filipinas">Filipinas</option>
+        <option value="Finlandia">Finlandia</option>
+        <option value="Francia">Francia</option>
+        <option value="Gabón">Gabón</option>
+        <option value="Gambia">Gambia</option>
+        <option value="Georgia">Georgia</option>
+        <option value="Ghana">Ghana</option>
+        <option value="Granada">Granada</option>
+        <option value="Grecia">Grecia</option>
+        <option value="Guatemala">Guatemala</option>
+        <option value="Guyana">Guyana</option>
+        <option value="Guinea">Guinea</option>
+        <option value="Guinea-Bisáu">Guinea-Bisáu</option>
+        <option value="Guinea Ecuatorial">Guinea Ecuatorial</option>
+        <option value="Haití">Haití</option>
+        <option value="Honduras">Honduras</option>
+        <option value="Hungría">Hungría</option>
+        <option value="India">India</option>
+        <option value="Indonesia">Indonesia</option>
+        <option value="Irak">Irak</option>
+        <option value="Irán">Irán</option>
+        <option value="Irlanda">Irlanda</option>
+        <option value="Islandia">Islandia</option>
+        <option value="Islas Marshall">Islas Marshall</option>
+        <option value="Islas Salomón">Islas Salomón</option>
+        <option value="Israel">Israel</option>
+        <option value="Italia">Italia</option>
+        <option value="Jamaica">Jamaica</option>
+        <option value="Japón">Japón</option>
+        <option value="Jordania">Jordania</option>
+        <option value="Kazajistán">Kazajistán</option>
+        <option value="Kenia">Kenia</option>
+        <option value="Kirguistán">Kirguistán</option>
+        <option value="Kiribati">Kiribati</option>
+        <option value="Kosovo">Kosovo</option>
+        <option value="Kuwait">Kuwait</option>
+        <option value="Laos">Laos</option>
+        <option value="Lesoto">Lesoto</option>
+        <option value="Letonia">Letonia</option>
+        <option value="Líbano">Líbano</option>
+        <option value="Liberia">Liberia</option>
+        <option value="Libia">Libia</option>
+        <option value="Liechtenstein">Liechtenstein</option>
+        <option value="Lituania">Lituania</option>
+        <option value="Luxemburgo">Luxemburgo</option>
+        <option value="Macedonia del Norte">Macedonia del Norte</option>
+        <option value="Madagascar">Madagascar</option>
+        <option value="Malasia">Malasia</option>
+        <option value="Malaui">Malaui</option>
+        <option value="Maldivas">Maldivas</option>
+        <option value="Malí">Malí</option>
+        <option value="Malta">Malta</option>
+        <option value="Marruecos">Marruecos</option>
+        <option value="Mauricio">Mauricio</option>
+        <option value="Mauritania">Mauritania</option>
+        <option value="México">México</option>
+        <option value="Micronesia">Micronesia</option>
+        <option value="Moldavia">Moldavia</option>
+        <option value="Mónaco">Mónaco</option>
+        <option value="Mongolia">Mongolia</option>
+        <option value="Montenegro">Montenegro</option>
+        <option value="Mozambique">Mozambique</option>
+        <option value="Namibia">Namibia</option>
+        <option value="Nauru">Nauru</option>
+        <option value="Nepal">Nepal</option>
+        <option value="Nicaragua">Nicaragua</option>
+        <option value="Níger">Níger</option>
+        <option value="Nigeria">Nigeria</option>
+        <option value="Noruega">Noruega</option>
+        <option value="Nueva Zelanda">Nueva Zelanda</option>
+        <option value="Omán">Omán</option>
+        <option value="Países Bajos">Países Bajos</option>
+        <option value="Pakistán">Pakistán</option>
+        <option value="Palaos">Palaos</option>
+        <option value="Panamá">Panamá</option>
+        <option value="Papúa Nueva Guinea">Papúa Nueva Guinea</option>
+        <option value="Paraguay">Paraguay</option>
+        <option value="Perú">Perú</option>
+        <option value="Polonia">Polonia</option>
+        <option value="Portugal">Portugal</option>
+        <option value="Reino Unido">Reino Unido</option>
+        <option value="República Centroafricana">República Centroafricana</option>
+        <option value="República Checa">República Checa</option>
+        <option value="República del Congo">República del Congo</option>
+        <option value="República Democrática del Congo">República Democrática del Congo</option>
+        <option value="República Dominicana">República Dominicana</option>
+        <option value="Ruanda">Ruanda</option>
+        <option value="Rumania">Rumania</option>
+        <option value="Rusia">Rusia</option>
+        <option value="Samoa">Samoa</option>
+        <option value="San Marino">San Marino</option>
+        <option value="San Vicente y las Granadinas">San Vicente y las Granadinas</option>
+        <option value="Santa Lucía">Santa Lucía</option>
+        <option value="Santo Tomé y Príncipe">Santo Tomé y Príncipe</option>
+        <option value="Senegal">Senegal</option>
+        <option value="Serbia">Serbia</option>
+        <option value="Seychelles">Seychelles</option>
+        <option value="Sierra Leona">Sierra Leona</option>
+        <option value="Singapur">Singapur</option>
+        <option value="Siria">Siria</option>
+        <option value="Somalia">Somalia</option>
+        <option value="Sri Lanka">Sri Lanka</option>
+        <option value="Sudáfrica">Sudáfrica</option>
+        <option value="Sudán">Sudán</option>
+        <option value="Sudán del Sur">Sudán del Sur</option>
+        <option value="Suecia">Suecia</option>
+        <option value="Suiza">Suiza</option>
+        <option value="Surinam">Surinam</option>
+        <option value="Tailandia">Tailandia</option>
+        <option value="Tanzania">Tanzania</option>
+        <option value="Tayikistán">Tayikistán</option>
+        <option value="Timor Oriental">Timor Oriental</option>
+        <option value="Togo">Togo</option>
+        <option value="Tonga">Tonga</option>
+        <option value="Trinidad y Tobago">Trinidad y Tobago</option>
+        <option value="Túnez">Túnez</option>
+        <option value="Turkmenistán">Turkmenistán</option>
+        <option value="Turquía">Turquía</option>
+        <option value="Tuvalu">Tuvalu</option>
+        <option value="Ucrania">Ucrania</option>
+        <option value="Uganda">Uganda</option>
+        <option value="Uruguay">Uruguay</option>
+        <option value="Uzbekistán">Uzbekistán</option>
+        <option value="Vanuatu">Vanuatu</option>
+        <option value="Vaticano">Vaticano</option>
+        <option value="Venezuela">Venezuela</option>
+        <option value="Vietnam">Vietnam</option>
+        <option value="Yemen">Yemen</option>
+        <option value="Yibuti">Yibuti</option>
+        <option value="Zambia">Zambia</option>
+        <option value="Zimbabue">Zimbabue</option>
+        <option value="Otro (escribir)">Otro (escribir)</option>
+    </select>
+    <input type="text" id="in-pais-otro" placeholder="Escribe tu país..." style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 10px; margin-top: 5px; display: none;">
+</div>
+        <div>
+            <label>Sexo:</label>
+            <select id="in-sexo" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 10px;">
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+                <option value="Otro">Otro</option>
+                <option value="Prefiero no decir">Prefiero no decir</option>
+            </select>
+        </div>
+        <div>
+            <label>Fuma:</label>
+            <select id="in-fuma" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 10px;">
+                <option value="">Selecciona</option>
+                <option value="No">No</option>
+                <option value="Sí">Sí</option>
+                <option value="A veces">A veces</option>
+            </select>
+        </div>
+        <div>
+            <label>Toma:</label>
+            <select id="in-toma" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 10px;">
+               <option value="">Selecciona</option>
+                <option value="No">No</option>
+                <option value="Sí">Sí</option>
+                <option value="A veces">A veces</option>
+            </select>
+        </div>
+    </div>
+    
+    <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <button class="btn-retro" onclick="saveAll()" style="flex: 2; background: #4CAF50; color: white; padding: 14px; font-size: 16px; border-radius: 30px;">💾 GUARDAR CAMBIOS</button>
+        <button class="btn-retro" onclick="cerrarModalesGlobal()" style="flex: 1; padding: 14px; border-radius: 30px;">❌ CERRAR</button>
+    </div>
+</div>
+
+
+
+
+
+
+
 
     <div id="design-modal" class="modal">
         <h3>🎨 Personalizar Shatt</h3>
@@ -683,14 +1038,14 @@
         <button class="btn-retro" onclick="cerrarModalesGlobal()" style="margin-top:10px;">❌ CERRAR</button></div>
     </div>
 
-    <script>
+  <script>
         // Variables globales (solo una vez)
-let currentUser = null;
-let palabrasFiltro = [];
+        let currentUser = null;
+        let palabrasFiltro = [];
 
-const PB_URL = 'https://shatt-social-production.up.railway.app';
-const pb = new PocketBase(PB_URL);
-pb.autoCancellation(false);
+        const PB_URL = 'https://shatt-social-production.up.railway.app';
+        const pb = new PocketBase(PB_URL);
+        pb.autoCancellation(false);
         
         let publicaciones = [];
         let filtroActual = 'todas';
@@ -717,18 +1072,6 @@ pb.autoCancellation(false);
             const mobileSeguidos = document.getElementById('mobile-seguidos');
             if (mobileSeguidores) mobileSeguidores.textContent = formatearNumero(seguidores);
             if (mobileSeguidos) mobileSeguidos.textContent = formatearNumero(seguidos);
-        }
-        
-        function toggleCollapsible(id) {
-            const content = document.getElementById(id);
-            const icon = document.getElementById(id.replace('-content', '-icon'));
-            if (content.classList.contains('collapsed')) {
-                content.classList.remove('collapsed');
-                if (icon) icon.innerHTML = '▼';
-            } else {
-                content.classList.add('collapsed');
-                if (icon) icon.innerHTML = '▶';
-            }
         }
         
         async function verListaPropia(tipo) {
@@ -782,6 +1125,52 @@ pb.autoCancellation(false);
             try { const seguidoresCount = await getSeguidoresCount(uid); const seguidosCount = await getSeguidosCount(uid); actualizarContadores(seguidoresCount, seguidosCount); } catch (error) { console.error(error); }
         }
         
+        // ========== VISTA PREVIA DE FOTO/VIDEO DE PERFIL ==========
+        function previewPfp(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const img = document.getElementById('preview-avatar-img');
+            const video = document.getElementById('preview-avatar-video');
+            const placeholder = document.getElementById('preview-avatar-placeholder');
+            
+            // Ocultar todo
+            img.style.display = 'none';
+            video.style.display = 'none';
+            placeholder.style.display = 'none';
+            
+            const url = URL.createObjectURL(file);
+            
+            if (file.type.startsWith('video/')) {
+                video.src = url;
+                video.style.display = 'block';
+                video.load();
+                video.play().catch(() => {});
+                video.onloadedmetadata = function() {
+                    if (this.duration > 5) {
+                        mostrarToast("⚠️ El video dura " + Math.round(this.duration) + "s. Se recomienda máximo 5 segundos.");
+                    }
+                };
+            } else if (file.type.startsWith('image/')) {
+                img.src = url;
+                img.style.display = 'block';
+            } else {
+                mostrarToast("❌ Formato no soportado");
+                input.value = '';
+                placeholder.style.display = 'block';
+            }
+        }
+        
+        // ========== FUNCIÓN PARA PAÍS "OTRO" ==========
+        function mostrarInputPais(select) {
+            const otroInput = document.getElementById('in-pais-otro');
+            if (select.value === 'Otro (escribir)') {
+                otroInput.style.display = 'block';
+            } else {
+                otroInput.style.display = 'none';
+            }
+        }
+        
         async function cargarDatos() {
             if (!currentUser) return;
             try {
@@ -808,8 +1197,28 @@ pb.autoCancellation(false);
                 const seguidosCount = await getSeguidosCount(currentUser.id);
                 actualizarContadores(seguidoresCount, seguidosCount);
                 
-                if (user.pfp) { const pfpUrl = pb.files.getUrl(user, user.pfp); document.getElementById('disp-pfp').innerHTML = `<img src="${pfpUrl}" alt="PFP">`; document.getElementById('mobile-pfp').innerHTML = `<img src="${pfpUrl}" alt="PFP">`; }
-                else { document.getElementById('disp-pfp').innerHTML = '👤'; document.getElementById('mobile-pfp').innerHTML = '👤'; }
+                if (user.pfp) { 
+    const pfpUrl = pb.files.getUrl(user, user.pfp);
+    const nombreArchivo = user.pfp.toLowerCase();
+    
+    // Detectar si es video (mp4, webm, mov, avi)
+    const esVideo = nombreArchivo.match(/\.(mp4|webm|mov|avi)$/i);
+    // Detectar si es GIF (se muestra como imagen pero se mueve solo)
+    const esGif = nombreArchivo.match(/\.(gif)$/i);
+    
+    if (esVideo) {
+        // Si es video, usar etiqueta <video>
+        document.getElementById('disp-pfp').innerHTML = `<video src="${pfpUrl}" style="width:100%; height:100%; object-fit:cover;" muted autoplay loop playsinline></video>`;
+        document.getElementById('mobile-pfp').innerHTML = `<video src="${pfpUrl}" style="width:100%; height:100%; object-fit:cover;" muted autoplay loop playsinline></video>`;
+    } else {
+        // Si es imagen o GIF, usar etiqueta <img> (el GIF se mueve solo)
+        document.getElementById('disp-pfp').innerHTML = `<img src="${pfpUrl}" alt="PFP" style="width:100%; height:100%; object-fit:cover;">`;
+        document.getElementById('mobile-pfp').innerHTML = `<img src="${pfpUrl}" alt="PFP" style="width:100%; height:100%; object-fit:cover;">`;
+    }
+} else {
+    document.getElementById('disp-pfp').innerHTML = '👤';
+    document.getElementById('mobile-pfp').innerHTML = '👤';
+}
                 
                 document.getElementById('in-nick').value = user.nick || '';
                 document.getElementById('in-bio').value = user.bio || '';
@@ -818,8 +1227,30 @@ pb.autoCancellation(false);
                 document.getElementById('in-int-mus').value = user.intMus || '';
                 document.getElementById('in-pais').value = user.pais || '';
                 document.getElementById('in-sexo').value = user.sexo || 'Masculino';
-                document.getElementById('in-fuma').value = user.fuma || 'No';
-                document.getElementById('in-toma').value = user.toma || 'A veces';
+                document.getElementById('in-fuma').value = user.fuma || '';
+                document.getElementById('in-toma').value = user.toma || '';
+                
+                // Cargar país con soporte para "Otro"
+                const paisActual = user.pais || '';
+                const paisSelect = document.getElementById('in-pais');
+                const paisOtroInput = document.getElementById('in-pais-otro');
+                
+                let paisEncontrado = false;
+                for (let option of paisSelect.options) {
+                    if (option.value === paisActual) {
+                        paisSelect.value = paisActual;
+                        paisEncontrado = true;
+                        break;
+                    }
+                }
+                if (!paisEncontrado && paisActual) {
+                    paisSelect.value = 'Otro (escribir)';
+                    paisOtroInput.value = paisActual;
+                    paisOtroInput.style.display = 'block';
+                } else {
+                    paisSelect.value = paisActual || '';
+                    paisOtroInput.style.display = 'none';
+                }
             } catch (error) { console.error(error); mostrarToast("Error al cargar el perfil"); }
         }
         
@@ -898,44 +1329,71 @@ pb.autoCancellation(false);
             container.innerHTML = html; 
         }
         
+        // ========== SAVE ALL (con soporte para imagen, video y país "Otro") ==========
         async function saveAll() {
-            if (!currentUser) return;
-            const btn = document.querySelector('#edit-modal .btn-retro'); 
-            const textoOriginal = btn.textContent; 
-            btn.textContent = "💾 GUARDANDO..."; 
-            btn.disabled = true;
-            try { 
-                const updateData = { 
-                    nick: document.getElementById('in-nick').value, 
-                    bio: document.getElementById('in-bio').value, 
-                    about: document.getElementById('in-about').value, 
-                    intGen: document.getElementById('in-int-gen').value, 
-                    intMus: document.getElementById('in-int-mus').value, 
-                    pais: document.getElementById('in-pais').value, 
-                    sexo: document.getElementById('in-sexo').value, 
-                    fuma: document.getElementById('in-fuma').value, 
-                    toma: document.getElementById('in-toma').value 
-                }; 
-                const pfpInput = document.getElementById('f-pfp'); 
-                if (pfpInput.files && pfpInput.files[0]) { 
-                    const comprimida = await comprimirImagen(pfpInput.files[0]); 
-                    const formData = new FormData(); 
-                    formData.append('pfp', comprimida); 
-                    await pb.collection('usuarios').update(currentUser.id, formData); 
-                } 
-                await pb.collection('usuarios').update(currentUser.id, updateData); 
-                mostrarToast("✅ Perfil actualizado"); 
-                cerrarModalesGlobal(); 
-                await cargarDatos(); 
-            } catch (error) { console.error(error); mostrarToast("❌ Error al guardar"); } 
-            finally { btn.textContent = textoOriginal; btn.disabled = false; }
+    if (!currentUser) return;
+    const btn = document.querySelector('#edit-modal .btn-retro'); 
+    const textoOriginal = btn.textContent; 
+    btn.textContent = "💾 GUARDANDO..."; 
+    btn.disabled = true;
+    try { 
+        // Obtener país (con soporte para "Otro")
+        let pais = document.getElementById('in-pais').value;
+        if (pais === 'Otro (escribir)') {
+            pais = document.getElementById('in-pais-otro').value || 'Otro';
         }
         
+        const updateData = { 
+            nick: document.getElementById('in-nick').value, 
+            bio: document.getElementById('in-bio').value, 
+            about: document.getElementById('in-about').value, 
+            intGen: document.getElementById('in-int-gen').value, 
+            intMus: document.getElementById('in-int-mus').value, 
+            pais: pais, 
+            sexo: document.getElementById('in-sexo').value, 
+            fuma: document.getElementById('in-fuma').value, 
+            toma: document.getElementById('in-toma').value 
+        }; 
+        
+        const pfpInput = document.getElementById('f-pfp'); 
+        if (pfpInput.files && pfpInput.files[0]) {
+            const file = pfpInput.files[0];
+            const formData = new FormData();
+            
+            // Si es GIF, subir DIRECTAMENTE sin comprimir
+            if (file.type === 'image/gif' || file.name.toLowerCase().endsWith('.gif')) {
+                formData.append('pfp', file);
+            } else if (file.type.startsWith('image/')) {
+                // Si es imagen (JPG, PNG, WebP), comprimir
+                const comprimida = await comprimirImagen(file);
+                formData.append('pfp', comprimida);
+            } else {
+                // Es video, subir directamente
+                formData.append('pfp', file);
+            }
+            await pb.collection('usuarios').update(currentUser.id, formData);
+        } 
+        await pb.collection('usuarios').update(currentUser.id, updateData); 
+        mostrarToast("✅ Perfil actualizado"); 
+        cerrarModalesGlobal(); 
+        await cargarDatos(); 
+    } catch (error) { console.error(error); mostrarToast("❌ Error al guardar"); } 
+    finally { btn.textContent = textoOriginal; btn.disabled = false; }
+}
+        
         async function comprimirImagen(file) { 
-            if (!file.type.startsWith('image/')) return file; 
-            const opciones = { maxSizeMB: 1, maxWidthOrHeight: 800, useWebWorker: true }; 
-            try { return await imageCompression(file, opciones); } catch (error) { return file; } 
-        }
+    // Si es GIF, NO comprimir (devolver el archivo original)
+    if (file.type === 'image/gif' || file.name.toLowerCase().endsWith('.gif')) {
+        return file;
+    }
+    
+    // Si no es imagen, devolver el archivo original
+    if (!file.type.startsWith('image/')) return file; 
+    
+    const opciones = { maxSizeMB: 1, maxWidthOrHeight: 800, useWebWorker: true }; 
+    try { return await imageCompression(file, opciones); } 
+    catch (error) { return file; } 
+}
         
         // ========== NOTIFICACIONES ==========
         async function cargarNotificaciones() {
@@ -952,99 +1410,99 @@ pb.autoCancellation(false);
         }
         
         function renderNotificacionesModernas() {
-    const container = document.getElementById('notifications-list-modern');
-    const statsDiv = document.getElementById('notif-stats');
-    
-    if (!container) return;
-    
-    if (!notificacionesCache || notificacionesCache.length === 0) {
-        container.innerHTML = '<div class="empty-notifications"><span>📭</span><p>No hay notificaciones</p></div>';
-        if (statsDiv) statsDiv.innerHTML = '0 notificaciones';
-        return;
-    }
-    
-    const noLeidas = notificacionesCache.filter(n => !n.leido).length;
-    if (statsDiv) statsDiv.innerHTML = `${notificacionesCache.length} notificaciones · ${noLeidas} no leídas`;
-    
-    const hoy = dayjs().startOf('day');
-    const ayer = dayjs().subtract(1, 'day').startOf('day');
-    const grupos = { hoy: [], ayer: [], anteriores: [] };
-    
-    notificacionesCache.forEach(noti => {
-        const fecha = dayjs(noti.created);
-        if (fecha.isSame(hoy, 'day')) grupos.hoy.push(noti);
-        else if (fecha.isSame(ayer, 'day')) grupos.ayer.push(noti);
-        else grupos.anteriores.push(noti);
-    });
-    
-    let html = '';
-    
-    if (grupos.hoy.length > 0) {
-        html += `<div class="notif-group"><div class="notif-group-title">HOY</div>`;
-        grupos.hoy.forEach(noti => { html += crearNotifCardHTML(noti); });
-        html += `</div>`;
-    }
-    
-    if (grupos.ayer.length > 0) {
-        html += `<div class="notif-group"><div class="notif-group-title">AYER</div>`;
-        grupos.ayer.forEach(noti => { html += crearNotifCardHTML(noti); });
-        html += `</div>`;
-    }
-    
-    if (grupos.anteriores.length > 0) {
-        html += `<div class="notif-group"><div class="notif-group-title">ANTERIORES</div>`;
-        grupos.anteriores.forEach(noti => { html += crearNotifCardHTML(noti); });
-        html += `</div>`;
-    }
-    
-    container.innerHTML = html;
-}
+            const container = document.getElementById('notifications-list-modern');
+            const statsDiv = document.getElementById('notif-stats');
+            
+            if (!container) return;
+            
+            if (!notificacionesCache || notificacionesCache.length === 0) {
+                container.innerHTML = '<div class="empty-notifications"><span>📭</span><p>No hay notificaciones</p></div>';
+                if (statsDiv) statsDiv.innerHTML = '0 notificaciones';
+                return;
+            }
+            
+            const noLeidas = notificacionesCache.filter(n => !n.leido).length;
+            if (statsDiv) statsDiv.innerHTML = `${notificacionesCache.length} notificaciones · ${noLeidas} no leídas`;
+            
+            const hoy = dayjs().startOf('day');
+            const ayer = dayjs().subtract(1, 'day').startOf('day');
+            const grupos = { hoy: [], ayer: [], anteriores: [] };
+            
+            notificacionesCache.forEach(noti => {
+                const fecha = dayjs(noti.created);
+                if (fecha.isSame(hoy, 'day')) grupos.hoy.push(noti);
+                else if (fecha.isSame(ayer, 'day')) grupos.ayer.push(noti);
+                else grupos.anteriores.push(noti);
+            });
+            
+            let html = '';
+            
+            if (grupos.hoy.length > 0) {
+                html += `<div class="notif-group"><div class="notif-group-title">HOY</div>`;
+                grupos.hoy.forEach(noti => { html += crearNotifCardHTML(noti); });
+                html += `</div>`;
+            }
+            
+            if (grupos.ayer.length > 0) {
+                html += `<div class="notif-group"><div class="notif-group-title">AYER</div>`;
+                grupos.ayer.forEach(noti => { html += crearNotifCardHTML(noti); });
+                html += `</div>`;
+            }
+            
+            if (grupos.anteriores.length > 0) {
+                html += `<div class="notif-group"><div class="notif-group-title">ANTERIORES</div>`;
+                grupos.anteriores.forEach(noti => { html += crearNotifCardHTML(noti); });
+                html += `</div>`;
+            }
+            
+            container.innerHTML = html;
+        }
         
         function crearNotifCardHTML(noti) {
-    let texto = '';
-    let icon = '🔔';
-    let tipoClass = '';
-    let onClickAction = '';
-    
-    if (noti.tipo === 'like') { 
-        texto = `<strong>@${escapeHtml(noti.deNick)}</strong> le gusta tu publicación`;
-        icon = '❤️';
-        tipoClass = 'like';
-        onClickAction = `marcarNotificacionLeida('${noti.id}', '${noti.postId || ''}')`;
-    }
-    else if (noti.tipo === 'comentario') { 
-        texto = `<strong>@${escapeHtml(noti.deNick)}</strong> comentó: "${escapeHtml(noti.comentario?.substring(0, 50))}"`;
-        icon = '💬';
-        tipoClass = 'comment';
-        onClickAction = `marcarNotificacionLeida('${noti.id}', '${noti.postId || ''}')`;
-    }
-    else if (noti.tipo === 'seguidor') { 
-        texto = `<strong>@${escapeHtml(noti.deNick)}</strong> comenzó a seguirte`;
-        icon = '👤';
-        tipoClass = 'follow';
-        onClickAction = `window.location.href='perfil.html?uid=${noti.de}'`;
-    }
-    else if (noti.tipo === 'compartido') { 
-        texto = `<strong>@${escapeHtml(noti.deNick)}</strong> compartió una publicación contigo`;
-        icon = '📤';
-        tipoClass = 'share';
-        onClickAction = `marcarNotificacionLeida('${noti.id}', '${noti.postId || ''}')`;
-    }
-    else if (noti.tipo === 'postit') { 
-        texto = `<strong>@${escapeHtml(noti.deNick)}</strong> dejó un post-it en tu diario: "${escapeHtml(noti.comentario?.substring(0, 50))}"`;
-        icon = '📌';
-        tipoClass = 'postit';
-        onClickAction = `window.location.href='diario.html?uid=${noti.para}'`;
-    }
-    
-    return `<div class="notif-card ${noti.leido ? '' : 'unread'}" onclick="${onClickAction}">
-        <div class="notif-icon ${tipoClass}">${icon}</div>
-        <div class="notif-content">
-            <div class="notif-text">${texto}</div>
-            <div class="notif-time">${dayjs(noti.created).fromNow()}</div>
-        </div>
-    </div>`;
-}
+            let texto = '';
+            let icon = '🔔';
+            let tipoClass = '';
+            let onClickAction = '';
+            
+            if (noti.tipo === 'like') { 
+                texto = `<strong>@${escapeHtml(noti.deNick)}</strong> le gusta tu publicación`;
+                icon = '❤️';
+                tipoClass = 'like';
+                onClickAction = `marcarNotificacionLeida('${noti.id}', '${noti.postId || ''}')`;
+            }
+            else if (noti.tipo === 'comentario') { 
+                texto = `<strong>@${escapeHtml(noti.deNick)}</strong> comentó: "${escapeHtml(noti.comentario?.substring(0, 50))}"`;
+                icon = '💬';
+                tipoClass = 'comment';
+                onClickAction = `marcarNotificacionLeida('${noti.id}', '${noti.postId || ''}')`;
+            }
+            else if (noti.tipo === 'seguidor') { 
+                texto = `<strong>@${escapeHtml(noti.deNick)}</strong> comenzó a seguirte`;
+                icon = '👤';
+                tipoClass = 'follow';
+                onClickAction = `window.location.href='perfil.html?uid=${noti.de}'`;
+            }
+            else if (noti.tipo === 'compartido') { 
+                texto = `<strong>@${escapeHtml(noti.deNick)}</strong> compartió una publicación contigo`;
+                icon = '📤';
+                tipoClass = 'share';
+                onClickAction = `marcarNotificacionLeida('${noti.id}', '${noti.postId || ''}')`;
+            }
+            else if (noti.tipo === 'postit') { 
+                texto = `<strong>@${escapeHtml(noti.deNick)}</strong> dejó un post-it en tu diario: "${escapeHtml(noti.comentario?.substring(0, 50))}"`;
+                icon = '📌';
+                tipoClass = 'postit';
+                onClickAction = `window.location.href='diario.html?uid=${noti.para}'`;
+            }
+            
+            return `<div class="notif-card ${noti.leido ? '' : 'unread'}" onclick="${onClickAction}">
+                <div class="notif-icon ${tipoClass}">${icon}</div>
+                <div class="notif-content">
+                    <div class="notif-text">${texto}</div>
+                    <div class="notif-time">${dayjs(noti.created).fromNow()}</div>
+                </div>
+            </div>`;
+        }
         
         async function marcarNotificacionLeida(id, postId) {
             await pb.collection('notificaciones').update(id, { leido: true });
@@ -1123,8 +1581,22 @@ pb.autoCancellation(false);
         }
         
         async function cargarDisenoGuardado() {
-            const user = await pb.collection('usuarios').getOne(currentUser.id);
-            if (user.diseno) { let d = user.diseno; if (typeof d === 'string') d = JSON.parse(d); aplicarDiseno(d.fondo, d.opacidad); }
+            try {
+                const user = await pb.collection('usuarios').getOne(currentUser.id);
+                if (user.diseno) { 
+                    let d = user.diseno; 
+                    if (typeof d === 'string') d = JSON.parse(d); 
+                    if (d.fondo && d.fondo !== 'null' && d.fondo !== 'none') {
+                        aplicarDiseno(d.fondo, d.opacidad);
+                        return;
+                    }
+                }
+                // Si no hay diseño guardado, usar el color azul por defecto
+                aplicarDiseno('#3a6186', 1);
+            } catch (e) {
+                console.error("Error cargando diseño:", e);
+                aplicarDiseno('#3a6186', 1);
+            }
         }
         
         function abrirPersonalizacion() { document.getElementById('design-modal').style.display = 'block'; document.getElementById('modal-overlay').style.display = 'block'; }
@@ -1174,38 +1646,71 @@ pb.autoCancellation(false);
             }
         });
         
-        function openEditModal() { document.getElementById('edit-modal').style.display = 'block'; document.getElementById('modal-overlay').style.display = 'block'; }
-        function cerrarSesion() { 
-    // Guardar las cuentas antes de limpiar
-    const cuentasGuardadas = localStorage.getItem('shatt_cuentas');
+        // ========== OPEN EDIT MODAL CON VISTA PREVIA DE LA FOTO ACTUAL ==========
+        function openEditModal() {
+    document.getElementById('edit-modal').style.display = 'block';
+    document.getElementById('modal-overlay').style.display = 'block';
     
-    // Limpiar autenticación
-    pb.authStore.clear();
-    localStorage.removeItem('pocketbase_auth');
+    const img = document.getElementById('preview-avatar-img');
+    const video = document.getElementById('preview-avatar-video');
+    const placeholder = document.getElementById('preview-avatar-placeholder');
     
-    // Restaurar las cuentas guardadas
-    if (cuentasGuardadas) {
-        localStorage.setItem('shatt_cuentas', cuentasGuardadas);
+    const imgElement = document.querySelector('#disp-pfp img');
+    const videoElement = document.querySelector('#disp-pfp video');
+    
+    if (imgElement) {
+        // Si es imagen o GIF
+        img.src = imgElement.src;
+        img.style.display = 'block';
+        video.style.display = 'none';
+        placeholder.style.display = 'none';
+    } else if (videoElement) {
+        // Si es video
+        video.src = videoElement.src;
+        video.style.display = 'block';
+        img.style.display = 'none';
+        placeholder.style.display = 'none';
+        video.load();
+        video.play().catch(() => {});
+    } else {
+        img.style.display = 'none';
+        video.style.display = 'none';
+        placeholder.style.display = 'block';
     }
-    
-    window.location.href = "iniciarsesion.html";
 }
         
-        function initCollapsibles() {
-            if (window.innerWidth <= 768) {
-                document.getElementById('intereses-content')?.classList.add('collapsed');
-                document.getElementById('amigos-mobile-content')?.classList.add('collapsed');
-                if (document.getElementById('intereses-icon')) document.getElementById('intereses-icon').innerHTML = '▶';
-                if (document.getElementById('amigos-mobile-icon')) document.getElementById('amigos-mobile-icon').innerHTML = '▶';
+        function cerrarSesion() { 
+            const cuentasGuardadas = localStorage.getItem('shatt_cuentas');
+            pb.authStore.clear();
+            localStorage.removeItem('pocketbase_auth');
+            if (cuentasGuardadas) {
+                localStorage.setItem('shatt_cuentas', cuentasGuardadas);
+            }
+            window.location.href = "iniciarsesion.html";
+        }
+        
+        function toggleCollapsible(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById('amigos-mobile-icon');
+            if (content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                if (icon) icon.innerHTML = '▼';
             } else {
-                document.getElementById('intereses-content')?.classList.remove('collapsed');
-                document.getElementById('amigos-mobile-content')?.classList.remove('collapsed');
-                if (document.getElementById('intereses-icon')) document.getElementById('intereses-icon').innerHTML = '▼';
-                if (document.getElementById('amigos-mobile-icon')) document.getElementById('amigos-mobile-icon').innerHTML = '▼';
+                content.classList.add('collapsed');
+                if (icon) icon.innerHTML = '▶';
             }
         }
         
-        window.addEventListener('resize', initCollapsibles);
+        function initCollapsibles() {
+            if (window.innerWidth <= 768) {
+                const content = document.getElementById('amigos-mobile-content');
+                const icon = document.getElementById('amigos-mobile-icon');
+                if (content) {
+                    content.classList.add('collapsed');
+                    if (icon) icon.innerHTML = '▶';
+                }
+            }
+        }
         
         (async function() {
             const savedAuth = localStorage.getItem('pocketbase_auth');
@@ -1250,6 +1755,8 @@ pb.autoCancellation(false);
         window.marcarTodasComoLeidas = marcarTodasComoLeidas;
         window.abrirBuscadorFullscreen = abrirBuscadorFullscreen;
         window.cerrarBuscadorFullscreen = cerrarBuscadorFullscreen;
-    </script>
+        window.previewPfp = previewPfp;
+        window.mostrarInputPais = mostrarInputPais;
+</script>
 </body>
 </html>
