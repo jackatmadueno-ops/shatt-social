@@ -10,14 +10,14 @@
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/plugin/relativeTime.js"></script>
     <script>dayjs.extend(window.dayjs_plugin_relativeTime);</script>
     
+    
     <style>
         /* ========== ESTILOS ========== */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         :root { --main-blue: #3a6186; --glossy: linear-gradient(180deg, #ffffff 0%, #d1d1d1 100%); --shatt-blue: #3b5998; --panel-opacity: 1; --shadow-sm: 0 2px 8px rgba(0,0,0,0.1); --shadow-md: 0 4px 12px rgba(0,0,0,0.15); --shadow-lg: 0 8px 24px rgba(0,0,0,0.2); --transition: all 0.3s ease; --border-radius: 12px; --border-radius-sm: 8px; --spacing-xs: 4px; --spacing-sm: 8px; --spacing-md: 12px; --spacing-lg: 16px; --spacing-xl: 24px; --star-color: #ddd; --star-active: #ffc107; --star-hover: #ffdb6e; }
         
-        /* ========== FONDO DE RESPALDO ========== */
         body { 
-            background: #3a6186 !important; 
+            background: #3a6186; 
             background-size: cover; 
             background-attachment: fixed; 
             background-position: center; 
@@ -199,7 +199,7 @@
         }
         .volver-btn:hover { background: #2d4a7a; transform: translateY(-1px); }
         
-        /* ========== COMENTARIOS ========== */
+        /* ========== COMENTARIOS MEJORADOS ========== */
         .comentarios-section {
             background: rgba(255, 255, 255, var(--panel-opacity));
             border: 2px solid #000;
@@ -211,18 +211,93 @@
             margin-bottom: var(--spacing-lg);
             padding-bottom: var(--spacing-lg);
             border-bottom: 1px solid #eee;
+            position: relative;
         }
         .comentario-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         
-        .comentario-user { cursor: pointer; color: var(--shatt-blue); text-decoration: underline; font-weight: bold; font-size: 13px; }
-        .comentario-texto { margin-top: 6px; font-size: 14px; line-height: 1.5; }
-        .comentario-fecha { font-size: 10px; color: #888; margin-top: 6px; }
+        .comentario-user { cursor: pointer; color: var(--shatt-blue); font-weight: bold; font-size: 13px; }
+        .comentario-user:hover { text-decoration: underline; }
+        
+        .comentario-texto { margin-top: 4px; font-size: 14px; line-height: 1.5; word-wrap: break-word; }
+        .comentario-fecha { font-size: 10px; color: #888; margin-top: 4px; }
+        
+        .reply-btn {
+            background: none;
+            border: none;
+            color: var(--shatt-blue);
+            cursor: pointer;
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            transition: all 0.2s;
+            margin-top: 4px;
+        }
+        .reply-btn:hover { background: rgba(59,89,152,0.1); }
+        
+        .reply-area {
+            display: none;
+            margin-top: 8px;
+            padding: 8px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            position: relative;
+        }
+        body.dark-mode .reply-area { background: #2a2a3a; }
+        
+        .reply-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            font-size: 13px;
+            outline: none;
+            min-width: 120px;
+        }
+        body.dark-mode .reply-input { background: #3a3a4a; color: white; border-color: #555; }
+        
+        .reply-send-btn {
+            background: var(--shatt-blue);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        .reply-send-btn:hover { background: #2d4a7a; }
+        
+        .reply-close-btn {
+            background: #ccc;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        body.dark-mode .reply-close-btn { background: #555; color: white; }
+        
+        .respuestas-container {
+            margin-left: 24px;
+            padding-left: 12px;
+            border-left: 3px solid var(--shatt-blue);
+            margin-top: 8px;
+        }
+        
+        .respuesta-item {
+            padding: 6px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .respuesta-item:last-child { border-bottom: none; }
+        
+        .respuesta-user { font-weight: 500; font-size: 12px; color: var(--shatt-blue); cursor: pointer; }
+        .respuesta-user:hover { text-decoration: underline; }
+        .respuesta-texto { font-size: 13px; word-wrap: break-word; margin-top: 2px; }
+        .respuesta-fecha { font-size: 10px; color: #888; }
         
         .comentario-input-area {
             display: flex;
             gap: 10px;
             margin-top: var(--spacing-lg);
             flex-wrap: wrap;
+            position: relative;
         }
         .comentario-input {
             flex: 1;
@@ -234,11 +309,13 @@
             min-width: 150px;
         }
         .comentario-input:focus { border-color: var(--shatt-blue); }
+        body.dark-mode .comentario-input { background: #2a2a3a; color: white; border-color: #555; }
         
         .empty-state { text-align: center; padding: 40px; color: #888; }
         .btn-retro { background: #e0e0e0; border: 2px outset #fff; padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 30px; transition: var(--transition); }
         .btn-retro:hover { background: #d0d0d0; transform: translateY(-1px); }
         .btn-retro:active { transform: translate(1px, 1px); border-style: inset; }
+        body.dark-mode .btn-retro { background: #444; color: white; border-color: #666; }
         
         #custom-toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: white; padding: 12px 24px; border-radius: 50px; font-size: 14px; z-index: 10000; display: none; max-width: 90%; text-align: center; }
         
@@ -262,6 +339,33 @@
         .image-viewer-close { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.7); color: white; border: none; border-radius: 50%; width: 44px; height: 44px; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10001; }
         .image-viewer-close:hover { background: rgba(0,0,0,0.9); }
         
+        /* ========== SUGERENCIAS DE MENCIONES ========== */
+        .mention-suggestions-floating {
+            position: fixed;
+            background: white;
+            border-radius: 16px;
+            max-height: 220px;
+            overflow-y: auto;
+            width: 320px;
+            max-width: 90vw;
+            z-index: 99999;
+            display: none;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            border: 1px solid rgba(0,0,0,0.08);
+            padding: 6px 0;
+            pointer-events: auto;
+        }
+        body.dark-mode .mention-suggestions-floating {
+            background: #1e1e2e;
+            border-color: #333;
+        }
+        body.dark-mode .mention-suggestions-floating .mention-item {
+            color: #eee;
+        }
+        body.dark-mode .mention-suggestions-floating .mention-item:hover {
+            background: #2a2a3a !important;
+        }
+        
         /* ========== RESPONSIVE ========== */
         @media (max-width: 768px) {
             .nav-links { display: none !important; }
@@ -273,6 +377,7 @@
             .post-imagen { margin: var(--spacing-md) -16px; }
             .star-rating .star { font-size: 24px; }
             #custom-toast { bottom: 70px; }
+            .respuestas-container { margin-left: 12px; }
         }
         @media (max-width: 480px) {
             .bottom-nav-item { padding: 4px 8px; }
@@ -295,7 +400,18 @@
                 <a href="shatts.html">shatts</a>
             </div>
             <div class="nav-icons">
-                <!-- Sin brocha ni puerta -->
+                <span onclick="abrirBuscadorFullscreen()">🔍</span>
+            </div>
+        </div>
+
+        <!-- MODAL DE BÚSQUEDA -->
+        <div id="search-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:10000; overflow-y:auto;">
+            <div style="max-width:800px; margin:0 auto; padding:20px; min-height:100%; display:flex; flex-direction:column;">
+                <div style="display:flex; align-items:center; gap:15px; margin-bottom:30px; padding:10px; background:rgba(255,255,255,0.1); border-radius:60px;">
+                    <button onclick="cerrarBuscadorFullscreen()" style="background:none; border:none; font-size:28px; cursor:pointer; color:white;">←</button>
+                    <input type="text" id="search-modal-input" placeholder="🔎 Buscar usuarios..." style="flex:1; padding:15px 20px; font-size:18px; border:2px solid var(--shatt-blue); border-radius:50px; outline:none; background:white;">
+                </div>
+                <div id="search-results" style="color:white;"></div>
             </div>
         </div>
 
@@ -309,7 +425,7 @@
         <div id="comentariosSection" class="comentarios-section" style="display: none;">
             <div id="comentariosLista"></div>
             <div class="comentario-input-area">
-                <input type="text" id="comentarioInput" class="comentario-input" placeholder="Escribe un comentario..." onkeypress="if(event.key==='Enter') enviarComentario()">
+                <input type="text" id="comentarioInput" class="comentario-input" placeholder="Escribe un comentario... (usa @ para mencionar)" onkeypress="if(event.key==='Enter') enviarComentario()">
                 <button class="btn-retro" onclick="enviarComentario()">Enviar</button>
             </div>
         </div>
@@ -345,11 +461,350 @@
         const PB_URL = 'https://shatt-social-production.up.railway.app';
         const pb = new PocketBase(PB_URL);
         pb.autoCancellation(false);
-        
-        // ========== OBTENER ID DEL POST DESDE LA URL ==========
-        function getPostIdFromUrl() {
-            const params = new URLSearchParams(window.location.search);
-            return params.get('id');
+
+        // ========== CONFIGURACIÓN GLOBAL ==========
+        async function cargarConfiguracionGlobal() {
+            const saved = localStorage.getItem('pocketbase_auth');
+            if (!saved) return;
+            
+            try {
+                const { token, model } = JSON.parse(saved);
+                pb.authStore.save(token, model);
+            } catch(e) { return; }
+            
+            if (!pb.authStore.isValid) return;
+            const currentUser = pb.authStore.model;
+            if (!currentUser) return;
+            
+            try {
+                const configs = await pb.collection('configuraciones').getList(1, 1, {
+                    filter: `usuario = "${currentUser.id}"`
+                });
+                
+                if (configs.items.length > 0) {
+                    const config = configs.items[0];
+                    if (config.tema === 'dark') document.body.classList.add('dark-mode');
+                    if (config.color_fondo) document.body.style.background = config.color_fondo;
+                    if (config.opacidad) document.documentElement.style.setProperty('--panel-opacity', config.opacidad);
+                    if (config.accent_color) document.documentElement.style.setProperty('--shatt-blue', config.accent_color);
+                    if (config.tamaño_fuente) document.documentElement.style.fontSize = config.tamaño_fuente + 'px';
+                    if (config.imagen_fondo) {
+                        try {
+                            const url = pb.files.getUrl(config, config.imagen_fondo);
+                            document.body.style.background = `url(${url}) center/cover fixed`;
+                        } catch(e) {}
+                    }
+                }
+            } catch(e) {
+                console.error("Error cargando configuración:", e);
+            }
+        }
+
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'shatt_config_update') {
+                cargarConfiguracionGlobal();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarConfiguracionGlobal();
+        });
+
+        // ========== SISTEMA DE MENCIONES ==========
+        let allUsersCache = [];
+        let mentionTimeout = null;
+        let selectedMentionIndex = -1;
+        let activeMentionInput = null;
+        let activeMentionContainer = null;
+
+        const userCache = new Map();
+
+        async function getUserCached(userId) {
+            if (userCache.has(userId)) return userCache.get(userId);
+            try {
+                const user = await pb.collection('usuarios').getOne(userId);
+                userCache.set(userId, user);
+                return user;
+            } catch(e) {
+                return null;
+            }
+        }
+
+        async function cargarUsuariosParaMenciones() {
+            try {
+                const users = await pb.collection('usuarios').getFullList({
+                    fields: 'id,nick,email,pfp'
+                });
+                allUsersCache = users;
+                return users;
+            } catch(e) {
+                console.error("Error cargando usuarios:", e);
+                return [];
+            }
+        }
+
+        function setupMentionSystem(inputId, containerId) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+
+            let container = document.getElementById(containerId);
+            if (!container) {
+                container = document.createElement('div');
+                container.id = containerId;
+                container.className = 'mention-suggestions-floating';
+                container.style.cssText = `
+                    position: fixed;
+                    background: white;
+                    border-radius: 16px;
+                    max-height: 220px;
+                    overflow-y: auto;
+                    width: 320px;
+                    max-width: 90vw;
+                    z-index: 99999;
+                    display: none;
+                    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+                    border: 1px solid rgba(0,0,0,0.08);
+                    padding: 6px 0;
+                    pointer-events: auto;
+                `;
+                document.body.appendChild(container);
+
+                document.addEventListener('scroll', function() {
+                    if (container.style.display === 'block') {
+                        container.style.display = 'none';
+                    }
+                }, { passive: true });
+            }
+
+            input.addEventListener('input', function(e) {
+                const value = this.value;
+                const cursorPos = this.selectionStart;
+                const textBefore = value.substring(0, cursorPos);
+                const atIndex = textBefore.lastIndexOf('@');
+
+                if (atIndex !== -1) {
+                    const searchTerm = textBefore.substring(atIndex + 1);
+                    activeMentionInput = this;
+                    activeMentionContainer = container;
+                    buscarMencionesEnTiempoReal(searchTerm, container, this, atIndex);
+                    return;
+                }
+
+                container.style.display = 'none';
+                container.innerHTML = '';
+                selectedMentionIndex = -1;
+                activeMentionInput = null;
+                activeMentionContainer = null;
+            });
+
+            input.addEventListener('keydown', function(e) {
+                if (container.style.display !== 'block') return;
+
+                const items = container.querySelectorAll('.mention-item');
+                if (items.length === 0) return;
+
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    selectedMentionIndex = (selectedMentionIndex + 1) % items.length;
+                    highlightMentionItem(items, selectedMentionIndex);
+                    items[selectedMentionIndex]?.scrollIntoView({ block: 'nearest' });
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    selectedMentionIndex = (selectedMentionIndex - 1 + items.length) % items.length;
+                    highlightMentionItem(items, selectedMentionIndex);
+                    items[selectedMentionIndex]?.scrollIntoView({ block: 'nearest' });
+                } else if (e.key === 'Enter' || e.key === 'Tab') {
+                    e.preventDefault();
+                    if (selectedMentionIndex >= 0 && selectedMentionIndex < items.length) {
+                        items[selectedMentionIndex].click();
+                    }
+                } else if (e.key === 'Escape') {
+                    container.style.display = 'none';
+                    container.innerHTML = '';
+                    selectedMentionIndex = -1;
+                    activeMentionInput = null;
+                    activeMentionContainer = null;
+                }
+            });
+
+            document.addEventListener('click', function(e) {
+                if (container.style.display === 'block' && 
+                    !container.contains(e.target) && 
+                    e.target !== input) {
+                    container.style.display = 'none';
+                    container.innerHTML = '';
+                    selectedMentionIndex = -1;
+                    activeMentionInput = null;
+                    activeMentionContainer = null;
+                }
+            });
+
+            input.addEventListener('blur', function() {
+                setTimeout(() => {
+                    if (container.style.display === 'block') {
+                        container.style.display = 'none';
+                        container.innerHTML = '';
+                        selectedMentionIndex = -1;
+                        activeMentionInput = null;
+                        activeMentionContainer = null;
+                    }
+                }, 200);
+            });
+
+            return container;
+        }
+
+        function highlightMentionItem(items, index) {
+            items.forEach((item, i) => {
+                item.style.background = i === index ? '#eef3fc' : '';
+                item.style.borderLeft = i === index ? '3px solid #3b82f6' : '3px solid transparent';
+            });
+        }
+
+        async function getAmigos() {
+            try {
+                const seguidos = await pb.collection('seguidores').getFullList({
+                    filter: `seguidor = "${currentUser.id}"`,
+                    fields: 'seguido'
+                });
+                const idsAmigos = seguidos.map(s => s.seguido);
+
+                const amigos = [];
+                for (const id of idsAmigos) {
+                    const user = await getUserCached(id);
+                    if (user) amigos.push(user);
+                }
+                return amigos;
+            } catch(e) {
+                console.error("Error cargando amigos:", e);
+                return [];
+            }
+        }
+
+        function buscarMencionesEnTiempoReal(searchTerm, container, input, atIndex) {
+            if (mentionTimeout) clearTimeout(mentionTimeout);
+
+            mentionTimeout = setTimeout(async () => {
+                let resultados = [];
+
+                if (searchTerm === '') {
+                    const amigos = await getAmigos();
+                    if (amigos.length > 0) {
+                        resultados = amigos.slice(0, 3);
+                    } else {
+                        resultados = allUsersCache.slice(0, 3);
+                    }
+                    mostrarResultadosMenciones(resultados, container, input, atIndex, true);
+                    return;
+                }
+
+                const term = searchTerm.toLowerCase();
+                resultados = allUsersCache.filter(user => {
+                    const nick = (user.nick || '').toLowerCase();
+                    const email = (user.email || '').toLowerCase();
+                    return nick.includes(term) || email.includes(term);
+                });
+
+                const amigos = await getAmigos();
+                const idsAmigos = new Set(amigos.map(a => a.id));
+
+                const amigosEncontrados = resultados.filter(u => idsAmigos.has(u.id));
+                const otrosEncontrados = resultados.filter(u => !idsAmigos.has(u.id));
+
+                if (searchTerm.length < 2) {
+                    resultados = amigosEncontrados.slice(0, 5);
+                } else {
+                    resultados = [...amigosEncontrados, ...otrosEncontrados].slice(0, 8);
+                }
+
+                mostrarResultadosMenciones(resultados, container, input, atIndex, false);
+            }, 150);
+        }
+
+        function mostrarResultadosMenciones(usuarios, container, input, atIndex, esAmigo) {
+            if (!usuarios || usuarios.length === 0) {
+                container.style.display = 'none';
+                container.innerHTML = '';
+                return;
+            }
+
+            const rect = input.getBoundingClientRect();
+            const top = rect.bottom + 6;
+            const left = Math.min(rect.left, window.innerWidth - 320);
+
+            container.style.top = top + 'px';
+            container.style.left = left + 'px';
+            container.style.maxWidth = Math.min(320, window.innerWidth - 20) + 'px';
+            
+            if (top + 220 > window.innerHeight) {
+                container.style.top = (rect.top - 220) + 'px';
+            }
+
+            container.style.display = 'block';
+            container.innerHTML = `
+                ${esAmigo ? '<div style="padding:8px 14px; font-size:11px; color:#888; border-bottom:1px solid #eee; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">👥 Amigos</div>' : ''}
+                ${usuarios.map(user => {
+                    const nombre = user.nick || user.email?.split('@')[0] || 'Usuario';
+                    const avatar = user.pfp ? pb.files.getUrl(user, user.pfp) : null;
+                    return `
+                        <div class="mention-item" data-id="${user.id}" data-nick="${nombre}" 
+                             style="display:flex; align-items:center; gap:12px; padding:10px 14px; cursor:pointer; transition:all 0.15s; border-left:3px solid transparent;"
+                             onmouseenter="this.style.background='#f0f4f9'" 
+                             onmouseleave="this.style.background=''">
+                            <div style="width:36px; height:36px; border-radius:50%; overflow:hidden; flex-shrink:0; background:#e8ecf0; display:flex; align-items:center; justify-content:center; font-size:16px;">
+                                ${avatar ? `<img src="${avatar}" style="width:100%; height:100%; object-fit:cover;">` : '👤'}
+                            </div>
+                            <div style="flex:1; min-width:0;">
+                                <div style="font-weight:600; font-size:14px; color:#1a1a2e;">@${escapeHtml(nombre)}</div>
+                                <div style="font-size:11px; color:#888; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(user.email || '')}</div>
+                            </div>
+                            <div style="color:#bbb; font-size:14px;">›</div>
+                        </div>
+                    `;
+                }).join('')}
+            `;
+
+            container.querySelectorAll('.mention-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const nick = this.dataset.nick;
+                    const value = input.value;
+                    const cursorPos = input.selectionStart;
+                    const textBefore = value.substring(0, cursorPos);
+                    const atIndex = textBefore.lastIndexOf('@');
+
+                    if (atIndex !== -1) {
+                        const newText = value.substring(0, atIndex) + `@${nick} ` + value.substring(cursorPos);
+                        input.value = newText;
+                        input.focus();
+                        const newPos = atIndex + nick.length + 2;
+                        input.setSelectionRange(newPos, newPos);
+                        input.dispatchEvent(new Event('input'));
+                    }
+
+                    container.style.display = 'none';
+                    container.innerHTML = '';
+                    selectedMentionIndex = -1;
+                    activeMentionInput = null;
+                    activeMentionContainer = null;
+                });
+            });
+
+            selectedMentionIndex = -1;
+        }
+
+        async function inicializarMencionesGlobal() {
+            await cargarUsuariosParaMenciones();
+            const input = document.getElementById('comentarioInput');
+            if (input) {
+                setupMentionSystem('comentarioInput', 'mention-suggestions-comment');
+            }
+        }
+
+        function inicializarMencionesReply(replyId) {
+            const input = document.getElementById(`reply-input-${replyId}`);
+            if (input) {
+                setupMentionSystem(`reply-input-${replyId}`, `mention-suggestions-reply-${replyId}`);
+            }
         }
 
         // ========== TOAST ==========
@@ -365,6 +820,33 @@
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        }
+
+        function detectarMenciones(texto) {
+            const mentionRegex = /@(\w+)/g;
+            let matches = [];
+            let match;
+            while ((match = mentionRegex.exec(texto)) !== null) {
+                matches.push(match[1]);
+            }
+            return matches;
+        }
+
+        async function obtenerIdsMencionados(nicks) {
+            const ids = [];
+            for (const nick of nicks) {
+                try {
+                    const users = await pb.collection('usuarios').getList(1, 1, {
+                        filter: `nick = "${nick}"`
+                    });
+                    if (users.items.length > 0) {
+                        ids.push(users.items[0].id);
+                    }
+                } catch(e) {
+                    console.error(`Error buscando usuario @${nick}:`, e);
+                }
+            }
+            return ids;
         }
 
         // ========== ZOOM IMAGEN ==========
@@ -403,162 +885,54 @@
             }
         }
 
-        // ========== FUNCIONES DE DISEÑO (DEFINIDAS ANTES DE USARSE) ==========
-        function aplicarDiseno(fondo, opacidad) {
-            try {
-                console.log("🎨 Aplicando diseño:", fondo, opacidad);
-                
-                // Si fondo es null, undefined, "none", "null", o vacío → usar color por defecto
-                if (!fondo || fondo === 'none' || fondo === 'null' || fondo === 'undefined' || fondo === '') {
-                    fondo = '#3a6186';
-                    console.log("⚠️ Fondo inválido, usando color por defecto:", fondo);
-                }
-                
-                if (fondo) {
-                    if (fondo.startsWith('url')) {
-                        document.body.style.backgroundImage = fondo;
-                        document.body.style.backgroundSize = 'cover';
-                        document.body.style.backgroundAttachment = 'fixed';
-                        document.body.style.backgroundPosition = 'center';
-                        document.body.style.backgroundColor = 'transparent';
-                    } else if (fondo.startsWith('linear-gradient')) {
-                        document.body.style.background = fondo;
-                        document.body.style.backgroundImage = 'none';
-                    } else {
-                        document.body.style.background = fondo;
-                        document.body.style.backgroundImage = 'none';
-                    }
-                } else {
-                    // Fallback: color azul
-                    document.body.style.background = '#3a6186';
-                    document.body.style.backgroundImage = 'none';
-                }
-                
-                if (opacidad !== undefined && opacidad !== null) {
-                    const val = parseFloat(opacidad);
-                    if (isNaN(val) || val <= 0) {
-                        document.documentElement.style.setProperty('--panel-opacity', '1');
-                    } else {
-                        document.documentElement.style.setProperty('--panel-opacity', val);
-                    }
-                }
-                
-                // Forzar que el cuerpo tenga el color
-                document.body.style.backgroundColor = '#3a6186';
-                
-                console.log("✅ Diseño aplicado correctamente");
-            } catch(e) {
-                console.error("❌ Error aplicando diseño:", e);
-                document.body.style.background = '#3a6186';
-                document.body.style.backgroundImage = 'none';
-                document.body.style.backgroundColor = '#3a6186';
-            }
-        }
-
-        async function cargarDisenoGuardado() {
-            if (!currentUser) return;
-            try {
-                let fondoAplicado = false;
-                
-                // 1. Intentar cargar desde localStorage
-                let local = localStorage.getItem('shatt_diseno');
-                if (local) {
-                    try {
-                        let d = JSON.parse(local);
-                        if (d.fondo && d.fondo !== 'none' && d.fondo !== 'null' && d.fondo !== '') {
-                            aplicarDiseno(d.fondo, d.opacidad || 1);
-                            fondoAplicado = true;
-                            console.log("✅ Diseño aplicado desde localStorage");
-                        }
-                    } catch(e) {
-                        console.warn("Error parseando localStorage:", e);
-                    }
-                }
-                
-                // 2. Si no se aplicó desde localStorage, cargar desde PocketBase
-                if (!fondoAplicado) {
-                    try {
-                        let user = await pb.collection('usuarios').getOne(currentUser.id);
-                        if (user.diseno && user.diseno.fondo && user.diseno.fondo !== 'none' && user.diseno.fondo !== 'null') {
-                            aplicarDiseno(user.diseno.fondo, user.diseno.opacidad || 1);
-                            fondoAplicado = true;
-                            console.log("✅ Diseño aplicado desde PocketBase");
-                        }
-                    } catch(e) {
-                        console.warn("No se pudo cargar diseño desde PocketBase:", e);
-                    }
-                }
-                
-                // 3. Si NO se aplicó ningún diseño, usar el color por defecto
-                if (!fondoAplicado) {
-                    console.log("⚠️ No hay diseño guardado, usando color por defecto");
-                    aplicarDiseno('#3a6186', 1);
-                }
-                
-                // 4. Verificar modo oscuro
-                if (localStorage.getItem('shatt_darkmode') === 'true') {
-                    document.body.classList.add('dark-mode');
-                }
-                
-                // 5. FORZAR que el cuerpo tenga color (por si acaso)
-                setTimeout(() => {
-                    if (document.body.style.background === '' || document.body.style.background === 'none') {
-                        document.body.style.background = '#3a6186';
-                        document.body.style.backgroundImage = 'none';
-                    }
-                }, 100);
-                
-            } catch(e) {
-                console.error("❌ Error cargando diseño:", e);
-                document.body.style.background = '#3a6186';
-                document.body.style.backgroundImage = 'none';
-            }
-        }
-
         function verPerfil(uid) {
             window.location.href = `perfil.html?uid=${uid}`;
         }
 
-        // ========== FUNCIONES DE PERSONALIZACIÓN ==========
-        function setBgColorGlobal(color) {
-            document.body.style.background = color;
-            document.body.style.backgroundImage = 'none';
-            if (currentUser) guardarDisenoGlobal();
+        // ========== BÚSQUEDA ==========
+        function abrirBuscadorFullscreen() {
+            document.getElementById('search-modal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => document.getElementById('search-modal-input').focus(), 100);
         }
 
-        function setImageBgGlobal(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    document.body.style.backgroundImage = `url(${e.target.result})`;
-                    document.body.style.backgroundSize = 'cover';
-                    document.body.style.backgroundAttachment = 'fixed';
-                    if (currentUser) guardarDisenoGlobal();
-                };
-                reader.readAsDataURL(input.files[0]);
+        function cerrarBuscadorFullscreen() {
+            document.getElementById('search-modal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        async function ejecutarBusquedaFullscreen(termino) {
+            const resultsDiv = document.getElementById('search-results');
+            if (termino.length < 2) { resultsDiv.innerHTML = '<div style="color:white; text-align:center; padding:20px;">✏️ 2+ caracteres</div>'; return; }
+            resultsDiv.innerHTML = '<div style="color:white; text-align:center; padding:20px;">🔍 Buscando...</div>';
+            const users = await pb.collection('usuarios').getFullList();
+            const termLower = termino.toLowerCase();
+            const resultados = users.filter(u => u.id !== currentUser?.id && ((u.email || '').toLowerCase().includes(termLower) || (u.nick || u.email?.split('@')[0] || '').toLowerCase().includes(termLower)));
+            if (!resultados.length) { resultsDiv.innerHTML = '<div style="color:white; text-align:center; padding:20px;">😕 No encontrados</div>'; return; }
+            resultsDiv.innerHTML = resultados.map(u => {
+                const nombre = u.nick || u.email?.split('@')[0] || 'Usuario';
+                const avatar = u.pfp ? pb.files.getUrl(u, u.pfp) : `https://ui-avatars.com/api/?name=${encodeURIComponent(nombre)}&background=3b5998&color=fff&size=50`;
+                return `<div style="display:flex; align-items:center; gap:12px; padding:12px; background:rgba(255,255,255,0.1); margin-bottom:8px; border-radius:12px; cursor:pointer;" onclick="verPerfil('${u.id}')">
+                    <img src="${avatar}" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">
+                    <div><div style="font-weight:bold; color:white;">@${escapeHtml(nombre)}</div><div style="font-size:12px; color:#aaa;">${escapeHtml(u.email || '')}</div></div>
+                </div>`;
+            }).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('search-modal-input');
+            if (searchInput) {
+                let timeout;
+                searchInput.addEventListener('input', (e) => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => ejecutarBusquedaFullscreen(e.target.value), 300);
+                });
             }
-        }
-
-        function setOpacityGlobal(val) {
-            document.documentElement.style.setProperty('--panel-opacity', val);
-            if (currentUser) guardarDisenoGlobal();
-        }
-
-        async function guardarDisenoGlobal() {
-            if (!currentUser) { mostrarToast("No hay usuario logueado"); return; }
-            let fondoActual = document.body.style.backgroundImage || document.body.style.background || '#3a6186';
-            let opacidad = parseFloat(document.documentElement.style.getPropertyValue('--panel-opacity') || '1');
-            try {
-                await pb.collection('usuarios').update(currentUser.id, { diseno: { fondo: fondoActual, opacidad } });
-                localStorage.setItem('shatt_diseno', JSON.stringify({ fondo: fondoActual, opacidad }));
-                mostrarToast("✅ Diseño guardado");
-            } catch(e) { console.error("Error guardando diseño:", e); }
-        }
+        });
 
         // ========== AUTENTICACIÓN Y CARGA ==========
         (async function() {
-            // 1. Obtener ID del post
-            postId = getPostIdFromUrl();
+            postId = new URLSearchParams(window.location.search).get('id');
             console.log("📌 Post ID:", postId);
             
             if (!postId) {
@@ -566,15 +940,12 @@
                 return;
             }
 
-            // 2. Autenticar usuario
             const saved = localStorage.getItem('pocketbase_auth');
             if (saved) {
                 try {
                     const { token, model } = JSON.parse(saved);
                     pb.authStore.save(token, model);
-                } catch(e) {
-                    console.error("Error cargando sesión:", e);
-                }
+                } catch(e) { console.error("Error cargando sesión:", e); }
             }
             
             if (!pb.authStore.isValid || !pb.authStore.model) {
@@ -585,15 +956,8 @@
             currentUser = pb.authStore.model;
             console.log("👤 Usuario:", currentUser.email);
             
-            // 3. ⭐ APLICAR DISEÑO GUARDADO ANTES DE MOSTRAR EL POST ⭐
-            await cargarDisenoGuardado();
-            
-            // 4. Verificar modo oscuro
-            if (localStorage.getItem('shatt_darkmode') === 'true') {
-                document.body.classList.add('dark-mode');
-            }
-            
-            // 5. Cargar el post
+            await cargarConfiguracionGlobal();
+            await inicializarMencionesGlobal();
             await cargarPost();
         })();
 
@@ -612,9 +976,7 @@
                 console.log("✅ Post encontrado:", post);
                 currentPost = post;
                 renderizarPost(post);
-                
-                // Cargar comentarios
-                await cargarComentarios();
+                await cargarComentarios(post.comments || []);
                 document.getElementById('comentariosSection').style.display = 'block';
                 
             } catch(e) {
@@ -737,24 +1099,124 @@
             }
         }
 
-        // ========== COMENTARIOS ==========
-        async function cargarComentarios() {
-            if (!currentPost) return;
-            const comments = currentPost.comments || [];
+        // ========== COMENTARIOS CON RESPUESTAS Y MENCIONES ==========
+        async function cargarComentarios(comments) {
             const container = document.getElementById('comentariosLista');
             
-            if (comments.length === 0) {
+            if (!comments || comments.length === 0) {
                 container.innerHTML = '<div class="empty-state">💬 No hay comentarios aún. ¡Sé el primero!</div>';
                 return;
             }
             
-            container.innerHTML = comments.map(c => `
-                <div class="comentario-item">
-                    <div class="comentario-user" onclick="verPerfil('${c.userId}')">@${escapeHtml(c.userNick)}</div>
-                    <div class="comentario-texto">${escapeHtml(c.text)}</div>
-                    <div class="comentario-fecha">${c.createdAt ? dayjs(c.createdAt).fromNow() : ''}</div>
-                </div>
-            `).join('');
+            // Separar comentarios principales y respuestas
+            const comentariosPrincipales = comments.filter(c => !c.parentId);
+            const respuestasMap = {};
+            comments.forEach(c => {
+                if (c.parentId) {
+                    if (!respuestasMap[c.parentId]) respuestasMap[c.parentId] = [];
+                    respuestasMap[c.parentId].push(c);
+                }
+            });
+            
+            let html = '';
+            for (const c of comentariosPrincipales) {
+                const respuestas = respuestasMap[c.id] || [];
+                const tieneRespuestas = respuestas.length > 0;
+                
+                html += `
+                    <div class="comentario-item" id="comentario-${c.id}">
+                        <div class="comentario-user" onclick="verPerfil('${c.userId}')">@${escapeHtml(c.userNick)}</div>
+                        <div class="comentario-texto">${escapeHtml(c.text)}</div>
+                        <div class="comentario-fecha">${c.createdAt ? dayjs(c.createdAt).fromNow() : ''}</div>
+                        <button class="reply-btn" onclick="abrirRespuesta('${c.id}')">↩️ Responder</button>
+                        
+                        <div id="reply-area-${c.id}" class="reply-area">
+                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                <input type="text" id="reply-input-${c.id}" class="reply-input" placeholder="Escribe una respuesta... (usa @ para mencionar)">
+                                <button class="reply-send-btn" onclick="enviarRespuesta('${c.id}')">Responder</button>
+                                <button class="reply-close-btn" onclick="cerrarRespuesta('${c.id}')">✕</button>
+                            </div>
+                            <div style="font-size:10px; color:#888; margin-top:4px;">💡 Menciona a alguien con @nombre_usuario</div>
+                        </div>
+                        
+                        ${tieneRespuestas ? `
+                            <div class="respuestas-container">
+                                ${respuestas.map(r => `
+                                    <div class="respuesta-item">
+                                        <span class="respuesta-user" onclick="verPerfil('${r.userId}')">@${escapeHtml(r.userNick)}</span>
+                                        <span class="respuesta-fecha">${r.createdAt ? dayjs(r.createdAt).fromNow() : ''}</span>
+                                        <div class="respuesta-texto">${escapeHtml(r.text)}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+            
+            // Inicializar menciones para respuestas
+            comentariosPrincipales.forEach(c => {
+                const input = document.getElementById(`reply-input-${c.id}`);
+                if (input) {
+                    setupMentionSystem(`reply-input-${c.id}`, `mention-suggestions-reply-${c.id}`);
+                }
+            });
+        }
+
+        function abrirRespuesta(commentId) {
+            const area = document.getElementById(`reply-area-${commentId}`);
+            if (area) {
+                area.style.display = 'block';
+                const input = document.getElementById(`reply-input-${commentId}`);
+                if (input) input.focus();
+            }
+        }
+
+        function cerrarRespuesta(commentId) {
+            const area = document.getElementById(`reply-area-${commentId}`);
+            if (area) area.style.display = 'none';
+        }
+
+        async function enviarRespuesta(parentId) {
+            const input = document.getElementById(`reply-input-${parentId}`);
+            if (!input) return;
+            
+            const texto = input.value.trim();
+            if (!texto) { mostrarToast("Escribe una respuesta"); return; }
+            
+            // Detectar menciones
+            const nicksMencionados = detectarMenciones(texto);
+            const mentionIds = await obtenerIdsMencionados(nicksMencionados);
+            
+            try {
+                const comments = currentPost.comments || [];
+                const userNick = currentUser.nick || currentUser.email.split('@')[0];
+                
+                const reply = {
+                    id: `reply_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+                    userNick: userNick,
+                    userId: currentUser.id,
+                    text: texto,
+                    createdAt: new Date().toISOString(),
+                    parentId: parentId,
+                    mentions: mentionIds
+                };
+                
+                comments.push(reply);
+                await pb.collection('posts').update(currentPost.id, { comments: comments });
+                currentPost.comments = comments;
+                
+                input.value = '';
+                cerrarRespuesta(parentId);
+                await cargarComentarios(comments);
+                mostrarToast("💬 Respuesta enviada");
+                
+            } catch(e) {
+                console.error("Error al responder:", e);
+                mostrarToast("Error al responder", true);
+            }
         }
 
         async function enviarComentario() {
@@ -765,22 +1227,31 @@
             const texto = input.value.trim();
             if (!texto) return;
             
+            // Detectar menciones
+            const nicksMencionados = detectarMenciones(texto);
+            const mentionIds = await obtenerIdsMencionados(nicksMencionados);
+            
             try {
                 const comments = currentPost.comments || [];
                 const userNick = currentUser.nick || currentUser.email.split('@')[0];
                 
                 const newComment = {
+                    id: `comment_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
                     userNick: userNick,
                     userId: currentUser.id,
                     text: texto,
-                    createdAt: new Date().toISOString()
+                    createdAt: new Date().toISOString(),
+                    parentId: null,
+                    mentions: mentionIds
                 };
+                
                 comments.push(newComment);
                 await pb.collection('posts').update(currentPost.id, { comments: comments });
                 currentPost.comments = comments;
                 input.value = '';
-                await cargarComentarios();
+                await cargarComentarios(comments);
                 mostrarToast("💬 Comentario enviado");
+                
             } catch(e) {
                 console.error("Error al comentar:", e);
                 mostrarToast("Error al comentar");
@@ -790,16 +1261,15 @@
         // ========== EXPOSICIÓN GLOBAL ==========
         window.ratePost = ratePost;
         window.enviarComentario = enviarComentario;
+        window.enviarRespuesta = enviarRespuesta;
+        window.abrirRespuesta = abrirRespuesta;
+        window.cerrarRespuesta = cerrarRespuesta;
         window.verPerfil = verPerfil;
         window.abrirImageViewer = abrirImageViewer;
         window.cerrarImageViewer = cerrarImageViewer;
         window.toggleZoom = toggleZoom;
-        window.setBgColorGlobal = setBgColorGlobal;
-        window.setImageBgGlobal = setImageBgGlobal;
-        window.setOpacityGlobal = setOpacityGlobal;
-        window.guardarDisenoGlobal = guardarDisenoGlobal;
-        window.cargarDisenoGuardado = cargarDisenoGuardado;
-        window.aplicarDiseno = aplicarDiseno;
+        window.abrirBuscadorFullscreen = abrirBuscadorFullscreen;
+        window.cerrarBuscadorFullscreen = cerrarBuscadorFullscreen;
     </script>
 </body>
 </html>
