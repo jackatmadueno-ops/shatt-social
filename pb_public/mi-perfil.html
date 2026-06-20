@@ -10,24 +10,25 @@
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/plugin/relativeTime.js"></script>
     <script>dayjs.extend(window.dayjs_plugin_relativeTime);</script>
     
+    
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         :root { --main-blue: #3a6186; --glossy: linear-gradient(180deg, #ffffff 0%, #d1d1d1 100%); --shatt-blue: #3b5998; --panel-opacity: 1; --shadow-sm: 0 2px 8px rgba(0,0,0,0.1); --shadow-md: 0 4px 12px rgba(0,0,0,0.15); --shadow-lg: 0 8px 24px rgba(0,0,0,0.2); --transition: all 0.3s ease; --border-radius: 12px; --border-radius-sm: 8px; --spacing-xs: 4px; --spacing-sm: 8px; --spacing-md: 12px; --spacing-lg: 16px; --spacing-xl: 24px; }
         
         /* ========== FONDO AZUL POR DEFECTO ========== */
         body { 
-            background: #3a6186 !important; 
-            background-size: cover; 
-            background-attachment: fixed; 
-            background-position: center; 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; 
-            margin: 0; 
-            min-height: 100vh; 
-            color: #000; 
-            line-height: 1.5; 
-            transition: background 0.3s ease; 
-            padding-bottom: 70px; 
-        }
+    background: #3a6186; 
+    background-size: cover; 
+    background-attachment: fixed; 
+    background-position: center; 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; 
+    margin: 0; 
+    min-height: 100vh; 
+    color: #000; 
+    line-height: 1.5; 
+    transition: background 0.3s ease; 
+    padding-bottom: 70px; 
+}
         
         body.dark-mode { background: #0f0f1a !important; }
         body.dark-mode .panel-retro, body.dark-mode .profile-mobile-card { background: rgba(30, 30, 50, 0.95); color: white; border-color: #555; }
@@ -1039,32 +1040,222 @@
     </div>
 
   <script>
-        // Variables globales (solo una vez)
-        let currentUser = null;
-        let palabrasFiltro = [];
-
+        // ========== CONFIGURACIÓN GLOBAL (CARGAR DESDE POCKETBASE) ==========
         const PB_URL = 'https://shatt-social-production.up.railway.app';
         const pb = new PocketBase(PB_URL);
         pb.autoCancellation(false);
-        
+
+        let currentUser = null;
+        let configuracionGlobal = null;
         let publicaciones = [];
         let filtroActual = 'todas';
         let notificacionesCache = [];
-        
+        let palabrasFiltro = [];
+
+        // ========== CARGAR CONFIGURACIÓN GLOBAL ==========
+        async function cargarConfiguracionGlobal() {
+            const saved = localStorage.getItem('pocketbase_auth');
+            if (!saved) return;
+
+            try {
+                const { token, model } = JSON.parse(saved);
+                pb.authStore.save(token, model);
+            } catch (e) { return; }
+
+            if (!pb.authStore.isValid) return;
+            const currentUser = pb.authStore.model;
+            if (!currentUser) return;
+
+            try {
+                const configs = await pb.collection('configuraciones').getList(1, 1, {
+                    filter: `usuario = "${currentUser.id}"`
+                });
+
+                if (configs.items.length > 0) {
+                    const config = configs.items[0];
+                    configuracionGlobal = config;
+                    aplicarConfiguracion(config);
+                }
+            } catch (e) {
+                console.error("Error cargando configuración:", e);
+                // Fallback a localStorage
+                const dark = localStorage.getItem('shatt_darkmode') === 'true';
+                if (dark) document.body.classList.add('dark-mode');
+                const bg = localStorage.getItem('shatt_bg');
+                if (bg) document.body.style.background = bg;
+            }
+        }
+
+        function aplicarConfiguracion(config) {
+            if (!config) return;
+
+            if (config.tema === 'dark') {
+                document.body.classList.add('dark-mode');
+                const toggle = document.getElementById('dark-mode-toggle');
+                if (toggle) toggle.checked = true;
+            } else {
+                document.body.classList.remove('dark-mode');
+                const toggle = document.getElementById('dark-mode-toggle');
+                if (toggle) toggle.checked = false;
+            }
+
+            if (config.color_fondo) {
+                document.body.style.background = config.color_fondo;
+            }
+
+            if (config.opacidad) {
+                document.documentElement.style.setProperty('--panel-opacity', config.opacidad);
+            }
+
+            if (config.accent_color) {
+                document.documentElement.style.setProperty('--shatt-blue', config.accent_color);
+            }
+
+            if (config.tamaño_fuente) {
+                document.documentElement.style.fontSize = config.tamaño_fuente + 'px';
+            }
+
+            if (config.imagen_fondo) {
+                try {
+                    const url = pb.files.getUrl(config, config.imagen_fondo);
+                    document.body.style.background = `url(${url}) center/cover fixed`;
+                } catch (e) {}
+            }
+        }
+
+        // Sincronizar entre pestañas
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'shatt_config_update') {
+                cargarConfiguracionGlobal();
+            }
+        });
+
+        // ========== FUNCIONES DE PERSONALIZACIÓN ==========
+
+        function toggleDarkMode() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            const toggle = document.getElementById('dark-mode-toggle');
+            if (toggle) toggle.checked = isDark;
+            localStorage.setItem('shatt_darkmode', isDark);
+            
+            // Guardar en PocketBase si es posible
+            if (configuracionGlobal) {
+                guardarConfiguracionEnPB({ tema: isDark ? 'dark' : 'light' });
+            }
+        }
+
+        function setBgColorGlobal(color) {
+            document.body.style.background = color;
+            if (configuracionGlobal) {
+                guardarConfiguracionEnPB({ color_fondo: color });
+            }
+        }
+
+        function setImageBgGlobal(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const url = URL.createObjectURL(file);
+                document.body.style.background = `url(${url}) center/cover fixed`;
+                mostrarToast("🖼️ Imagen de fondo aplicada");
+            }
+        }
+
+        function setOpacityGlobal(val) {
+            document.documentElement.style.setProperty('--panel-opacity', val);
+            if (configuracionGlobal) {
+                guardarConfiguracionEnPB({ opacidad: parseFloat(val) });
+            }
+        }
+
+        function setAccentColorGlobal(color) {
+            document.documentElement.style.setProperty('--shatt-blue', color);
+            if (configuracionGlobal) {
+                guardarConfiguracionEnPB({ accent_color: color });
+            }
+            mostrarToast("🎨 Color de acento actualizado");
+        }
+
+        function setFontSizeGlobal(size) {
+            document.documentElement.style.fontSize = size + 'px';
+            if (configuracionGlobal) {
+                guardarConfiguracionEnPB({ tamaño_fuente: parseInt(size) });
+            }
+            mostrarToast("📏 Tamaño de fuente actualizado");
+        }
+
+        async function guardarConfiguracionEnPB(data) {
+            if (!configuracionGlobal) {
+                mostrarToast("❌ No hay configuración activa", true);
+                return;
+            }
+
+            try {
+                const updated = await pb.collection('configuraciones').update(configuracionGlobal.id, data);
+                configuracionGlobal = updated;
+                localStorage.setItem('shatt_config_update', Date.now().toString());
+                mostrarToast("💾 Configuración guardada");
+            } catch (e) {
+                console.error("Error guardando configuración:", e);
+                mostrarToast("❌ Error al guardar", true);
+            }
+        }
+
+        async function guardarDisenoGlobal() {
+            const bg = document.body.style.background;
+            const opacity = getComputedStyle(document.documentElement).getPropertyValue('--panel-opacity');
+            const accent = getComputedStyle(document.documentElement).getPropertyValue('--shatt-blue');
+            const isDark = document.body.classList.contains('dark-mode');
+
+            await guardarConfiguracionEnPB({
+                color_fondo: bg,
+                opacidad: parseFloat(opacity) || 1,
+                accent_color: accent || '#3b5998',
+                tema: isDark ? 'dark' : 'light'
+            });
+
+            localStorage.setItem('shatt_bg', bg);
+            localStorage.setItem('shatt_opacity', opacity);
+            mostrarToast("💾 Diseño guardado");
+            cerrarModalesGlobal();
+        }
+
+        // ========== FUNCIONES DE UTILIDAD ==========
+
         function mostrarToast(mensaje) {
             let toast = document.getElementById('custom-toast');
-            if (!toast) { toast = document.createElement('div'); toast.id = 'custom-toast'; document.body.appendChild(toast); }
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'custom-toast';
+                toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);color:white;padding:12px 24px;border-radius:50px;font-size:14px;z-index:10000;display:none;max-width:90%;text-align:center;';
+                document.body.appendChild(toast);
+            }
             toast.textContent = mensaje;
             toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 2000);
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => toast.style.display = 'none', 2000);
         }
-        
-        function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-        function formatearNumero(num) { if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M'; if (num >= 1000) return (num / 1000).toFixed(1) + 'k'; return num.toString(); }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatearNumero(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+            return num.toString();
+        }
+
         function abrirMisMensajes() { window.location.href = "shatts.html"; }
+
         function verPublicacion(postId) { window.location.href = `post.html?id=${postId}`; }
+
         function verPerfil(uid) { window.location.href = `perfil.html?uid=${uid}`; }
-        
+
+        // ========== ACTUALIZAR CONTADORES ==========
+
         function actualizarContadores(seguidores, seguidos) {
             document.getElementById('seguidores-count').textContent = formatearNumero(seguidores);
             document.getElementById('seguidos-count').textContent = formatearNumero(seguidos);
@@ -1073,7 +1264,7 @@
             if (mobileSeguidores) mobileSeguidores.textContent = formatearNumero(seguidores);
             if (mobileSeguidos) mobileSeguidos.textContent = formatearNumero(seguidos);
         }
-        
+
         async function verListaPropia(tipo) {
             if (!currentUser) return;
             let ids = [];
@@ -1085,9 +1276,11 @@
                 ids = result.map(f => f.seguido);
             }
             if (ids.length === 0) { mostrarToast(`📋 No tienes ${tipo === 'seguidores' ? 'seguidores' : 'seguidos'}`); return; }
-            const usuarios = await Promise.all(ids.map(async id => { try { return await pb.collection('usuarios').getOne(id); } catch(e) { return null; } }));
+            const usuarios = await Promise.all(ids.map(async id => {
+                try { return await pb.collection('usuarios').getOne(id); } catch (e) { return null; }
+            }));
             const usuariosValidos = usuarios.filter(u => u !== null);
-            
+
             let modalHtml = `
                 <div id="followModalOverlay" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; display:flex; align-items:center; justify-content:center;">
                     <div style="background:#1a1a1a; border-radius:16px; width:90%; max-width:450px; max-height:80vh; overflow:auto; border:2px solid #f5c518;">
@@ -1112,45 +1305,41 @@
             if (oldModal) oldModal.remove();
             document.body.insertAdjacentHTML('beforeend', modalHtml);
         }
-        
-        function cerrarModalSeguidores() { const modal = document.getElementById('followModalOverlay'); if (modal) modal.remove(); }
-        
+
+        function cerrarModalSeguidores() {
+            const modal = document.getElementById('followModalOverlay');
+            if (modal) modal.remove();
+        }
+
         async function getSeguidoresCount(userId) {
             try { const result = await pb.collection('seguidores').getList(1, 1, { filter: `seguido = "${userId}"` }); return result.totalItems; } catch (error) { return 0; }
         }
+
         async function getSeguidosCount(userId) {
             try { const result = await pb.collection('seguidores').getList(1, 1, { filter: `seguidor = "${userId}"` }); return result.totalItems; } catch (error) { return 0; }
         }
-        async function actualizarContadoresPerfil(uid) {
-            try { const seguidoresCount = await getSeguidoresCount(uid); const seguidosCount = await getSeguidosCount(uid); actualizarContadores(seguidoresCount, seguidosCount); } catch (error) { console.error(error); }
-        }
-        
-        // ========== VISTA PREVIA DE FOTO/VIDEO DE PERFIL ==========
+
+        // ========== VISTA PREVIA DE FOTO/VIDEO ==========
+
         function previewPfp(input) {
             const file = input.files[0];
             if (!file) return;
-            
+
             const img = document.getElementById('preview-avatar-img');
             const video = document.getElementById('preview-avatar-video');
             const placeholder = document.getElementById('preview-avatar-placeholder');
-            
-            // Ocultar todo
+
             img.style.display = 'none';
             video.style.display = 'none';
             placeholder.style.display = 'none';
-            
+
             const url = URL.createObjectURL(file);
-            
+
             if (file.type.startsWith('video/')) {
                 video.src = url;
                 video.style.display = 'block';
                 video.load();
                 video.play().catch(() => {});
-                video.onloadedmetadata = function() {
-                    if (this.duration > 5) {
-                        mostrarToast("⚠️ El video dura " + Math.round(this.duration) + "s. Se recomienda máximo 5 segundos.");
-                    }
-                };
             } else if (file.type.startsWith('image/')) {
                 img.src = url;
                 img.style.display = 'block';
@@ -1160,8 +1349,7 @@
                 placeholder.style.display = 'block';
             }
         }
-        
-        // ========== FUNCIÓN PARA PAÍS "OTRO" ==========
+
         function mostrarInputPais(select) {
             const otroInput = document.getElementById('in-pais-otro');
             if (select.value === 'Otro (escribir)') {
@@ -1170,7 +1358,9 @@
                 otroInput.style.display = 'none';
             }
         }
-        
+
+        // ========== CARGAR DATOS DEL PERFIL ==========
+
         async function cargarDatos() {
             if (!currentUser) return;
             try {
@@ -1185,41 +1375,35 @@
                 document.getElementById('disp-sexo').innerText = user.sexo || "-";
                 document.getElementById('disp-fuma').innerText = user.fuma || "-";
                 document.getElementById('disp-toma').innerText = user.toma || "-";
-                
+
                 document.getElementById('mobile-nick').innerText = `@${nombreMostrar}`;
                 document.getElementById('mobile-bio').innerText = user.bio || "Sin bio.";
                 document.getElementById('mobile-pais').innerText = user.pais || "-";
                 document.getElementById('mobile-sexo').innerText = user.sexo || "-";
                 document.getElementById('mobile-fuma').innerText = user.fuma || "-";
                 document.getElementById('mobile-toma').innerText = user.toma || "-";
-                
+
                 const seguidoresCount = await getSeguidoresCount(currentUser.id);
                 const seguidosCount = await getSeguidosCount(currentUser.id);
                 actualizarContadores(seguidoresCount, seguidosCount);
-                
-                if (user.pfp) { 
-    const pfpUrl = pb.files.getUrl(user, user.pfp);
-    const nombreArchivo = user.pfp.toLowerCase();
-    
-    // Detectar si es video (mp4, webm, mov, avi)
-    const esVideo = nombreArchivo.match(/\.(mp4|webm|mov|avi)$/i);
-    // Detectar si es GIF (se muestra como imagen pero se mueve solo)
-    const esGif = nombreArchivo.match(/\.(gif)$/i);
-    
-    if (esVideo) {
-        // Si es video, usar etiqueta <video>
-        document.getElementById('disp-pfp').innerHTML = `<video src="${pfpUrl}" style="width:100%; height:100%; object-fit:cover;" muted autoplay loop playsinline></video>`;
-        document.getElementById('mobile-pfp').innerHTML = `<video src="${pfpUrl}" style="width:100%; height:100%; object-fit:cover;" muted autoplay loop playsinline></video>`;
-    } else {
-        // Si es imagen o GIF, usar etiqueta <img> (el GIF se mueve solo)
-        document.getElementById('disp-pfp').innerHTML = `<img src="${pfpUrl}" alt="PFP" style="width:100%; height:100%; object-fit:cover;">`;
-        document.getElementById('mobile-pfp').innerHTML = `<img src="${pfpUrl}" alt="PFP" style="width:100%; height:100%; object-fit:cover;">`;
-    }
-} else {
-    document.getElementById('disp-pfp').innerHTML = '👤';
-    document.getElementById('mobile-pfp').innerHTML = '👤';
-}
-                
+
+                if (user.pfp) {
+                    const pfpUrl = pb.files.getUrl(user, user.pfp);
+                    const nombreArchivo = user.pfp.toLowerCase();
+                    const esVideo = nombreArchivo.match(/\.(mp4|webm|mov|avi)$/i);
+
+                    if (esVideo) {
+                        document.getElementById('disp-pfp').innerHTML = `<video src="${pfpUrl}" style="width:100%; height:100%; object-fit:cover;" muted autoplay loop playsinline></video>`;
+                        document.getElementById('mobile-pfp').innerHTML = `<video src="${pfpUrl}" style="width:100%; height:100%; object-fit:cover;" muted autoplay loop playsinline></video>`;
+                    } else {
+                        document.getElementById('disp-pfp').innerHTML = `<img src="${pfpUrl}" alt="PFP" style="width:100%; height:100%; object-fit:cover;">`;
+                        document.getElementById('mobile-pfp').innerHTML = `<img src="${pfpUrl}" alt="PFP" style="width:100%; height:100%; object-fit:cover;">`;
+                    }
+                } else {
+                    document.getElementById('disp-pfp').innerHTML = '👤';
+                    document.getElementById('mobile-pfp').innerHTML = '👤';
+                }
+
                 document.getElementById('in-nick').value = user.nick || '';
                 document.getElementById('in-bio').value = user.bio || '';
                 document.getElementById('in-about').value = user.about || '';
@@ -1229,12 +1413,11 @@
                 document.getElementById('in-sexo').value = user.sexo || 'Masculino';
                 document.getElementById('in-fuma').value = user.fuma || '';
                 document.getElementById('in-toma').value = user.toma || '';
-                
-                // Cargar país con soporte para "Otro"
+
                 const paisActual = user.pais || '';
                 const paisSelect = document.getElementById('in-pais');
                 const paisOtroInput = document.getElementById('in-pais-otro');
-                
+
                 let paisEncontrado = false;
                 for (let option of paisSelect.options) {
                     if (option.value === paisActual) {
@@ -1253,7 +1436,9 @@
                 }
             } catch (error) { console.error(error); mostrarToast("Error al cargar el perfil"); }
         }
-        
+
+        // ========== CARGAR AMIGOS ==========
+
         async function cargarAmigos(uid) {
             try {
                 const seguidosResult = await pb.collection('seguidores').getFullList({ filter: `seguidor = "${uid}"` });
@@ -1264,138 +1449,130 @@
                 document.getElementById('amigos-count').innerText = `(${amigosIds.length})`;
                 const amigosMobileCount = document.getElementById('amigos-mobile-count');
                 if (amigosMobileCount) amigosMobileCount.innerText = `(${amigosIds.length})`;
-                
-                if (amigosIds.length === 0) { 
+
+                if (amigosIds.length === 0) {
                     document.getElementById('amigos-container').innerHTML = '<div style="text-align: center; padding: 20px;">👥 Sin amigos aún</div>';
                     const mobileContainer = document.getElementById('amigos-mobile-container');
                     if (mobileContainer) mobileContainer.innerHTML = '<div style="text-align: center; padding: 20px;">👥 Sin amigos aún</div>';
                     return;
                 }
-                
+
                 let html = '';
                 for (const amigoId of amigosIds) {
-                    try { 
-                        const amigo = await pb.collection('usuarios').getOne(amigoId); 
-                        const nombre = amigo.nick || amigo.email.split('@')[0]; 
-                        let avatarUrl = amigo.pfp ? pb.files.getUrl(amigo, amigo.pfp) : `https://ui-avatars.com/api/?name=${encodeURIComponent(nombre)}&background=3b5998&color=fff&size=40`; 
-                        html += `<div class="amigo-item" onclick="verPerfil('${amigo.id}')"><img src="${avatarUrl}"><div><b>@${escapeHtml(nombre)}</b></div></div>`; 
+                    try {
+                        const amigo = await pb.collection('usuarios').getOne(amigoId);
+                        const nombre = amigo.nick || amigo.email.split('@')[0];
+                        let avatarUrl = amigo.pfp ? pb.files.getUrl(amigo, amigo.pfp) : `https://ui-avatars.com/api/?name=${encodeURIComponent(nombre)}&background=3b5998&color=fff&size=40`;
+                        html += `<div class="amigo-item" onclick="verPerfil('${amigo.id}')"><img src="${avatarUrl}"><div><b>@${escapeHtml(nombre)}</b></div></div>`;
                     } catch (e) { console.error(e); }
                 }
                 document.getElementById('amigos-container').innerHTML = html || '<div style="text-align: center; padding: 20px;">Error al cargar amigos</div>';
                 const mobileContainer = document.getElementById('amigos-mobile-container');
                 if (mobileContainer) mobileContainer.innerHTML = html || '<div style="text-align: center; padding: 20px;">Error al cargar amigos</div>';
-            } catch (error) { 
+            } catch (error) {
                 document.getElementById('amigos-container').innerHTML = '<div style="text-align: center; padding: 20px;">Error al cargar amigos</div>';
             }
         }
-        
+
+        // ========== PUBLICACIONES ==========
+
         async function cargarPublicaciones() {
             if (!currentUser) return;
-            try { 
-                const posts = await pb.collection('posts').getList(1, 50, { filter: `usuario = "${currentUser.id}"`, sort: '-created', expand: 'usuario' }); 
-                publicaciones = posts.items; 
-                filtrarPublicaciones(filtroActual); 
+            try {
+                const posts = await pb.collection('posts').getList(1, 50, { filter: `usuario = "${currentUser.id}"`, sort: '-created', expand: 'usuario' });
+                publicaciones = posts.items;
+                filtrarPublicaciones(filtroActual);
             } catch (error) { console.error(error); }
         }
-        
-        function cambiarTab(tipo, elemento) { 
-            filtroActual = tipo; 
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active')); 
-            if (elemento) elemento.classList.add('active'); 
-            filtrarPublicaciones(tipo); 
+
+        function cambiarTab(tipo, elemento) {
+            filtroActual = tipo;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            if (elemento) elemento.classList.add('active');
+            filtrarPublicaciones(tipo);
         }
-        
-        function filtrarPublicaciones(tipo) { 
-            let filtradas = publicaciones; 
-            if (tipo === 'imagen') filtradas = publicaciones.filter(p => p.imagen); 
-            else if (tipo === 'audio') filtradas = publicaciones.filter(p => p.audio); 
-            else if (tipo === 'texto') filtradas = publicaciones.filter(p => !p.imagen && !p.audio); 
-            mostrarPublicaciones(filtradas); 
+
+        function filtrarPublicaciones(tipo) {
+            let filtradas = publicaciones;
+            if (tipo === 'imagen') filtradas = publicaciones.filter(p => p.imagen);
+            else if (tipo === 'audio') filtradas = publicaciones.filter(p => p.audio);
+            else if (tipo === 'texto') filtradas = publicaciones.filter(p => !p.imagen && !p.audio);
+            mostrarPublicaciones(filtradas);
         }
-        
-        function mostrarPublicaciones(pubs) { 
-            const container = document.getElementById('publicaciones-container'); 
-            if (pubs.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 40px;">📭 No hay publicaciones</div>'; return; } 
-            let html = ''; 
-            pubs.forEach(pub => { 
-                const fecha = pub.created ? dayjs(pub.created).fromNow() : 'Fecha desconocida'; 
-                const autor = pub.expand?.usuario; 
-                const autorNombre = autor?.nick || autor?.email?.split('@')[0] || 'Usuario'; 
-                html += `<div class="publicacion-item" onclick="verPublicacion('${pub.id}')"><div style="font-weight: bold;">@${escapeHtml(autorNombre)}</div><div style="font-size: 12px; margin: var(--spacing-sm) 0;">${escapeHtml(pub.texto ? pub.texto.substring(0, 80) + (pub.texto.length > 80 ? '...' : '') : '')}</div>`; 
-                if (pub.imagen) { const imgUrl = pb.files.getUrl(pub, pub.imagen); html += `<img src="${imgUrl}" onclick="event.stopPropagation(); window.open('${imgUrl}', '_blank')">`; } 
-                if (pub.audio) { const audioUrl = pb.files.getUrl(pub, pub.audio); html += `<audio src="${audioUrl}" controls onclick="event.stopPropagation()"></audio>`; } 
-                html += `<div class="publicacion-fecha">${fecha}</div><div style="display:flex; gap:var(--spacing-sm); font-size:11px; color:#666;"><span>⭐ ${(pub.rating || 0).toFixed(1)}</span><span>💬 ${pub.comments?.length || 0}</span></div></div>`; 
-            }); 
-            container.innerHTML = html; 
+
+        function mostrarPublicaciones(pubs) {
+            const container = document.getElementById('publicaciones-container');
+            if (pubs.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 40px;">📭 No hay publicaciones</div>'; return; }
+            let html = '';
+            pubs.forEach(pub => {
+                const fecha = pub.created ? dayjs(pub.created).fromNow() : 'Fecha desconocida';
+                const autor = pub.expand?.usuario;
+                const autorNombre = autor?.nick || autor?.email?.split('@')[0] || 'Usuario';
+                html += `<div class="publicacion-item" onclick="verPublicacion('${pub.id}')"><div style="font-weight: bold;">@${escapeHtml(autorNombre)}</div><div style="font-size: 12px; margin: var(--spacing-sm) 0;">${escapeHtml(pub.texto ? pub.texto.substring(0, 80) + (pub.texto.length > 80 ? '...' : '') : '')}</div>`;
+                if (pub.imagen) { const imgUrl = pb.files.getUrl(pub, pub.imagen); html += `<img src="${imgUrl}" onclick="event.stopPropagation(); window.open('${imgUrl}', '_blank')">`; }
+                if (pub.audio) { const audioUrl = pb.files.getUrl(pub, pub.audio); html += `<audio src="${audioUrl}" controls onclick="event.stopPropagation()"></audio>`; }
+                html += `<div class="publicacion-fecha">${fecha}</div><div style="display:flex; gap:var(--spacing-sm); font-size:11px; color:#666;"><span>⭐ ${(pub.rating || 0).toFixed(1)}</span><span>💬 ${pub.comments?.length || 0}</span></div></div>`;
+            });
+            container.innerHTML = html;
         }
-        
-        // ========== SAVE ALL (con soporte para imagen, video y país "Otro") ==========
+
+        // ========== SAVE ALL ==========
+
         async function saveAll() {
-    if (!currentUser) return;
-    const btn = document.querySelector('#edit-modal .btn-retro'); 
-    const textoOriginal = btn.textContent; 
-    btn.textContent = "💾 GUARDANDO..."; 
-    btn.disabled = true;
-    try { 
-        // Obtener país (con soporte para "Otro")
-        let pais = document.getElementById('in-pais').value;
-        if (pais === 'Otro (escribir)') {
-            pais = document.getElementById('in-pais-otro').value || 'Otro';
+            if (!currentUser) return;
+            const btn = document.querySelector('#edit-modal .btn-retro');
+            const textoOriginal = btn.textContent;
+            btn.textContent = "💾 GUARDANDO...";
+            btn.disabled = true;
+            try {
+                let pais = document.getElementById('in-pais').value;
+                if (pais === 'Otro (escribir)') {
+                    pais = document.getElementById('in-pais-otro').value || 'Otro';
+                }
+
+                const updateData = {
+                    nick: document.getElementById('in-nick').value,
+                    bio: document.getElementById('in-bio').value,
+                    about: document.getElementById('in-about').value,
+                    intGen: document.getElementById('in-int-gen').value,
+                    intMus: document.getElementById('in-int-mus').value,
+                    pais: pais,
+                    sexo: document.getElementById('in-sexo').value,
+                    fuma: document.getElementById('in-fuma').value,
+                    toma: document.getElementById('in-toma').value
+                };
+
+                const pfpInput = document.getElementById('f-pfp');
+                if (pfpInput.files && pfpInput.files[0]) {
+                    const file = pfpInput.files[0];
+                    const formData = new FormData();
+                    if (file.type === 'image/gif' || file.name.toLowerCase().endsWith('.gif')) {
+                        formData.append('pfp', file);
+                    } else if (file.type.startsWith('image/')) {
+                        const comprimida = await comprimirImagen(file);
+                        formData.append('pfp', comprimida);
+                    } else {
+                        formData.append('pfp', file);
+                    }
+                    await pb.collection('usuarios').update(currentUser.id, formData);
+                }
+                await pb.collection('usuarios').update(currentUser.id, updateData);
+                mostrarToast("✅ Perfil actualizado");
+                cerrarModalesGlobal();
+                await cargarDatos();
+            } catch (error) { console.error(error); mostrarToast("❌ Error al guardar"); } finally { btn.textContent = textoOriginal;
+                btn.disabled = false; }
         }
-        
-        const updateData = { 
-            nick: document.getElementById('in-nick').value, 
-            bio: document.getElementById('in-bio').value, 
-            about: document.getElementById('in-about').value, 
-            intGen: document.getElementById('in-int-gen').value, 
-            intMus: document.getElementById('in-int-mus').value, 
-            pais: pais, 
-            sexo: document.getElementById('in-sexo').value, 
-            fuma: document.getElementById('in-fuma').value, 
-            toma: document.getElementById('in-toma').value 
-        }; 
-        
-        const pfpInput = document.getElementById('f-pfp'); 
-        if (pfpInput.files && pfpInput.files[0]) {
-            const file = pfpInput.files[0];
-            const formData = new FormData();
-            
-            // Si es GIF, subir DIRECTAMENTE sin comprimir
-            if (file.type === 'image/gif' || file.name.toLowerCase().endsWith('.gif')) {
-                formData.append('pfp', file);
-            } else if (file.type.startsWith('image/')) {
-                // Si es imagen (JPG, PNG, WebP), comprimir
-                const comprimida = await comprimirImagen(file);
-                formData.append('pfp', comprimida);
-            } else {
-                // Es video, subir directamente
-                formData.append('pfp', file);
-            }
-            await pb.collection('usuarios').update(currentUser.id, formData);
-        } 
-        await pb.collection('usuarios').update(currentUser.id, updateData); 
-        mostrarToast("✅ Perfil actualizado"); 
-        cerrarModalesGlobal(); 
-        await cargarDatos(); 
-    } catch (error) { console.error(error); mostrarToast("❌ Error al guardar"); } 
-    finally { btn.textContent = textoOriginal; btn.disabled = false; }
-}
-        
-        async function comprimirImagen(file) { 
-    // Si es GIF, NO comprimir (devolver el archivo original)
-    if (file.type === 'image/gif' || file.name.toLowerCase().endsWith('.gif')) {
-        return file;
-    }
-    
-    // Si no es imagen, devolver el archivo original
-    if (!file.type.startsWith('image/')) return file; 
-    
-    const opciones = { maxSizeMB: 1, maxWidthOrHeight: 800, useWebWorker: true }; 
-    try { return await imageCompression(file, opciones); } 
-    catch (error) { return file; } 
-}
-        
+
+        async function comprimirImagen(file) {
+            if (file.type === 'image/gif' || file.name.toLowerCase().endsWith('.gif')) return file;
+            if (!file.type.startsWith('image/')) return file;
+            const opciones = { maxSizeMB: 1, maxWidthOrHeight: 800, useWebWorker: true };
+            try { return await imageCompression(file, opciones); } catch (error) { return file; }
+        }
+
         // ========== NOTIFICACIONES ==========
+
         async function cargarNotificaciones() {
             if (!currentUser) return;
             try {
@@ -1408,93 +1585,89 @@
                 if (document.getElementById('notifications-overlay').classList.contains('active')) renderNotificacionesModernas();
             } catch (error) {}
         }
-        
+
         function renderNotificacionesModernas() {
             const container = document.getElementById('notifications-list-modern');
             const statsDiv = document.getElementById('notif-stats');
-            
+
             if (!container) return;
-            
+
             if (!notificacionesCache || notificacionesCache.length === 0) {
                 container.innerHTML = '<div class="empty-notifications"><span>📭</span><p>No hay notificaciones</p></div>';
                 if (statsDiv) statsDiv.innerHTML = '0 notificaciones';
                 return;
             }
-            
+
             const noLeidas = notificacionesCache.filter(n => !n.leido).length;
             if (statsDiv) statsDiv.innerHTML = `${notificacionesCache.length} notificaciones · ${noLeidas} no leídas`;
-            
+
             const hoy = dayjs().startOf('day');
             const ayer = dayjs().subtract(1, 'day').startOf('day');
             const grupos = { hoy: [], ayer: [], anteriores: [] };
-            
+
             notificacionesCache.forEach(noti => {
                 const fecha = dayjs(noti.created);
                 if (fecha.isSame(hoy, 'day')) grupos.hoy.push(noti);
                 else if (fecha.isSame(ayer, 'day')) grupos.ayer.push(noti);
                 else grupos.anteriores.push(noti);
             });
-            
+
             let html = '';
-            
+
             if (grupos.hoy.length > 0) {
                 html += `<div class="notif-group"><div class="notif-group-title">HOY</div>`;
                 grupos.hoy.forEach(noti => { html += crearNotifCardHTML(noti); });
                 html += `</div>`;
             }
-            
+
             if (grupos.ayer.length > 0) {
                 html += `<div class="notif-group"><div class="notif-group-title">AYER</div>`;
                 grupos.ayer.forEach(noti => { html += crearNotifCardHTML(noti); });
                 html += `</div>`;
             }
-            
+
             if (grupos.anteriores.length > 0) {
                 html += `<div class="notif-group"><div class="notif-group-title">ANTERIORES</div>`;
                 grupos.anteriores.forEach(noti => { html += crearNotifCardHTML(noti); });
                 html += `</div>`;
             }
-            
+
             container.innerHTML = html;
         }
-        
+
         function crearNotifCardHTML(noti) {
             let texto = '';
             let icon = '🔔';
             let tipoClass = '';
             let onClickAction = '';
-            
-            if (noti.tipo === 'like') { 
+
+            if (noti.tipo === 'like') {
                 texto = `<strong>@${escapeHtml(noti.deNick)}</strong> le gusta tu publicación`;
                 icon = '❤️';
                 tipoClass = 'like';
                 onClickAction = `marcarNotificacionLeida('${noti.id}', '${noti.postId || ''}')`;
-            }
-            else if (noti.tipo === 'comentario') { 
+            } else if (noti.tipo === 'comentario') {
                 texto = `<strong>@${escapeHtml(noti.deNick)}</strong> comentó: "${escapeHtml(noti.comentario?.substring(0, 50))}"`;
                 icon = '💬';
                 tipoClass = 'comment';
                 onClickAction = `marcarNotificacionLeida('${noti.id}', '${noti.postId || ''}')`;
-            }
-            else if (noti.tipo === 'seguidor') { 
+            } else if (noti.tipo === 'seguidor') {
                 texto = `<strong>@${escapeHtml(noti.deNick)}</strong> comenzó a seguirte`;
                 icon = '👤';
                 tipoClass = 'follow';
                 onClickAction = `window.location.href='perfil.html?uid=${noti.de}'`;
-            }
-            else if (noti.tipo === 'compartido') { 
+            } else if (noti.tipo === 'compartido') {
                 texto = `<strong>@${escapeHtml(noti.deNick)}</strong> compartió una publicación contigo`;
                 icon = '📤';
                 tipoClass = 'share';
                 onClickAction = `marcarNotificacionLeida('${noti.id}', '${noti.postId || ''}')`;
-            }
-            else if (noti.tipo === 'postit') { 
+            } else if (noti.tipo === 'postit') {
                 texto = `<strong>@${escapeHtml(noti.deNick)}</strong> dejó un post-it en tu diario: "${escapeHtml(noti.comentario?.substring(0, 50))}"`;
                 icon = '📌';
                 tipoClass = 'postit';
                 onClickAction = `window.location.href='diario.html?uid=${noti.para}'`;
             }
-            
+
             return `<div class="notif-card ${noti.leido ? '' : 'unread'}" onclick="${onClickAction}">
                 <div class="notif-icon ${tipoClass}">${icon}</div>
                 <div class="notif-content">
@@ -1503,120 +1676,89 @@
                 </div>
             </div>`;
         }
-        
+
         async function marcarNotificacionLeida(id, postId) {
             await pb.collection('notificaciones').update(id, { leido: true });
             await cargarNotificaciones();
-            if (postId) { cerrarPanelNotificaciones(); window.location.href = `post.html?id=${postId}`; }
+            if (postId) { cerrarPanelNotificaciones();
+                window.location.href = `post.html?id=${postId}`; }
         }
-        
+
         async function marcarTodasComoLeidas() {
             const noLeidas = notificacionesCache.filter(n => !n.leido);
             for (const n of noLeidas) await pb.collection('notificaciones').update(n.id, { leido: true });
             await cargarNotificaciones();
             mostrarToast("✅ Todas leídas");
         }
-        
+
+        // ========== PANELES DE CONFIGURACIÓN Y NOTIFICACIONES ==========
+
         function abrirPanelNotificaciones() {
             document.getElementById('notifications-overlay').classList.add('active');
             document.querySelector('.notifications-panel').classList.add('active');
             document.body.style.overflow = 'hidden';
             renderNotificacionesModernas();
         }
-        
+
         function cerrarPanelNotificaciones() {
             document.getElementById('notifications-overlay').classList.remove('active');
             document.querySelector('.notifications-panel').classList.remove('active');
             document.body.style.overflow = '';
         }
-        
-        // ========== CONFIGURACIÓN ==========
+
         function abrirPanelConfiguracion() {
             document.getElementById('settings-overlay').classList.add('active');
             document.querySelector('.settings-panel').classList.add('active');
             document.body.style.overflow = 'hidden';
             cargarConfiguraciones();
         }
-        
+
         function cerrarPanelConfiguracion() {
             document.getElementById('settings-overlay').classList.remove('active');
             document.querySelector('.settings-panel').classList.remove('active');
             document.body.style.overflow = '';
         }
-        
+
         function cargarConfiguraciones() {
-            document.getElementById('dark-mode-toggle').checked = localStorage.getItem('shatt_dark_mode') === 'true';
-            document.getElementById('mute-notifications').checked = localStorage.getItem('shatt_mute_notifications') === 'true';
+            const isDark = document.body.classList.contains('dark-mode');
+            const toggle = document.getElementById('dark-mode-toggle');
+            if (toggle) toggle.checked = isDark;
+            document.getElementById('mute-notifications').checked = localStorage.getItem('shatt_mute') === 'true';
             document.getElementById('private-profile').checked = localStorage.getItem('shatt_private_profile') === 'true';
             document.getElementById('hide-online-status').checked = localStorage.getItem('shatt_hide_online') === 'true';
         }
-        
-        function toggleDarkMode() {
-            const isDark = document.getElementById('dark-mode-toggle').checked;
-            if (isDark) document.body.classList.add('dark-mode');
-            else document.body.classList.remove('dark-mode');
-            localStorage.setItem('shatt_dark_mode', isDark);
+
+        function toggleMuteNotifications() {
+            const mute = document.getElementById('mute-notifications').checked;
+            localStorage.setItem('shatt_mute', mute);
+            mostrarToast(mute ? "🔇 Notificaciones silenciadas" : "🔔 Notificaciones activadas");
         }
-        
-        function toggleMuteNotifications() { localStorage.setItem('shatt_mute_notifications', document.getElementById('mute-notifications').checked); }
-        function togglePrivateProfile() { localStorage.setItem('shatt_private_profile', document.getElementById('private-profile').checked); }
-        function toggleHideOnlineStatus() { localStorage.setItem('shatt_hide_online', document.getElementById('hide-online-status').checked); }
-        
-        function aplicarDiseno(fondo, opacidad) {
-            if (fondo) {
-                if (fondo.startsWith('url')) { document.body.style.backgroundImage = fondo; document.body.style.backgroundSize = 'cover'; document.body.style.backgroundAttachment = 'fixed'; }
-                else if (fondo.startsWith('linear-gradient')) { document.body.style.background = fondo; document.body.style.backgroundImage = 'none'; }
-                else { document.body.style.background = fondo; document.body.style.backgroundImage = 'none'; }
-            }
-            if (opacidad) document.documentElement.style.setProperty('--panel-opacity', opacidad);
+
+        function togglePrivateProfile() {
+            const priv = document.getElementById('private-profile').checked;
+            localStorage.setItem('shatt_private_profile', priv);
+            mostrarToast(priv ? "🔒 Perfil privado activado" : "🌍 Perfil público activado");
         }
-        
-        async function guardarDisenoGlobal() {
-            if (!currentUser) return;
-            let fondo = document.body.style.backgroundImage !== 'none' ? document.body.style.backgroundImage : document.body.style.background || '#3a6186';
-            let opacidad = document.documentElement.style.getPropertyValue('--panel-opacity') || '1';
-            await pb.collection('usuarios').update(currentUser.id, { diseno: { fondo, opacidad: parseFloat(opacidad) } });
-            mostrarToast("✅ Diseño guardado");
-            cerrarModalesGlobal();
+
+        function toggleHideOnlineStatus() {
+            const hide = document.getElementById('hide-online-status').checked;
+            localStorage.setItem('shatt_hide_online', hide);
+            mostrarToast(hide ? "👻 Estado oculto" : "🟢 Visible en línea");
         }
-        
-        async function cargarDisenoGuardado() {
-            try {
-                const user = await pb.collection('usuarios').getOne(currentUser.id);
-                if (user.diseno) { 
-                    let d = user.diseno; 
-                    if (typeof d === 'string') d = JSON.parse(d); 
-                    if (d.fondo && d.fondo !== 'null' && d.fondo !== 'none') {
-                        aplicarDiseno(d.fondo, d.opacidad);
-                        return;
-                    }
-                }
-                // Si no hay diseño guardado, usar el color azul por defecto
-                aplicarDiseno('#3a6186', 1);
-            } catch (e) {
-                console.error("Error cargando diseño:", e);
-                aplicarDiseno('#3a6186', 1);
-            }
-        }
-        
-        function abrirPersonalizacion() { document.getElementById('design-modal').style.display = 'block'; document.getElementById('modal-overlay').style.display = 'block'; }
-        function cerrarModalesGlobal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); document.getElementById('modal-overlay').style.display = 'none'; }
-        function setBgColorGlobal(color) { document.body.style.background = color; document.body.style.backgroundImage = 'none'; }
-        function setImageBgGlobal(input) { if (input.files[0]) { const reader = new FileReader(); reader.onload = e => { document.body.style.backgroundImage = `url(${e.target.result})`; document.body.style.backgroundSize = 'cover'; }; reader.readAsDataURL(input.files[0]); } }
-        function setOpacityGlobal(val) { document.documentElement.style.setProperty('--panel-opacity', val); }
-        
+
         // ========== BÚSQUEDA ==========
+
         function abrirBuscadorFullscreen() {
             document.getElementById('search-modal').style.display = 'block';
             document.body.style.overflow = 'hidden';
             setTimeout(() => document.getElementById('search-modal-input').focus(), 100);
         }
-        
+
         function cerrarBuscadorFullscreen() {
             document.getElementById('search-modal').style.display = 'none';
             document.body.style.overflow = '';
         }
-        
+
         async function ejecutarBusquedaFullscreen(termino) {
             const resultsDiv = document.getElementById('search-results');
             if (termino.length < 2) { resultsDiv.innerHTML = '<div style="color:white; text-align:center; padding:20px;">✏️ 2+ caracteres</div>'; return; }
@@ -1634,7 +1776,7 @@
                 </div>`;
             }).join('');
         }
-        
+
         document.addEventListener('DOMContentLoaded', () => {
             const searchInput = document.getElementById('search-modal-input');
             if (searchInput) {
@@ -1645,41 +1787,50 @@
                 });
             }
         });
-        
-        // ========== OPEN EDIT MODAL CON VISTA PREVIA DE LA FOTO ACTUAL ==========
+
+        // ========== MODALES ==========
+
         function openEditModal() {
-    document.getElementById('edit-modal').style.display = 'block';
-    document.getElementById('modal-overlay').style.display = 'block';
-    
-    const img = document.getElementById('preview-avatar-img');
-    const video = document.getElementById('preview-avatar-video');
-    const placeholder = document.getElementById('preview-avatar-placeholder');
-    
-    const imgElement = document.querySelector('#disp-pfp img');
-    const videoElement = document.querySelector('#disp-pfp video');
-    
-    if (imgElement) {
-        // Si es imagen o GIF
-        img.src = imgElement.src;
-        img.style.display = 'block';
-        video.style.display = 'none';
-        placeholder.style.display = 'none';
-    } else if (videoElement) {
-        // Si es video
-        video.src = videoElement.src;
-        video.style.display = 'block';
-        img.style.display = 'none';
-        placeholder.style.display = 'none';
-        video.load();
-        video.play().catch(() => {});
-    } else {
-        img.style.display = 'none';
-        video.style.display = 'none';
-        placeholder.style.display = 'block';
-    }
-}
-        
-        function cerrarSesion() { 
+            document.getElementById('edit-modal').style.display = 'block';
+            document.getElementById('modal-overlay').style.display = 'block';
+
+            const img = document.getElementById('preview-avatar-img');
+            const video = document.getElementById('preview-avatar-video');
+            const placeholder = document.getElementById('preview-avatar-placeholder');
+
+            const imgElement = document.querySelector('#disp-pfp img');
+            const videoElement = document.querySelector('#disp-pfp video');
+
+            if (imgElement) {
+                img.src = imgElement.src;
+                img.style.display = 'block';
+                video.style.display = 'none';
+                placeholder.style.display = 'none';
+            } else if (videoElement) {
+                video.src = videoElement.src;
+                video.style.display = 'block';
+                img.style.display = 'none';
+                placeholder.style.display = 'none';
+                video.load();
+                video.play().catch(() => {});
+            } else {
+                img.style.display = 'none';
+                video.style.display = 'none';
+                placeholder.style.display = 'block';
+            }
+        }
+
+        function cerrarModalesGlobal() {
+            document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+            document.getElementById('modal-overlay').style.display = 'none';
+        }
+
+        function abrirPersonalizacion() {
+            document.getElementById('design-modal').style.display = 'block';
+            document.getElementById('modal-overlay').style.display = 'block';
+        }
+
+        function cerrarSesion() {
             const cuentasGuardadas = localStorage.getItem('shatt_cuentas');
             pb.authStore.clear();
             localStorage.removeItem('pocketbase_auth');
@@ -1688,7 +1839,7 @@
             }
             window.location.href = "iniciarsesion.html";
         }
-        
+
         function toggleCollapsible(id) {
             const content = document.getElementById(id);
             const icon = document.getElementById('amigos-mobile-icon');
@@ -1700,7 +1851,7 @@
                 if (icon) icon.innerHTML = '▶';
             }
         }
-        
+
         function initCollapsibles() {
             if (window.innerWidth <= 768) {
                 const content = document.getElementById('amigos-mobile-content');
@@ -1711,28 +1862,36 @@
                 }
             }
         }
-        
+
+        // ========== INICIALIZACIÓN ==========
+
         (async function() {
             const savedAuth = localStorage.getItem('pocketbase_auth');
-            if (savedAuth) { try { const { token, model } = JSON.parse(savedAuth); pb.authStore.save(token, model); } catch (e) {} }
+            if (savedAuth) { try { const { token, model } = JSON.parse(savedAuth);
+                    pb.authStore.save(token, model); } catch (e) {} }
             if (!pb.authStore.isValid) { window.location.href = "iniciarsesion.html"; return; }
             currentUser = pb.authStore.model;
-            await cargarDisenoGuardado();
+
+            // ✅ Cargar configuración global
+            await cargarConfiguracionGlobal();
+
             await cargarDatos();
             await cargarPublicaciones();
             await cargarAmigos(currentUser.id);
             await cargarNotificaciones();
             initCollapsibles();
             cargarConfiguraciones();
-            if (document.getElementById('dark-mode-toggle').checked) document.body.classList.add('dark-mode');
         })();
-        
+
+        // ========== EXPOSICIÓN DE FUNCIONES GLOBALES ==========
         window.abrirPersonalizacion = abrirPersonalizacion;
         window.guardarDisenoGlobal = guardarDisenoGlobal;
         window.cerrarModalesGlobal = cerrarModalesGlobal;
         window.setBgColorGlobal = setBgColorGlobal;
         window.setImageBgGlobal = setImageBgGlobal;
         window.setOpacityGlobal = setOpacityGlobal;
+        window.setAccentColorGlobal = setAccentColorGlobal;
+        window.setFontSizeGlobal = setFontSizeGlobal;
         window.cambiarTab = cambiarTab;
         window.saveAll = saveAll;
         window.cerrarSesion = cerrarSesion;
@@ -1757,6 +1916,6 @@
         window.cerrarBuscadorFullscreen = cerrarBuscadorFullscreen;
         window.previewPfp = previewPfp;
         window.mostrarInputPais = mostrarInputPais;
-</script>
+    </script>
 </body>
 </html>
