@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/plugin/relativeTime.js"></script>
     <script>dayjs.extend(window.dayjs_plugin_relativeTime);</script>
     
+    
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -23,15 +24,18 @@
         }
 
         body { 
-            background: #3a6186 !important; 
-            background-size: cover; 
-            background-attachment: fixed; 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-            margin: 0; 
-            min-height: 100vh; 
-            color: #000; 
-            padding-bottom: 70px;
-        }
+    background: #3a6186; 
+    background-size: cover; 
+    background-attachment: fixed; 
+    background-position: center; 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; 
+    margin: 0; 
+    min-height: 100vh; 
+    color: #000; 
+    line-height: 1.5; 
+    transition: background 0.3s ease; 
+    padding-bottom: 70px; 
+}
 
         body.dark-mode { background: #0f0f1a !important; }
         body.dark-mode .panel-retro, body.dark-mode .notebook-page { background: rgba(30, 30, 50, 0.95); color: white; border-color: #555; }
@@ -772,6 +776,57 @@
         const pb = new PocketBase(PB_URL);
         pb.autoCancellation(false);
         
+
+async function cargarConfiguracionGlobal() {
+        const saved = localStorage.getItem('pocketbase_auth');
+        if (!saved) return;
+        
+        try {
+            const { token, model } = JSON.parse(saved);
+            pb.authStore.save(token, model);
+        } catch(e) { return; }
+        
+        if (!pb.authStore.isValid) return;
+        const currentUser = pb.authStore.model;
+        if (!currentUser) return;
+        
+        try {
+            const configs = await pb.collection('configuraciones').getList(1, 1, {
+                filter: `usuario = "${currentUser.id}"`
+            });
+            
+            if (configs.items.length > 0) {
+                const config = configs.items[0];
+                if (config.tema === 'dark') document.body.classList.add('dark-mode');
+                if (config.color_fondo) document.body.style.background = config.color_fondo;
+                if (config.opacidad) document.documentElement.style.setProperty('--panel-opacity', config.opacidad);
+                if (config.accent_color) document.documentElement.style.setProperty('--shatt-blue', config.accent_color);
+                if (config.tamaño_fuente) document.documentElement.style.fontSize = config.tamaño_fuente + 'px';
+                if (config.imagen_fondo) {
+                    try {
+                        const url = pb.files.getUrl(config, config.imagen_fondo);
+                        document.body.style.background = `url(${url}) center/cover fixed`;
+                    } catch(e) {}
+                }
+            }
+        } catch(e) {
+            console.error("Error cargando configuración:", e);
+        }
+    }
+
+    // Sincronizar entre pestañas
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'shatt_config_update') {
+            cargarConfiguracionGlobal();
+        }
+    });
+
+    // Cargar configuración al inicio
+    document.addEventListener('DOMContentLoaded', function() {
+        cargarConfiguracionGlobal();
+    });
+
+
         let currentDiaryUserId = null;
         let currentDiarioId = null;
         let paginas = [];
@@ -789,6 +844,12 @@
             '#ffcc00', '#ff6600', '#ff3366', '#33cc33', '#3399ff', '#9933cc',
             '#f5c518', '#e6e6fa', '#f0e68c', '#ddff99', '#b3e5fc', '#c8e6c9'
         ];
+
+
+        
+
+
+
 
         function mostrarToast(msg, isError = false) {
             let t = document.getElementById('toast');
@@ -947,48 +1008,92 @@
         }
 
         // ========== PERSONALIZACIÓN ==========
-        function aplicarDiseno(fondo, opacidad) {
-            if (fondo) {
-                if (fondo.startsWith('url')) {
-                    document.body.style.backgroundImage = fondo;
-                    document.body.style.backgroundSize = 'cover';
-                    document.body.style.backgroundAttachment = 'fixed';
-                } else if (fondo.startsWith('linear-gradient')) {
-                    document.body.style.background = fondo;
-                } else {
-                    document.body.style.background = fondo;
-                }
-            }
-            if (opacidad) {
-                document.documentElement.style.setProperty('--panel-opacity', opacidad);
-                const slider = document.getElementById('opacity-slider-global');
-                if (slider) slider.value = opacidad;
-                const valSpan = document.getElementById('opacity-value-global');
-                if (valSpan) valSpan.innerText = Math.round(opacidad * 100) + '%';
-            }
+        // ========== PERSONALIZACIÓN ==========
+function aplicarDiseno(fondo, opacidad) {
+    if (fondo) {
+        if (fondo.startsWith('url')) {
+            document.body.style.backgroundImage = fondo;
+            document.body.style.backgroundSize = 'cover';
+            document.body.style.backgroundAttachment = 'fixed';
+        } else if (fondo.startsWith('linear-gradient')) {
+            document.body.style.background = fondo;
+        } else {
+            document.body.style.background = fondo;
+        }
+    }
+    if (opacidad) {
+        document.documentElement.style.setProperty('--panel-opacity', opacidad);
+        const slider = document.getElementById('opacity-slider-global');
+        if (slider) slider.value = opacidad;
+        const valSpan = document.getElementById('opacity-value-global');
+        if (valSpan) valSpan.innerText = Math.round(opacidad * 100) + '%';
+    }
+}
+
+// ========== GUARDAR CONFIGURACIÓN EN POCKETBASE ==========
+async function guardarConfiguracionGlobal(data) {
+    if (!currentUser) {
+        mostrarToast("❌ Usuario no autenticado", true);
+        return;
+    }
+
+    try {
+        const configs = await pb.collection('configuraciones').getList(1, 1, {
+            filter: `usuario = "${currentUser.id}"`
+        });
+
+        if (configs.items.length > 0) {
+            await pb.collection('configuraciones').update(configs.items[0].id, data);
+        } else {
+            await pb.collection('configuraciones').create({
+                usuario: currentUser.id,
+                tema: data.tema || 'light',
+                color_fondo: data.color_fondo || '#3a6186',
+                opacidad: data.opacidad || 1,
+                accent_color: data.accent_color || '#3b5998',
+                tamaño_fuente: data.tamaño_fuente || 16
+            });
         }
 
-        async function guardarDisenoGlobal() {
-            if (!currentUser) return mostrarToast("No hay usuario", true);
-            let fondo = document.body.style.backgroundImage || document.body.style.background || '#3a6186';
-            let opacidad = parseFloat(document.documentElement.style.getPropertyValue('--panel-opacity') || '1');
-            try {
-                await pb.collection('usuarios').update(currentUser.id, { diseno: { fondo, opacidad } });
-                localStorage.setItem('shatt_diseno', JSON.stringify({ fondo, opacidad }));
-                mostrarToast("✅ Diseño guardado");
-                cerrarModalesGlobal();
-            } catch(e) { mostrarToast("Error", true); }
-        }
+        localStorage.setItem('shatt_config_update', Date.now().toString());
+        mostrarToast("💾 Configuración guardada en la nube");
+    } catch (e) {
+        console.error("Error guardando configuración:", e);
+        mostrarToast("❌ Error al guardar", true);
+    }
+}
 
-        async function cargarDisenoGuardado() {
-            if (!currentUser) return;
-            try {
-                let local = localStorage.getItem('shatt_diseno');
-                if (local) { let d = JSON.parse(local); aplicarDiseno(d.fondo, d.opacidad); }
-                let user = await pb.collection('usuarios').getOne(currentUser.id);
-                if (user.diseno) aplicarDiseno(user.diseno.fondo, user.diseno.opacidad);
-            } catch(e) {}
-        }
+// ========== GUARDAR DISEÑO GLOBAL ==========
+async function guardarDisenoGlobal() {
+    const bg = document.body.style.background;
+    const opacity = getComputedStyle(document.documentElement).getPropertyValue('--panel-opacity');
+    const accent = getComputedStyle(document.documentElement).getPropertyValue('--shatt-blue');
+    const isDark = document.body.classList.contains('dark-mode');
+
+    await guardarConfiguracionGlobal({
+        color_fondo: bg,
+        opacidad: parseFloat(opacity) || 1,
+        accent_color: accent || '#3b5998',
+        tema: isDark ? 'dark' : 'light'
+    });
+
+    localStorage.setItem('shatt_bg', bg);
+    localStorage.setItem('shatt_opacity', opacity);
+    mostrarToast("💾 Diseño guardado en la nube");
+    cerrarModalesGlobal();
+}
+
+// ========== CARGAR DISEÑO GUARDADO ==========
+async function cargarDisenoGuardado() {
+    if (!currentUser) return;
+    try {
+        let local = localStorage.getItem('shatt_diseno');
+        if (local) { let d = JSON.parse(local); aplicarDiseno(d.fondo, d.opacidad); }
+        let user = await pb.collection('usuarios').getOne(currentUser.id);
+        if (user.diseno) aplicarDiseno(user.diseno.fondo, user.diseno.opacidad);
+    } catch(e) {}
+}
+
 
         function abrirPersonalizacion() { document.getElementById('design-modal').style.display = 'block'; document.getElementById('modal-overlay').style.display = 'block'; }
         function cerrarModalesGlobal() { document.querySelectorAll('.modal, .overlay').forEach(el => el.style.display = 'none'); }
