@@ -4,7 +4,7 @@
   "webDir": "www",
   "bundledWebRuntime": false,
   "server": {
-    "url": "https://shatt-social-production.up.railway.app/pb_public/iniciarsesion.html",
+    "url": "https://shatt-social-production.up.railway.app",
     "cleartext": true
   },
   "android": {
