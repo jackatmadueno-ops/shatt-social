@@ -24,6 +24,7 @@
             --radius: 12px;
             --radius-sm: 8px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --online-color: #22c55e;
         }
         
         body { 
@@ -47,6 +48,11 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.7); }
         }
         
         .loading-spinner {
@@ -93,13 +99,53 @@
             .content { padding: 28px 24px; }
             .shatt-logo { 
                 text-align: center; 
-                margin-bottom: 24px; 
+                margin-bottom: 16px; 
                 font-weight: 900; 
                 font-size: 32px; 
                 color: #000; 
                 letter-spacing: -1px;
             }
             .shatt-logo span { color: var(--shatt-blue); }
+            
+            /* ESTADÍSTICAS PEQUEÑAS ABAJO */
+            .footer-stats {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 16px;
+                margin-top: 18px;
+                padding-top: 14px;
+                border-top: 1px solid rgba(0,0,0,0.08);
+                font-size: 12px;
+                color: #666;
+            }
+            .footer-stats .stat-item {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+            .footer-stats .stat-number {
+                font-weight: 700;
+                background: rgba(0,0,0,0.05);
+                padding: 0 8px;
+                border-radius: 12px;
+                font-size: 13px;
+            }
+            .footer-stats .online-dot {
+                display: inline-block;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: #94a3b8;
+                flex-shrink: 0;
+                transition: all 0.3s;
+            }
+            .footer-stats .online-dot.active {
+                background: var(--online-color);
+                animation: pulse-dot 1.5s infinite;
+                box-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
+            }
+            
             h2 { margin: 0 0 20px 0; color: #000; font-size: 20px; text-align: center; font-weight: 700; }
             label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px; color: #333; text-transform: uppercase; }
             input, select { 
@@ -192,6 +238,8 @@
             .add-account-btn:hover { background: #d0d0d0; transform: translateY(-2px); }
             .add-account-btn span:first-child { font-size: 24px; }
             .add-account-btn span:last-child { font-size: 11px; font-weight: bold; }
+            .recover-link { text-align: center; margin-top: 10px; font-size: 12px; color: var(--shatt-blue); cursor: pointer; text-decoration: none; opacity: 0.7; }
+            .recover-link:hover { opacity: 1; text-decoration: underline; }
         }
         
         /* MÓVIL */
@@ -200,9 +248,49 @@
             .login-window { background: rgba(255, 255, 255, 0.98); border: none; border-radius: 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); width: 100%; overflow: hidden; }
             .window-header { background: linear-gradient(135deg, var(--shatt-blue), #2a4880); color: white; padding: 18px 20px; font-weight: 600; font-size: 15px; display: flex; justify-content: space-between; align-items: center; }
             .content { padding: 24px 20px; }
-            .shatt-logo { text-align: center; margin-bottom: 20px; font-weight: 900; font-size: 34px; color: #1a1a2e; }
+            .shatt-logo { text-align: center; margin-bottom: 12px; font-weight: 900; font-size: 34px; color: #1a1a2e; }
             .shatt-logo span { color: var(--shatt-blue); }
-            h2 { margin: 0 0 20px 0; color: #1a1a2e; font-size: 22px; text-align: center; font-weight: 700; }
+            
+            /* ESTADÍSTICAS PEQUEÑAS ABAJO */
+            .footer-stats {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 14px;
+                margin-top: 16px;
+                padding-top: 12px;
+                border-top: 1px solid rgba(0,0,0,0.06);
+                font-size: 11px;
+                color: #888;
+            }
+            .footer-stats .stat-item {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+            .footer-stats .stat-number {
+                font-weight: 700;
+                background: rgba(0,0,0,0.05);
+                padding: 0 6px;
+                border-radius: 10px;
+                font-size: 12px;
+            }
+            .footer-stats .online-dot {
+                display: inline-block;
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+                background: #94a3b8;
+                flex-shrink: 0;
+                transition: all 0.3s;
+            }
+            .footer-stats .online-dot.active {
+                background: var(--online-color);
+                animation: pulse-dot 1.5s infinite;
+                box-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
+            }
+            
+            h2 { margin: 0 0 16px 0; color: #1a1a2e; font-size: 22px; text-align: center; font-weight: 700; }
             .saved-accounts { margin-bottom: 20px; }
             .saved-title { font-size: 12px; font-weight: 600; color: #666; margin-bottom: 12px; }
             .accounts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; }
@@ -242,9 +330,20 @@
             .toggle-link:active { background: rgba(59, 89, 152, 0.15); transform: scale(0.98); }
             hr { margin: 20px 0; border: none; height: 1px; background: linear-gradient(90deg, transparent, #ddd, transparent); }
             .extra-fields-title { font-size: 13px; font-weight: 600; color: var(--shatt-blue); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--accent); display: inline-block; }
+            .recover-link {
+                display: block;
+                text-align: center;
+                margin-top: 10px;
+                font-size: 12px;
+                color: var(--shatt-blue);
+                cursor: pointer;
+                text-decoration: none;
+                opacity: 0.7;
+            }
+            .recover-link:active { opacity: 1; }
         }
         
-        /* MODALES - TODOS CON Z-INDEX ALTO */
+        /* MODALES */
         .password-modal {
             position: fixed;
             inset: 0;
@@ -266,6 +365,37 @@
             text-align: center;
             animation: zoomIn 0.2s ease;
         }
+        
+        .password-modal-content .cancel {
+            background: #e0e0e0;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        
+        .password-modal-content #confirm-login {
+            background: var(--shatt-blue);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .password-modal-content input {
+            width: 100%;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 14px;
+            font-size: 16px;
+            outline: none;
+        }
+        .password-modal-content input:focus { border-color: var(--shatt-blue); }
         
         .terms-modal {
             position: fixed;
@@ -315,6 +445,7 @@
             display: flex;
             justify-content: flex-end;
             gap: 12px;
+            flex-wrap: wrap;
         }
         .terms-modal-footer button { padding: 10px 24px; border-radius: 30px; font-weight: bold; cursor: pointer; border: none; transition: all 0.2s; }
         .terms-modal-footer button:hover { transform: scale(1.02); }
@@ -368,10 +499,8 @@
                     <button type="submit" class="btn-access">ENTRAR</button>
                 </form>
                 <div class="toggle-link" onclick="toggleMode()">¿No tienes cuenta? Regístrate aquí</div>
+                <div class="recover-link" onclick="recuperarPassword()">🔐 ¿Olvidaste tu contraseña?</div>
             </div>
-<div style="text-align: center; margin-top: 10px;">
-    <a href="#" onclick="recuperarPassword()" style="color: #3b5998; font-size: 12px; text-decoration: none;">🔐 ¿Olvidaste tu contraseña?</a>
-</div>
             
             <div id="register-form" style="display: none;">
                 <h2>Crear Cuenta</h2>
@@ -431,10 +560,22 @@
                 </form>
                 <div class="toggle-link" onclick="toggleMode()">¿Ya eres parte? Inicia sesión</div>
             </div>
+            
+            <!-- ========== ESTADÍSTICAS PEQUEÑAS ABAJO ========== -->
+            <div class="footer-stats" id="statsBar">
+                <span class="stat-item">
+                    👥 Registrados
+                    <span class="stat-number" id="totalUsuarios">0</span>
+                </span>
+                <span class="stat-item">
+                    <span class="online-dot" id="onlineDot"></span>
+                    <span id="usuariosOnline">0</span> en línea
+                </span>
+            </div>
         </div>
     </div>
     
-    <!-- MODAL DE TÉRMINOS Y CONDICIONES (COMPLETO) -->
+    <!-- MODAL DE TÉRMINOS Y CONDICIONES -->
     <div id="termsModal" class="terms-modal">
         <div class="terms-modal-content">
             <div class="terms-modal-header">
@@ -529,6 +670,40 @@
         
         let cuentasGuardadas = [];
         let datosFormulario = {};
+        
+        // ========== ESTADÍSTICAS EN TIEMPO REAL ==========
+        async function actualizarEstadisticas() {
+            try {
+                const users = await pb.collection('usuarios').getFullList({
+                    $autoCancel: false
+                });
+                
+                // Total de usuarios
+                document.getElementById('totalUsuarios').textContent = users.length;
+                
+                // Usuarios en línea (últimos 5 minutos)
+                const ahora = Date.now();
+                const hace5Min = ahora - (5 * 60 * 1000);
+                
+                const onlineUsers = users.filter(u => 
+                    u.ultimaVez && new Date(u.ultimaVez).getTime() > hace5Min
+                );
+                
+                const onlineCount = onlineUsers.length;
+                document.getElementById('usuariosOnline').textContent = onlineCount;
+                
+                // Punto verde: parpadea si hay usuarios en línea
+                const dot = document.getElementById('onlineDot');
+                if (onlineCount > 0) {
+                    dot.className = 'online-dot active';
+                } else {
+                    dot.className = 'online-dot';
+                }
+                
+            } catch(e) {
+                console.error("Error actualizando estadísticas:", e);
+            }
+        }
         
         // ========== LLENAR SELECTS DE FECHA ==========
         function llenarSelectsFecha() {
@@ -655,6 +830,15 @@
                 try {
                     await pb.collection('usuarios').authWithPassword(cuenta.email, pass);
                     const user = pb.authStore.model;
+                    
+                    if (user.bloqueado === true) {
+                        pb.authStore.clear();
+                        localStorage.removeItem('pocketbase_auth');
+                        alert("🚫 Tu cuenta ha sido bloqueada.");
+                        modal.remove();
+                        return;
+                    }
+                    
                     let avatarUrl = '';
                     if (user.pfp) avatarUrl = pb.files.getUrl(user, user.pfp);
                     
@@ -691,21 +875,17 @@
             document.getElementById('log-pass').value = '';
         }
         
-        // ========== FUNCIONES DE MODALES CON CIERRE CORRECTO ==========
+        // ========== FUNCIONES DE MODALES ==========
         
         function mostrarTerminos() {
-            // Cerrar el modal de declaración
             document.getElementById('declaracionModal').classList.remove('show');
-            // Abrir el modal de términos
             setTimeout(() => {
                 document.getElementById('termsModal').classList.add('show');
             }, 100);
         }
         
         function mostrarPrivacidad() {
-            // Cerrar el modal de declaración
             document.getElementById('declaracionModal').classList.remove('show');
-            // Abrir el modal de términos (incluye privacidad)
             setTimeout(() => {
                 document.getElementById('termsModal').classList.add('show');
             }, 100);
@@ -713,7 +893,6 @@
         
         function cerrarTerminos() {
             document.getElementById('termsModal').classList.remove('show');
-            // Volver a abrir el modal de declaración
             setTimeout(() => {
                 document.getElementById('declaracionModal').classList.add('show');
             }, 100);
@@ -837,50 +1016,47 @@
             }
         }
         
-       async function entrar() {
-    const email = document.getElementById('log-email').value;
-    const pass = document.getElementById('log-pass').value;
-    
-    if (!email || !pass) {
-        alert("❌ Completa todos los campos");
-        return;
-    }
-    
-    const btn = document.querySelector('#login-form .btn-access');
-    const originalText = btn.innerText;
-    btn.innerHTML = '<span class="loading-spinner"></span> INGRESANDO...';
-    btn.disabled = true;
-    
-    try {
-        // Primero autenticar
-        await pb.collection('usuarios').authWithPassword(email, pass);
-        const user = pb.authStore.model;
-        
-        // 🔥 VERIFICAR SI EL USUARIO ESTÁ BLOQUEADO
-        if (user.bloqueado === true) {
-            // Cerrar sesión inmediatamente
-            pb.authStore.clear();
-            localStorage.removeItem('pocketbase_auth');
-            alert("🚫 Tu cuenta ha sido bloqueada por el administrador. No puedes acceder a SHATTS.");
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-            return;
+        async function entrar() {
+            const email = document.getElementById('log-email').value;
+            const pass = document.getElementById('log-pass').value;
+            
+            if (!email || !pass) {
+                alert("❌ Completa todos los campos");
+                return;
+            }
+            
+            const btn = document.querySelector('#login-form .btn-access');
+            const originalText = btn.innerText;
+            btn.innerHTML = '<span class="loading-spinner"></span> INGRESANDO...';
+            btn.disabled = true;
+            
+            try {
+                await pb.collection('usuarios').authWithPassword(email, pass);
+                const user = pb.authStore.model;
+                
+                if (user.bloqueado === true) {
+                    pb.authStore.clear();
+                    localStorage.removeItem('pocketbase_auth');
+                    alert("🚫 Tu cuenta ha sido bloqueada por el administrador. No puedes acceder a SHATTS.");
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    return;
+                }
+                
+                let avatarUrl = '';
+                if (user.pfp) avatarUrl = pb.files.getUrl(user, user.pfp);
+                agregarCuentaGuardada(user.id, user.email, user.nick || user.email.split('@')[0], avatarUrl);
+                localStorage.setItem('pocketbase_auth', JSON.stringify({
+                    token: pb.authStore.token,
+                    model: pb.authStore.model
+                }));
+                window.location.href = "inicio.html";
+            } catch (error) {
+                alert("❌ Email o contraseña incorrectos");
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
         }
-        
-        let avatarUrl = '';
-        if (user.pfp) avatarUrl = pb.files.getUrl(user, user.pfp);
-        agregarCuentaGuardada(user.id, user.email, user.nick || user.email.split('@')[0], avatarUrl);
-        localStorage.setItem('pocketbase_auth', JSON.stringify({
-            token: pb.authStore.token,
-            model: pb.authStore.model
-        }));
-        window.location.href = "inicio.html";
-    } catch (error) {
-        alert("❌ Email o contraseña incorrectos");
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-    }
-}
         
         function toggleMode() {
             const login = document.getElementById('login-form');
@@ -914,7 +1090,47 @@
             });
         }
         
-        // Eventos
+        async function recuperarPassword() {
+            const email = prompt("📧 Ingresa tu correo electrónico:");
+            if (!email) return;
+            
+            try {
+                const todos = await pb.collection('usuarios').getFullList({
+                    $autoCancel: false
+                });
+                
+                const emailLimpio = email.toLowerCase().trim();
+                const usuario = todos.find(u => u.email && u.email.toLowerCase().trim() === emailLimpio);
+                
+                if (!usuario) {
+                    alert(`❌ El correo "${email}" no está registrado.\n\nSi crees que es un error, contacta al administrador.`);
+                    return;
+                }
+                
+                const token = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+                    .map(b => b.toString(16).padStart(2, '0'))
+                    .join('');
+                
+                await pb.collection('usuarios').update(usuario.id, {
+                    resetToken: token,
+                    resetTokenExpires: new Date(Date.now() + 3600000).toISOString()
+                });
+                
+                const resetLink = `${window.location.origin}/restablecer.html?token=${token}&email=${encodeURIComponent(usuario.email)}`;
+                
+                if (confirm("🔗 ¿Quieres abrir el enlace de recuperación ahora?")) {
+                    window.open(resetLink, '_blank');
+                } else {
+                    alert(`🔗 Copia este enlace:\n\n${resetLink}\n\n(Expira en 1 hora)`);
+                }
+                
+            } catch(e) {
+                console.error("Error:", e);
+                alert("❌ Error al procesar la solicitud: " + e.message);
+            }
+        }
+        
+        // ========== EVENTOS ==========
         document.getElementById('reg-email')?.addEventListener('focus', () => {
             const extra = document.getElementById('extra-fields');
             if (extra) extra.style.display = 'block';
@@ -925,9 +1141,13 @@
         });
         document.getElementById('confirmarRegistroBtn')?.addEventListener('click', confirmarRegistro);
         
-        // Inicializar
+        // ========== INICIALIZAR ==========
         llenarSelectsFecha();
         cargarCuentasGuardadas();
+        
+        // Actualizar estadísticas inmediatamente y cada 30 segundos
+        actualizarEstadisticas();
+        setInterval(actualizarEstadisticas, 30000);
         
         // Exponer funciones globales
         window.entrar = entrar;
@@ -941,58 +1161,7 @@
         window.mostrarPrivacidad = mostrarPrivacidad;
         window.cerrarDeclaracion = cerrarDeclaracion;
         window.confirmarRegistro = confirmarRegistro;
-
-
-async function recuperarPassword() {
-    const email = prompt("📧 Ingresa tu correo electrónico:");
-    if (!email) return;
-    
-    try {
-        // 🔥 Obtener TODOS los usuarios sin ningún filtro (esto funciona aunque la regla List sea restrictiva)
-        const todos = await pb.collection('usuarios').getFullList({
-            $autoCancel: false
-        });
-        
-        console.log("📋 Usuarios encontrados:", todos.length);
-        
-        // Buscar manualmente por email
-        const emailLimpio = email.toLowerCase().trim();
-        const usuario = todos.find(u => u.email && u.email.toLowerCase().trim() === emailLimpio);
-        
-        if (!usuario) {
-            alert(`❌ El correo "${email}" no está registrado.\n\nSi crees que es un error, contacta al administrador.`);
-            return;
-        }
-        
-        // Generar token
-        // Token criptográficamente seguro (32 bytes en hexadecimal)
-// Generar token seguro (64 caracteres hexadecimales)
-const token = Array.from(crypto.getRandomValues(new Uint8Array(32)))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
-        
-        // Guardar token
-        await pb.collection('usuarios').update(usuario.id, {
-            resetToken: token,
-            resetTokenExpires: new Date(Date.now() + 3600000).toISOString()
-        });
-        
-        // Enlace de recuperación
-        const resetLink = `${window.location.origin}/restablecer.html?token=${token}&email=${encodeURIComponent(usuario.email)}`;
-        
-        console.log("🔗 Enlace:", resetLink);
-        
-        if (confirm("🔗 ¿Quieres abrir el enlace de recuperación ahora?")) {
-            window.open(resetLink, '_blank');
-        } else {
-            alert(`🔗 Copia este enlace:\n\n${resetLink}\n\n(Expira en 1 hora)`);
-        }
-        
-    } catch(e) {
-        console.error("Error:", e);
-        alert("❌ Error al procesar la solicitud: " + e.message);
-    }
-}
+        window.recuperarPassword = recuperarPassword;
     </script>
 </body>
 </html>
