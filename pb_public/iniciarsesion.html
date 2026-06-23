@@ -909,58 +909,68 @@
         }
 
         async function confirmarRegistro() {
-            const check = document.getElementById('acceptTermsCheckbox');
-            if (!check.checked) { alert("❌ Debes aceptar los Términos y Condiciones"); return; }
+    const check = document.getElementById('acceptTermsCheckbox');
+    if (!check.checked) {
+        alert("❌ Debes aceptar los Términos y Condiciones");
+        return;
+    }
 
-            const confirmBtn = document.getElementById('confirmarRegistroBtn');
-            const originalText = confirmBtn.innerText;
-            confirmBtn.innerHTML = '<span class="loading-spinner"></span> CREANDO CUENTA...';
-            confirmBtn.disabled = true;
+    const confirmBtn = document.getElementById('confirmarRegistroBtn');
+    const originalText = confirmBtn.innerText;
+    confirmBtn.innerHTML = '<span class="loading-spinner"></span> CREANDO CUENTA...';
+    confirmBtn.disabled = true;
 
-            try {
-                const finalNick = datosFormulario.nick.trim() || datosFormulario.email.split('@')[0];
+    try {
+        const finalNick = datosFormulario.nick.trim() || datosFormulario.email.split('@')[0];
 
-                // 🔥 REGISTRO CON LOS CAMPOS CORRECTOS
-                const userData = {
-                    username: finalNick,
-                    email: datosFormulario.email,
-                    password: datosFormulario.pass,
-                    passwordConfirm: datosFormulario.pass,
-                    nick: finalNick,
-                    bio: datosFormulario.bio || "Sin bio aún",
-                    about: datosFormulario.about || "Hola! Estoy en Shatt",
-                    intGen: "-",
-                    intMus: "-",
-                    pais: datosFormulario.pais || "",
-                    sexo: datosFormulario.sexo || "",
-                    fuma: "No",
-                    toma: "A veces"
-                };
+        // ✅ SOLO ENVIAR nick (PocketBase genera username automáticamente)
+        const userData = {
+            email: datosFormulario.email,
+            password: datosFormulario.pass,
+            passwordConfirm: datosFormulario.pass,
+            nick: finalNick,
+            bio: datosFormulario.bio || "Sin bio aún",
+            about: datosFormulario.about || "Hola! Estoy en Shatt",
+            intGen: "-",
+            intMus: "-",
+            pais: datosFormulario.pais || "",
+            sexo: datosFormulario.sexo || "",
+            fuma: "No",
+            toma: "A veces"
+        };
 
-                await pb.collection('usuarios').create(userData);
-                await pb.collection('usuarios').authWithPassword(datosFormulario.email, datosFormulario.pass);
+        await pb.collection('usuarios').create(userData);
+        await pb.collection('usuarios').authWithPassword(datosFormulario.email, datosFormulario.pass);
 
-                const user = pb.authStore.model;
-                let avatarUrl = user.pfp ? pb.files.getUrl(user, user.pfp) : '';
-                agregarCuentaGuardada(user.id, user.email, user.username || user.email.split('@')[0], avatarUrl);
+        const user = pb.authStore.model;
+        let avatarUrl = '';
+        if (user.pfp) avatarUrl = pb.files.getUrl(user, user.pfp);
+        agregarCuentaGuardada(user.id, user.email, user.nick || user.email.split('@')[0], avatarUrl);
 
-                localStorage.setItem('pocketbase_auth', JSON.stringify({ token: pb.authStore.token, model: pb.authStore.model }));
+        localStorage.setItem('pocketbase_auth', JSON.stringify({
+            token: pb.authStore.token,
+            model: pb.authStore.model
+        }));
 
-                alert("🎉 ¡Bienvenido a Shatt! Tu cuenta ha sido creada.");
-                cerrarDeclaracion();
-                window.location.href = "inicio.html";
+        alert("🎉 ¡Bienvenido a Shatt! Tu cuenta ha sido creada.");
+        cerrarDeclaracion();
+        window.location.href = "inicio.html";
 
-            } catch (error) {
-                console.error("Error en registro:", error);
-                let mensaje = "❌ Error al crear la cuenta: ";
-                if (error.message && error.message.includes("unique")) mensaje += "El correo o nombre de usuario ya está registrado";
-                else if (error.message) mensaje += error.message;
-                else mensaje += "Error desconocido. Intenta de nuevo.";
-                alert(mensaje);
-                confirmBtn.innerHTML = originalText;
-                confirmBtn.disabled = false;
-            }
+    } catch (error) {
+        console.error("Error en registro:", error);
+        let mensaje = "❌ Error al crear la cuenta: ";
+        if (error.message && error.message.includes("unique")) {
+            mensaje += "El correo o nombre de usuario ya está registrado";
+        } else if (error.message) {
+            mensaje += error.message;
+        } else {
+            mensaje += "Error desconocido. Intenta de nuevo.";
         }
+        alert(mensaje);
+        confirmBtn.innerHTML = originalText;
+        confirmBtn.disabled = false;
+    }
+}
 
         // ========== INICIO DE SESIÓN ==========
         async function entrar() {
