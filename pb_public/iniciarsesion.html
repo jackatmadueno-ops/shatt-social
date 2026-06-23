@@ -962,73 +962,72 @@
         
         // ========== CONFIRMAR REGISTRO CORREGIDO ==========
         async function confirmarRegistro() {
-            const check = document.getElementById('acceptTermsCheckbox');
-            if (!check.checked) {
-                alert("❌ Debes aceptar los Términos y Condiciones");
-                return;
-            }
-            
-            const confirmBtn = document.getElementById('confirmarRegistroBtn');
-            const originalText = confirmBtn.innerText;
-            confirmBtn.innerHTML = '<span class="loading-spinner"></span> CREANDO CUENTA...';
-            confirmBtn.disabled = true;
-            
-            try {
-                const finalNick = datosFormulario.nick.trim() || datosFormulario.email.split('@')[0];
-                
-                // ✅ SOLO campos que existen en la BD
-                const userData = {
-                    username: finalNick,  
-                    email: datosFormulario.email,
-                    password: datosFormulario.pass,
-                    passwordConfirm: datosFormulario.pass,
-                    
-                    bio: datosFormulario.bio || "Sin bio aún",
-                    about: datosFormulario.about || "Hola! Estoy en Shatt",
-                    intGen: "-",
-                    intMus: "-",
-                    pais: datosFormulario.pais || "",
-                    sexo: datosFormulario.sexo || "",
-                    fuma: "No",
-                    toma: "A veces"
-                };
-                
-                // ✅ NO enviamos terminosAceptados, mayorEdad, fechaNacimiento, edad
-                // porque NO existen en la colección
-                
-                await pb.collection('usuarios').create(userData);
-                
-                await pb.collection('usuarios').authWithPassword(datosFormulario.email, datosFormulario.pass);
-                
-                const user = pb.authStore.model;
-                let avatarUrl = '';
-                if (user.pfp) avatarUrl = pb.files.getUrl(user, user.pfp);
-                agregarCuentaGuardada(user.id, user.email, user.nick || user.email.split('@')[0], avatarUrl);
-                
-                localStorage.setItem('pocketbase_auth', JSON.stringify({
-                    token: pb.authStore.token,
-                    model: pb.authStore.model
-                }));
-                
-                alert("🎉 ¡Bienvenido a Shatt! Tu cuenta ha sido creada.");
-                cerrarDeclaracion();
-                window.location.href = "inicio.html";
-                
-            } catch (error) {
-                console.error("Error en registro:", error);
-                let mensaje = "❌ Error al crear la cuenta: ";
-                if (error.message && error.message.includes("unique")) {
-                    mensaje += "El correo ya está registrado";
-                } else if (error.message) {
-                    mensaje += error.message;
-                } else {
-                    mensaje += "Error desconocido. Intenta de nuevo.";
-                }
-                alert(mensaje);
-                confirmBtn.innerHTML = originalText;
-                confirmBtn.disabled = false;
-            }
+    const check = document.getElementById('acceptTermsCheckbox');
+    if (!check.checked) {
+        alert("❌ Debes aceptar los Términos y Condiciones");
+        return;
+    }
+    
+    const confirmBtn = document.getElementById('confirmarRegistroBtn');
+    const originalText = confirmBtn.innerText;
+    confirmBtn.innerHTML = '<span class="loading-spinner"></span> CREANDO CUENTA...';
+    confirmBtn.disabled = true;
+    
+    try {
+        const finalNick = datosFormulario.nick.trim() || datosFormulario.email.split('@')[0];
+        
+        // ✅ SOLO campos que existen en la BD
+        const userData = {
+            username: finalNick,           // ← OBLIGATORIO
+            email: datosFormulario.email,
+            password: datosFormulario.pass,
+            passwordConfirm: datosFormulario.pass,
+            // ❌ ELIMINADO: nick (NO existe en Auth)
+            bio: datosFormulario.bio || "Sin bio aún",
+            about: datosFormulario.about || "Hola! Estoy en Shatt",
+            intGen: "-",
+            intMus: "-",
+            pais: datosFormulario.pais || "",
+            sexo: datosFormulario.sexo || "",
+            fuma: "No",
+            toma: "A veces"
+        };
+        
+        await pb.collection('usuarios').create(userData);
+        
+        await pb.collection('usuarios').authWithPassword(datosFormulario.email, datosFormulario.pass);
+        
+        const user = pb.authStore.model;
+        let avatarUrl = '';
+        if (user.pfp) avatarUrl = pb.files.getUrl(user, user.pfp);
+        
+        // ✅ CAMBIADO: user.username en lugar de user.nick
+        agregarCuentaGuardada(user.id, user.email, user.username || user.email.split('@')[0], avatarUrl);
+        
+        localStorage.setItem('pocketbase_auth', JSON.stringify({
+            token: pb.authStore.token,
+            model: pb.authStore.model
+        }));
+        
+        alert("🎉 ¡Bienvenido a Shatt! Tu cuenta ha sido creada.");
+        cerrarDeclaracion();
+        window.location.href = "inicio.html";
+        
+    } catch (error) {
+        console.error("Error en registro:", error);
+        let mensaje = "❌ Error al crear la cuenta: ";
+        if (error.message && error.message.includes("unique")) {
+            mensaje += "El correo o nombre de usuario ya está registrado";
+        } else if (error.message) {
+            mensaje += error.message;
+        } else {
+            mensaje += "Error desconocido. Intenta de nuevo.";
         }
+        alert(mensaje);
+        confirmBtn.innerHTML = originalText;
+        confirmBtn.disabled = false;
+    }
+}
         
         async function entrar() {
             const email = document.getElementById('log-email').value;
