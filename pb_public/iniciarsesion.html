@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>Shatt | Acceso Oficial</title>
-    <script src="https://unpkg.com/pocketbase@0.21.5/dist/pocketbase.umd.js"></script>
-    
-    
+    <script src="https://unpkg.com/pocketbase@0.21.5/dist/pocketbase.umd.js">
+    </script>
+
     <style>
         * {
             margin: 0;
@@ -15,9 +15,9 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        :root { 
-            --bg: #3a6186; 
-            --shatt-blue: #3b5998; 
+        :root {
+            --bg: #3a6186;
+            --shatt-blue: #3b5998;
             --border-pc: 2px solid #000;
             --shadow-pc: 6px 6px 0px #000;
             --accent: #fbc02d;
@@ -26,35 +26,55 @@
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             --online-color: #22c55e;
         }
-        
-        body { 
-            background: var(--bg); 
+
+        body {
+            background: var(--bg);
             background-size: cover;
             background-attachment: fixed;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             margin: 0;
             padding: 20px;
+            overflow-x: hidden;
+            gap: 0;
         }
-        
+
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
+
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
-        
+
         @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.7); }
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.3;
+                transform: scale(0.7);
+            }
         }
-        
+
         .loading-spinner {
             display: inline-block;
             width: 18px;
@@ -66,48 +86,364 @@
             margin-right: 8px;
             vertical-align: middle;
         }
-        
-        .login-window {
-            animation: fadeInUp 0.5s ease;
+
+        /* ========== AVATAR FUERA DEL FORMULARIO ========== */
+        .avatar-outer-wrapper {
             position: relative;
-            z-index: 10;
+            z-index: 50;
+            margin-bottom: -26px;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        
+
+        .avatar-outer-wrapper.floating {
+            animation: gentleFloat 3.5s ease-in-out infinite;
+        }
+
+        @keyframes gentleFloat {
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+
+        .avatar-outer-wrapper.hiding {
+            transform: translateY(55px) scale(0.6);
+            opacity: 0.35;
+            z-index: 2;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .avatar-outer-wrapper.hiding .msn-avatar-svg {
+            filter: drop-shadow(0 2px 4px rgba(30, 70, 120, 0.1));
+        }
+
+        .avatar-outer-wrapper.peeking {
+            transform: translateY(30px) scale(0.72);
+            opacity: 0.6;
+            z-index: 4;
+            animation: peekBounce 0.45s ease;
+        }
+
+        @keyframes peekBounce {
+            0% {
+                transform: translateY(55px) scale(0.6);
+            }
+            60% {
+                transform: translateY(22px) scale(0.78);
+            }
+            100% {
+                transform: translateY(30px) scale(0.72);
+            }
+        }
+
+        .avatar-outer-wrapper.returning {
+            animation: returnBounce 0.75s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes returnBounce {
+            0% {
+                transform: translateY(30px) scale(0.72);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateY(-16px) scale(1.08);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(0px) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .msn-avatar-svg {
+            width: 150px;
+            height: 150px;
+            display: block;
+            cursor: pointer;
+            filter: drop-shadow(0 12px 30px rgba(30, 70, 120, 0.4));
+            transition: filter 0.4s ease;
+        }
+
+        .msn-avatar-svg:hover {
+            filter: drop-shadow(0 18px 40px rgba(30, 70, 120, 0.55));
+        }
+
+        .msn-avatar-svg.dizzy {
+            animation: dizzyAnimation 0.8s ease-in-out;
+        }
+
+        @keyframes dizzyAnimation {
+            0% {
+                transform: rotate(0deg) scale(1);
+            }
+            20% {
+                transform: rotate(18deg) scale(1.06);
+            }
+            40% {
+                transform: rotate(-14deg) scale(1.07);
+            }
+            60% {
+                transform: rotate(8deg) scale(1.03);
+            }
+            80% {
+                transform: rotate(-4deg) scale(1.01);
+            }
+            100% {
+                transform: rotate(0deg) scale(1);
+            }
+        }
+
+        .dizzy-stars {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .msn-avatar-svg.dizzy .dizzy-stars {
+            opacity: 1;
+            animation: starsPop 0.7s ease-out;
+        }
+
+        @keyframes starsPop {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.5);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+        }
+
+        @keyframes naturalBlink {
+            0%,
+            94%,
+            98%,
+            100% {
+                transform: scaleY(1);
+            }
+            96% {
+                transform: scaleY(0.06);
+            }
+        }
+
+        .blink-group {
+            transform-origin: center;
+            animation: naturalBlink 4.5s infinite;
+        }
+
+        .eye-left-follow,
+        .eye-right-follow,
+        .spy-eye-follow {
+            transition: cx 0.1s ease-out, cy 0.1s ease-out;
+        }
+
+        .music-notes {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .music-notes.show {
+            opacity: 1;
+            animation: notesFloat 2s ease-out infinite;
+        }
+
+        @keyframes notesFloat {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(0.5);
+            }
+            30% {
+                opacity: 1;
+                transform: translateY(-15px) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-35px) scale(0.3);
+            }
+        }
+
+        .sweat-drop {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .msn-avatar-svg.dizzy .sweat-drop {
+            opacity: 1;
+            animation: sweatFall 1s ease-out forwards;
+        }
+
+        @keyframes sweatFall {
+            0% {
+                opacity: 0.8;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(22px) scale(1.4);
+            }
+        }
+
+        .msn-avatar-svg.shake {
+            animation: shake 0.45s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            10% {
+                transform: translateX(-8px);
+            }
+            20% {
+                transform: translateX(8px);
+            }
+            30% {
+                transform: translateX(-6px);
+            }
+            40% {
+                transform: translateX(6px);
+            }
+            50% {
+                transform: translateX(-4px);
+            }
+            60% {
+                transform: translateX(4px);
+            }
+            70% {
+                transform: translateX(-2px);
+            }
+            80% {
+                transform: translateX(2px);
+            }
+        }
+
+        /* ========== MANOS FLOTANTES ========== */
+        .floating-hands {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .floating-hands.show {
+            opacity: 1;
+        }
+
+        .hand-emoji {
+            position: absolute;
+            font-size: 32px;
+            animation: floatHand 1.5s ease-out forwards;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        @keyframes floatHand {
+            0% {
+                opacity: 1;
+                transform: translateY(0) translateX(0) scale(0.5) rotate(0deg);
+            }
+            30% {
+                opacity: 1;
+                transform: translateY(-60px) translateX(var(--drift-x)) scale(1.2) rotate(var(--spin));
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-120px) translateX(var(--drift-x)) scale(0.3) rotate(var(--spin-end));
+            }
+        }
+
+        .hand-emoji.sink {
+            animation: sinkHand 1.2s ease-in forwards;
+        }
+
+        @keyframes sinkHand {
+            0% {
+                opacity: 1;
+                transform: translateY(0) translateX(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(80px) translateX(var(--drift-x)) scale(0.2);
+            }
+        }
+
+        /* ========== TOAST DE ERROR ========== */
+        .error-toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-120px);
+            background: #ff4444;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 14px;
+            z-index: 99999;
+            box-shadow: 0 8px 24px rgba(255, 68, 68, 0.4);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        .error-toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
         /* PC */
         @media (min-width: 769px) {
-            body { padding: 40px; }
-            .login-window { 
-                background: #f0f2f5; 
-                border: var(--border-pc); 
-                box-shadow: var(--shadow-pc); 
+            body {
+                padding: 30px;
+            }
+            .avatar-outer-wrapper {
+                margin-bottom: -26px;
+            }
+            .login-window {
+                background: #f0f2f5;
+                border: var(--border-pc);
+                box-shadow: var(--shadow-pc);
                 width: 100%;
                 max-width: 550px;
-                border-radius: var(--radius); 
+                border-radius: var(--radius);
                 overflow: hidden;
+                animation: fadeInUp 0.5s ease;
+                position: relative;
+                z-index: 10;
             }
-            .window-header { 
-                background: var(--shatt-blue); 
-                color: white; 
-                padding: 14px 24px; 
-                font-weight: bold; 
-                font-size: 14px; 
-                display: flex; 
-                justify-content: space-between; 
+            .window-header {
+                background: var(--shatt-blue);
+                color: white;
+                padding: 14px 24px;
+                font-weight: bold;
+                font-size: 14px;
+                display: flex;
+                justify-content: space-between;
                 align-items: center;
                 font-family: monospace;
             }
-            .content { padding: 28px 24px; }
-            .shatt-logo { 
-                text-align: center; 
-                margin-bottom: 16px; 
-                font-weight: 900; 
-                font-size: 32px; 
-                color: #000; 
+            .content {
+                padding: 28px 24px;
+            }
+            .shatt-logo {
+                text-align: center;
+                margin-bottom: 16px;
+                font-weight: 900;
+                font-size: 32px;
+                color: #000;
                 letter-spacing: -1px;
             }
-            .shatt-logo span { color: var(--shatt-blue); }
-            
-            /* ESTADÍSTICAS PEQUEÑAS ABAJO */
+            .shatt-logo span {
+                color: var(--shatt-blue);
+            }
             .footer-stats {
                 display: flex;
                 justify-content: center;
@@ -115,7 +451,7 @@
                 gap: 16px;
                 margin-top: 18px;
                 padding-top: 14px;
-                border-top: 1px solid rgba(0,0,0,0.08);
+                border-top: 1px solid rgba(0, 0, 0, 0.08);
                 font-size: 12px;
                 color: #666;
             }
@@ -126,7 +462,7 @@
             }
             .footer-stats .stat-number {
                 font-weight: 700;
-                background: rgba(0,0,0,0.05);
+                background: rgba(0, 0, 0, 0.05);
                 padding: 0 8px;
                 border-radius: 12px;
                 font-size: 13px;
@@ -145,20 +481,66 @@
                 animation: pulse-dot 1.5s infinite;
                 box-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
             }
-            
-            h2 { margin: 0 0 20px 0; color: #000; font-size: 20px; text-align: center; font-weight: 700; }
-            label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px; color: #333; text-transform: uppercase; }
-            input, select { 
-                width: 100%; 
-                padding: 12px 16px; 
-                margin-bottom: 18px; 
-                border: var(--border-pc); 
-                border-radius: var(--radius-sm); 
-                outline: none; 
+            h2 {
+                margin: 0 0 20px 0;
+                color: #000;
+                font-size: 20px;
+                text-align: center;
+                font-weight: 700;
+            }
+            label {
+                display: block;
+                font-size: 12px;
+                font-weight: 700;
+                margin-bottom: 8px;
+                color: #333;
+                text-transform: uppercase;
+            }
+            input,
+            select {
+                width: 100%;
+                padding: 12px 16px;
+                margin-bottom: 18px;
+                border: var(--border-pc);
+                border-radius: var(--radius-sm);
+                outline: none;
                 background: white;
                 font-size: 14px;
             }
-            input:focus, select:focus { border-color: var(--accent); }
+            input:focus,
+            select:focus {
+                border-color: var(--accent);
+            }
+            .password-field {
+                position: relative;
+                margin-bottom: 18px;
+            }
+            .password-field input {
+                width: 100%;
+                margin-bottom: 0;
+                padding-right: 80px;
+            }
+            .toggle-pass-btn {
+                position: absolute;
+                right: 4px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: #fff;
+                border: 1.5px solid #000;
+                padding: 5px 10px;
+                border-radius: 6px;
+                font-size: 10px;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.2s;
+                z-index: 2;
+            }
+            .toggle-pass-btn:hover {
+                background: #f0f0f0;
+            }
+            .toggle-pass-btn:active {
+                transform: translateY(-50%) scale(0.95);
+            }
             .date-group {
                 display: flex;
                 gap: 12px;
@@ -168,25 +550,54 @@
                 flex: 1;
                 margin-bottom: 0;
             }
-            .btn-access { 
-                width: 100%; 
-                padding: 12px; 
-                background: var(--accent); 
-                border: var(--border-pc); 
-                border-radius: var(--radius-sm); 
-                font-weight: 900; 
+            .btn-access {
+                width: 100%;
+                padding: 12px;
+                background: var(--accent);
+                border: var(--border-pc);
+                border-radius: var(--radius-sm);
+                font-weight: 900;
                 font-size: 15px;
-                cursor: pointer; 
+                cursor: pointer;
                 box-shadow: 3px 3px 0px #000;
                 transition: all 0.1s ease;
             }
-            .btn-access:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
-            .btn-register { background: var(--shatt-blue); color: white; }
-            .toggle-link { margin-top: 20px; text-align: center; font-size: 12px; color: var(--shatt-blue); cursor: pointer; text-decoration: underline; font-weight: 600; }
-            hr { margin: 20px 0; border: 1px solid #ddd; }
-            .saved-accounts { margin-bottom: 24px; }
-            .saved-title { font-size: 11px; font-weight: 700; color: #666; text-transform: uppercase; margin-bottom: 12px; }
-            .accounts-grid { display: flex; flex-wrap: wrap; gap: 12px; }
+            .btn-access:active {
+                transform: translate(2px, 2px);
+                box-shadow: 1px 1px 0px #000;
+            }
+            .btn-register {
+                background: var(--shatt-blue);
+                color: white;
+            }
+            .toggle-link {
+                margin-top: 20px;
+                text-align: center;
+                font-size: 12px;
+                color: var(--shatt-blue);
+                cursor: pointer;
+                text-decoration: underline;
+                font-weight: 600;
+            }
+            hr {
+                margin: 20px 0;
+                border: 1px solid #ddd;
+            }
+            .saved-accounts {
+                margin-bottom: 24px;
+            }
+            .saved-title {
+                font-size: 11px;
+                font-weight: 700;
+                color: #666;
+                text-transform: uppercase;
+                margin-bottom: 12px;
+            }
+            .accounts-grid {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
             .account-card {
                 flex: 1;
                 min-width: 100px;
@@ -199,10 +610,28 @@
                 position: relative;
                 transition: all 0.2s ease;
             }
-            .account-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-pc); }
-            .account-avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--shatt-blue); object-fit: cover; margin: 0 auto 8px; display: block; background: #eee; }
-            .account-nick { font-size: 12px; font-weight: bold; }
-            .account-email { font-size: 9px; color: #666; }
+            .account-card:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-pc);
+            }
+            .account-avatar {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                border: 2px solid var(--shatt-blue);
+                object-fit: cover;
+                margin: 0 auto 8px;
+                display: block;
+                background: #eee;
+            }
+            .account-nick {
+                font-size: 12px;
+                font-weight: bold;
+            }
+            .account-email {
+                font-size: 9px;
+                color: #666;
+            }
             .remove-account {
                 position: absolute;
                 top: -8px;
@@ -235,23 +664,75 @@
                 gap: 6px;
                 transition: all 0.2s ease;
             }
-            .add-account-btn:hover { background: #d0d0d0; transform: translateY(-2px); }
-            .add-account-btn span:first-child { font-size: 24px; }
-            .add-account-btn span:last-child { font-size: 11px; font-weight: bold; }
-            .recover-link { text-align: center; margin-top: 10px; font-size: 12px; color: var(--shatt-blue); cursor: pointer; text-decoration: none; opacity: 0.7; }
-            .recover-link:hover { opacity: 1; text-decoration: underline; }
+            .add-account-btn:hover {
+                background: #d0d0d0;
+                transform: translateY(-2px);
+            }
+            .add-account-btn span:first-child {
+                font-size: 24px;
+            }
+            .add-account-btn span:last-child {
+                font-size: 11px;
+                font-weight: bold;
+            }
+            .recover-link {
+                text-align: center;
+                margin-top: 10px;
+                font-size: 12px;
+                color: var(--shatt-blue);
+                cursor: pointer;
+                text-decoration: none;
+                opacity: 0.7;
+            }
+            .recover-link:hover {
+                opacity: 1;
+                text-decoration: underline;
+            }
         }
-        
+
         /* MÓVIL */
         @media (max-width: 768px) {
-            body { padding: 16px; align-items: flex-start; padding-top: 30px; background: linear-gradient(135deg, #3a6186 0%, #2a4a6a 100%); }
-            .login-window { background: rgba(255, 255, 255, 0.98); border: none; border-radius: 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); width: 100%; overflow: hidden; }
-            .window-header { background: linear-gradient(135deg, var(--shatt-blue), #2a4880); color: white; padding: 18px 20px; font-weight: 600; font-size: 15px; display: flex; justify-content: space-between; align-items: center; }
-            .content { padding: 24px 20px; }
-            .shatt-logo { text-align: center; margin-bottom: 12px; font-weight: 900; font-size: 34px; color: #1a1a2e; }
-            .shatt-logo span { color: var(--shatt-blue); }
-            
-            /* ESTADÍSTICAS PEQUEÑAS ABAJO */
+            body {
+                padding: 8px;
+                background: linear-gradient(135deg, #3a6186 0%, #2a4a6a 100%);
+            }
+            .avatar-outer-wrapper {
+                margin-bottom: -20px;
+            }
+            .login-window {
+                background: rgba(255, 255, 255, 0.98);
+                border: none;
+                border-radius: 28px;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+                width: 100%;
+                overflow: hidden;
+                animation: fadeInUp 0.5s ease;
+                position: relative;
+                z-index: 10;
+            }
+            .window-header {
+                background: linear-gradient(135deg, var(--shatt-blue), #2a4880);
+                color: white;
+                padding: 18px 20px;
+                font-weight: 600;
+                font-size: 15px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .content {
+                padding: 24px 20px;
+            }
+            .shatt-logo {
+                text-align: center;
+                margin-bottom: 12px;
+                font-weight: 900;
+                font-size: 34px;
+                color: #1a1a2e;
+            }
+            .shatt-logo span {
+                color: var(--shatt-blue);
+            }
             .footer-stats {
                 display: flex;
                 justify-content: center;
@@ -259,7 +740,7 @@
                 gap: 14px;
                 margin-top: 16px;
                 padding-top: 12px;
-                border-top: 1px solid rgba(0,0,0,0.06);
+                border-top: 1px solid rgba(0, 0, 0, 0.06);
                 font-size: 11px;
                 color: #888;
             }
@@ -270,7 +751,7 @@
             }
             .footer-stats .stat-number {
                 font-weight: 700;
-                background: rgba(0,0,0,0.05);
+                background: rgba(0, 0, 0, 0.05);
                 padding: 0 6px;
                 border-radius: 10px;
                 font-size: 12px;
@@ -289,16 +770,58 @@
                 animation: pulse-dot 1.5s infinite;
                 box-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
             }
-            
-            h2 { margin: 0 0 16px 0; color: #1a1a2e; font-size: 22px; text-align: center; font-weight: 700; }
-            .saved-accounts { margin-bottom: 20px; }
-            .saved-title { font-size: 12px; font-weight: 600; color: #666; margin-bottom: 12px; }
-            .accounts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; }
-            .account-card { background: white; border: 1px solid #e0e0e0; border-radius: 16px; padding: 12px 8px; text-align: center; cursor: pointer; position: relative; transition: all 0.2s ease; }
-            .account-card:active { transform: scale(0.98); }
-            .account-avatar { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--shatt-blue); object-fit: cover; margin: 0 auto 8px; display: block; background: #eee; }
-            .account-nick { font-size: 13px; font-weight: bold; }
-            .account-email { font-size: 10px; color: #888; }
+            h2 {
+                margin: 0 0 16px 0;
+                color: #1a1a2e;
+                font-size: 22px;
+                text-align: center;
+                font-weight: 700;
+            }
+            .saved-accounts {
+                margin-bottom: 20px;
+            }
+            .saved-title {
+                font-size: 12px;
+                font-weight: 600;
+                color: #666;
+                margin-bottom: 12px;
+            }
+            .accounts-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 12px;
+            }
+            .account-card {
+                background: white;
+                border: 1px solid #e0e0e0;
+                border-radius: 16px;
+                padding: 12px 8px;
+                text-align: center;
+                cursor: pointer;
+                position: relative;
+                transition: all 0.2s ease;
+            }
+            .account-card:active {
+                transform: scale(0.98);
+            }
+            .account-avatar {
+                width: 55px;
+                height: 55px;
+                border-radius: 50%;
+                border: 2px solid var(--shatt-blue);
+                object-fit: cover;
+                margin: 0 auto 8px;
+                display: block;
+                background: #eee;
+            }
+            .account-nick {
+                font-size: 13px;
+                font-weight: bold;
+            }
+            .account-email {
+                font-size: 10px;
+                color: #888;
+            }
             .remove-account {
                 position: absolute;
                 top: -8px;
@@ -313,23 +836,138 @@
                 align-items: center;
                 justify-content: center;
                 cursor: pointer;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             }
-            .add-account-btn { background: #f0f0f0; border: 1px dashed #ccc; border-radius: 16px; padding: 12px 8px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s ease; }
-            .add-account-btn:active { transform: scale(0.98); }
-            .add-account-btn span:first-child { font-size: 28px; }
-            .add-account-btn span:last-child { font-size: 11px; font-weight: 600; color: #666; }
-            label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #444; }
-            input, select { width: 100%; padding: 14px 16px; margin-bottom: 16px; border: 1.5px solid #e0e0e0; border-radius: 14px; background: #ffffff; font-size: 16px; }
-            .date-group { display: flex; gap: 10px; margin-bottom: 16px; }
-            .date-group select { flex: 1; margin-bottom: 0; }
-            .btn-access { width: 100%; padding: 16px; background: linear-gradient(135deg, #fbc02d, #f9a825); border: none; border-radius: 30px; font-weight: 700; font-size: 17px; cursor: pointer; color: #1a1a2e; margin-top: 8px; transition: all 0.2s ease; }
-            .btn-access:active { transform: scale(0.98); }
-            .btn-register { background: linear-gradient(135deg, var(--shatt-blue), #2a4880); color: white; }
-            .toggle-link { margin-top: 20px; text-align: center; font-size: 13px; color: var(--shatt-blue); cursor: pointer; font-weight: 600; padding: 10px; background: rgba(59, 89, 152, 0.08); border-radius: 30px; transition: all 0.2s ease; }
-            .toggle-link:active { background: rgba(59, 89, 152, 0.15); transform: scale(0.98); }
-            hr { margin: 20px 0; border: none; height: 1px; background: linear-gradient(90deg, transparent, #ddd, transparent); }
-            .extra-fields-title { font-size: 13px; font-weight: 600; color: var(--shatt-blue); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--accent); display: inline-block; }
+            .add-account-btn {
+                background: #f0f0f0;
+                border: 1px dashed #ccc;
+                border-radius: 16px;
+                padding: 12px 8px;
+                text-align: center;
+                cursor: pointer;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                transition: all 0.2s ease;
+            }
+            .add-account-btn:active {
+                transform: scale(0.98);
+            }
+            .add-account-btn span:first-child {
+                font-size: 28px;
+            }
+            .add-account-btn span:last-child {
+                font-size: 11px;
+                font-weight: 600;
+                color: #666;
+            }
+            label {
+                display: block;
+                font-size: 13px;
+                font-weight: 600;
+                margin-bottom: 6px;
+                color: #444;
+            }
+            input,
+            select {
+                width: 100%;
+                padding: 14px 16px;
+                margin-bottom: 16px;
+                border: 1.5px solid #e0e0e0;
+                border-radius: 14px;
+                background: #ffffff;
+                font-size: 16px;
+            }
+            .password-field {
+                position: relative;
+                margin-bottom: 16px;
+            }
+            .password-field input {
+                width: 100%;
+                margin-bottom: 0;
+                padding-right: 75px;
+            }
+            .toggle-pass-btn {
+                position: absolute;
+                right: 4px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: #fff;
+                border: 1.5px solid #ddd;
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 11px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s;
+                z-index: 2;
+            }
+            .toggle-pass-btn:active {
+                transform: translateY(-50%) scale(0.95);
+                background: #f5f5f5;
+            }
+            .date-group {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 16px;
+            }
+            .date-group select {
+                flex: 1;
+                margin-bottom: 0;
+            }
+            .btn-access {
+                width: 100%;
+                padding: 16px;
+                background: linear-gradient(135deg, #fbc02d, #f9a825);
+                border: none;
+                border-radius: 30px;
+                font-weight: 700;
+                font-size: 17px;
+                cursor: pointer;
+                color: #1a1a2e;
+                margin-top: 8px;
+                transition: all 0.2s ease;
+            }
+            .btn-access:active {
+                transform: scale(0.98);
+            }
+            .btn-register {
+                background: linear-gradient(135deg, var(--shatt-blue), #2a4880);
+                color: white;
+            }
+            .toggle-link {
+                margin-top: 20px;
+                text-align: center;
+                font-size: 13px;
+                color: var(--shatt-blue);
+                cursor: pointer;
+                font-weight: 600;
+                padding: 10px;
+                background: rgba(59, 89, 152, 0.08);
+                border-radius: 30px;
+                transition: all 0.2s ease;
+            }
+            .toggle-link:active {
+                background: rgba(59, 89, 152, 0.15);
+                transform: scale(0.98);
+            }
+            hr {
+                margin: 20px 0;
+                border: none;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, #ddd, transparent);
+            }
+            .extra-fields-title {
+                font-size: 13px;
+                font-weight: 600;
+                color: var(--shatt-blue);
+                margin-bottom: 16px;
+                padding-bottom: 8px;
+                border-bottom: 2px solid var(--accent);
+                display: inline-block;
+            }
             .recover-link {
                 display: block;
                 text-align: center;
@@ -340,14 +978,16 @@
                 text-decoration: none;
                 opacity: 0.7;
             }
-            .recover-link:active { opacity: 1; }
+            .recover-link:active {
+                opacity: 1;
+            }
         }
-        
+
         /* MODALES */
         .password-modal {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(8px);
             z-index: 99999;
             display: flex;
@@ -355,7 +995,7 @@
             justify-content: center;
             animation: fadeIn 0.2s ease;
         }
-        
+
         .password-modal-content {
             background: white;
             border-radius: 24px;
@@ -365,7 +1005,7 @@
             text-align: center;
             animation: zoomIn 0.2s ease;
         }
-        
+
         .password-modal-content .cancel {
             background: #e0e0e0;
             border: none;
@@ -375,7 +1015,7 @@
             cursor: pointer;
             margin-right: 10px;
         }
-        
+
         .password-modal-content #confirm-login {
             background: var(--shatt-blue);
             color: white;
@@ -385,7 +1025,7 @@
             font-weight: 600;
             cursor: pointer;
         }
-        
+
         .password-modal-content input {
             width: 100%;
             padding: 14px 16px;
@@ -395,12 +1035,15 @@
             font-size: 16px;
             outline: none;
         }
-        .password-modal-content input:focus { border-color: var(--shatt-blue); }
-        
+
+        .password-modal-content input:focus {
+            border-color: var(--shatt-blue);
+        }
+
         .terms-modal {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.95);
+            background: rgba(0, 0, 0, 0.95);
             backdrop-filter: blur(8px);
             z-index: 99999;
             display: none;
@@ -408,9 +1051,11 @@
             justify-content: center;
             animation: fadeIn 0.2s ease;
         }
-        
-        .terms-modal.show { display: flex; }
-        
+
+        .terms-modal.show {
+            display: flex;
+        }
+
         .terms-modal-content {
             background: white;
             border-radius: 28px;
@@ -419,9 +1064,9 @@
             max-height: 85vh;
             overflow-y: auto;
             animation: zoomIn 0.2s ease;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
         }
-        
+
         .terms-modal-header {
             background: linear-gradient(135deg, var(--shatt-blue), #2a4880);
             padding: 20px;
@@ -431,13 +1076,36 @@
             top: 0;
             z-index: 100;
         }
-        
-        .terms-modal-header h3 { margin: 0; font-size: 20px; }
-        .terms-modal-body { padding: 24px; }
-        .terms-modal-body h4 { color: var(--shatt-blue); margin: 20px 0 10px 0; }
-        .terms-modal-body p { margin-bottom: 12px; line-height: 1.6; color: #333; }
-        .terms-modal-body ul { margin: 10px 0 15px 25px; }
-        .terms-modal-body li { margin-bottom: 6px; line-height: 1.5; }
+
+        .terms-modal-header h3 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .terms-modal-body {
+            padding: 24px;
+        }
+
+        .terms-modal-body h4 {
+            color: var(--shatt-blue);
+            margin: 20px 0 10px 0;
+        }
+
+        .terms-modal-body p {
+            margin-bottom: 12px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .terms-modal-body ul {
+            margin: 10px 0 15px 25px;
+        }
+
+        .terms-modal-body li {
+            margin-bottom: 6px;
+            line-height: 1.5;
+        }
+
         .terms-modal-footer {
             padding: 16px 20px;
             background: #f8f9fa;
@@ -447,11 +1115,30 @@
             gap: 12px;
             flex-wrap: wrap;
         }
-        .terms-modal-footer button { padding: 10px 24px; border-radius: 30px; font-weight: bold; cursor: pointer; border: none; transition: all 0.2s; }
-        .terms-modal-footer button:hover { transform: scale(1.02); }
-        .terms-modal-footer .btn-close-terms { background: #ccc; color: #333; }
-        .terms-modal-footer .btn-accept-terms { background: #4CAF50; color: white; }
-        
+
+        .terms-modal-footer button {
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .terms-modal-footer button:hover {
+            transform: scale(1.02);
+        }
+
+        .terms-modal-footer .btn-close-terms {
+            background: #ccc;
+            color: #333;
+        }
+
+        .terms-modal-footer .btn-accept-terms {
+            background: #4CAF50;
+            color: white;
+        }
+
         .checkbox-container {
             margin: 20px 0;
             padding: 15px;
@@ -461,21 +1148,160 @@
             align-items: flex-start;
             gap: 12px;
         }
-        .checkbox-container input { width: 22px; height: 22px; margin-top: 2px; cursor: pointer; }
-        .checkbox-container label { flex: 1; font-size: 14px; font-weight: normal; line-height: 1.4; cursor: pointer; }
-        .terms-link { color: var(--shatt-blue); text-decoration: underline; cursor: pointer; font-weight: bold; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+
+        .checkbox-container input {
+            width: 22px;
+            height: 22px;
+            margin-top: 2px;
+            cursor: pointer;
         }
+
+        .checkbox-container label {
+            flex: 1;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 1.4;
+            cursor: pointer;
+        }
+
+        .terms-link {
+            color: var(--shatt-blue);
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
         @keyframes zoomIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="floating-hands" id="floatingHands"></div>
+    <div class="error-toast" id="errorToast"></div>
+
+    <!-- AVATAR MSN FUERA DEL FORMULARIO -->
+    <div class="avatar-outer-wrapper floating" id="avatarOuterWrapper">
+        <svg class="msn-avatar-svg" id="msnAvatar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="150" height="150">
+            <defs>
+                <radialGradient id="bgBase" cx="45%" cy="38%" r="55%">
+                    <stop offset="0%" style="stop-color:#B8E0F8;stop-opacity:1" />
+                    <stop offset="35%" style="stop-color:#8CC8E8;stop-opacity:1" />
+                    <stop offset="70%" style="stop-color:#5A9FCF;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#3D7EAD;stop-opacity:1" />
+                </radialGradient>
+                <radialGradient id="bgDizzy" cx="45%" cy="38%" r="55%">
+                    <stop offset="0%" style="stop-color:#F5C898;stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:#E8A87C;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#C07840;stop-opacity:1" />
+                </radialGradient>
+                <radialGradient id="headReflex" cx="28%" cy="22%" r="52%">
+                    <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.75" />
+                    <stop offset="35%" style="stop-color:#ffffff;stop-opacity:0.12" />
+                    <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+                </radialGradient>
+                <radialGradient id="headBounce" cx="72%" cy="76%" r="35%">
+                    <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.3" />
+                    <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+                </radialGradient>
+                <linearGradient id="bodyReflexTop" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.55" />
+                    <stop offset="40%" style="stop-color:#ffffff;stop-opacity:0.06" />
+                    <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+                </linearGradient>
+                <linearGradient id="bodyReflexBottom" x1="0%" y1="100%" x2="0%" y2="0%">
+                    <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.38" />
+                    <stop offset="30%" style="stop-color:#ffffff;stop-opacity:0.05" />
+                    <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+                </linearGradient>
+                <linearGradient id="innerGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#E0F4FF;stop-opacity:0.7" />
+                    <stop offset="35%" style="stop-color:#C5ECFA;stop-opacity:0.3" />
+                    <stop offset="70%" style="stop-color:#A8E0F4;stop-opacity:0.1" />
+                    <stop offset="100%" style="stop-color:#E0F4FF;stop-opacity:0.5" />
+                </linearGradient>
+                <filter id="softBlur"><feGaussianBlur stdDeviation="3"/></filter>
+                <filter id="softBlurLight"><feGaussianBlur stdDeviation="1.8"/></filter>
+                <filter id="outerShadow" x="-15%" y="-15%" width="135%" height="135%">
+                    <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#1a4a6a" flood-opacity="0.25"/>
+                </filter>
+            </defs>
+            <g id="dizzyGroup">
+                <g class="dizzy-stars">
+                    <text x="14" y="26" font-size="18" fill="#FFE082" font-weight="bold" opacity="0.95">✦</text>
+                    <text x="172" y="20" font-size="13" fill="#FFE082" font-weight="bold" opacity="0.9">✦</text>
+                    <text x="10" y="90" font-size="12" fill="#FFE082" opacity="0.85">✧</text>
+                    <text x="180" y="84" font-size="15" fill="#FFE082" font-weight="bold" opacity="0.9">✦</text>
+                    <text x="40" y="6" font-size="10" fill="#FFE082" opacity="0.75">✧</text>
+                    <text x="154" y="10" font-size="12" fill="#FFE082" font-weight="bold" opacity="0.85">✦</text>
+                </g>
+                <g class="music-notes" id="musicNotes">
+                    <text x="18" y="38" font-size="16" fill="#FFD54F" opacity="0.9">🎵</text>
+                    <text x="170" y="36" font-size="12" fill="#FFD54F" opacity="0.8">🎶</text>
+                    <text x="28" y="18" font-size="11" fill="#FFD54F" opacity="0.7">♪</text>
+                </g>
+                <circle cx="100" cy="63" r="40" fill="none" stroke="#2C6188" stroke-width="3" filter="url(#outerShadow)"/>
+                <path d="M48 154 Q48 94 100 94 Q152 94 152 154 Q152 180 100 180 Q48 180 48 154 Z" fill="none" stroke="#2C6188" stroke-width="3"/>
+                <circle id="bgHead" cx="100" cy="63" r="39" fill="url(#bgBase)"/>
+                <path id="bgBody" d="M49.2 154 Q49.2 95.2 100 95.2 Q150.8 95.2 150.8 154 Q150.8 178.8 100 178.8 Q49.2 178.8 49.2 154 Z" fill="url(#bgBase)"/>
+                <circle cx="100" cy="63" r="37" fill="none" stroke="url(#innerGlow)" stroke-width="2.2" opacity="0.6"/>
+                <path d="M51 154 Q51 97 100 97 Q149 97 149 154 Q149 177 100 177 Q51 177 51 154 Z" fill="none" stroke="url(#innerGlow)" stroke-width="2.2" opacity="0.6"/>
+                <circle cx="100" cy="63" r="39" fill="url(#headReflex)" filter="url(#softBlur)"/>
+                <circle cx="100" cy="63" r="39" fill="url(#headBounce)" filter="url(#softBlurLight)"/>
+                <path d="M49.2 154 Q49.2 95.2 100 95.2 Q150.8 95.2 150.8 154 Q150.8 178.8 100 178.8 Q49.2 178.8 49.2 154 Z" fill="url(#bodyReflexTop)" filter="url(#softBlur)"/>
+                <path d="M49.2 154 Q49.2 95.2 100 95.2 Q150.8 95.2 150.8 154 Q150.8 178.8 100 178.8 Q49.2 178.8 49.2 154 Z" fill="url(#bodyReflexBottom)" filter="url(#softBlurLight)"/>
+                <ellipse cx="80" cy="44" rx="18" ry="9" fill="white" opacity="0.24" filter="url(#softBlurLight)" transform="rotate(-18 80 44)"/>
+                <ellipse cx="84" cy="40" rx="7" ry="3.5" fill="white" opacity="0.38" filter="url(#softBlurLight)" transform="rotate(-15 84 40)"/>
+                <g id="normalEyes" class="blink-group">
+                    <circle id="leftEyeNormal" class="eye-left-follow" cx="86" cy="60" r="6" fill="#2C4F6E" opacity="0.9"/>
+                    <circle id="rightEyeNormal" class="eye-right-follow" cx="114" cy="60" r="6" fill="#2C4F6E" opacity="0.9"/>
+                </g>
+                <g id="closedEyes" opacity="0">
+                    <line x1="80" y1="60" x2="92" y2="60" stroke="#2C4F6E" stroke-width="2.8" stroke-linecap="round" opacity="0.85"/>
+                    <line x1="108" y1="60" x2="120" y2="60" stroke="#2C4F6E" stroke-width="2.8" stroke-linecap="round" opacity="0.85"/>
+                </g>
+                <g id="spyEyes" opacity="0">
+                    <line x1="80" y1="60" x2="92" y2="60" stroke="#2C4F6E" stroke-width="2.8" stroke-linecap="round" opacity="0.9"/>
+                    <circle id="spyEyeCircle" class="spy-eye-follow" cx="114" cy="60" r="6" fill="none" stroke="#2C4F6E" stroke-width="2.8" opacity="0.9"/>
+                </g>
+                <g id="lookingUpEyes" opacity="0">
+                    <circle cx="86" cy="53" r="6" fill="#2C4F6E" opacity="0.9"/>
+                    <circle cx="114" cy="53" r="6" fill="#2C4F6E" opacity="0.9"/>
+                </g>
+                <g id="spiralEyes" opacity="0">
+                    <circle cx="86" cy="60" r="6.5" fill="none" stroke="#4A3018" stroke-width="1.4" opacity="0.85"/>
+                    <circle cx="114" cy="60" r="6.5" fill="none" stroke="#4A3018" stroke-width="1.4" opacity="0.85"/>
+                    <text x="81" y="64" font-size="10" fill="#4A3018" opacity="0.85">🌀</text>
+                    <text x="109" y="64" font-size="10" fill="#4A3018" opacity="0.85">🌀</text>
+                </g>
+                <g id="whistleMouth" opacity="0">
+                    <circle cx="100" cy="75" r="5" fill="#2C4F6E" opacity="0.7"/>
+                    <ellipse cx="100" cy="75" rx="3.5" ry="2.5" fill="#7CB8E4" opacity="0.9"/>
+                </g>
+                <g class="sweat-drop" id="sweatDrop">
+                    <path d="M124 44 Q127 37 130 44 Q130 49 127 51 Q124 49 124 44Z" fill="#8CB8D4" stroke="#6A9AB8" stroke-width="0.7"/>
+                </g>
+            </g>
+        </svg>
+    </div>
+
+    <!-- FORMULARIO DE LOGIN -->
     <div class="login-window">
         <div class="window-header">
             <span>Shatt Identity Manager</span>
@@ -483,34 +1309,38 @@
         </div>
         <div class="content">
             <div class="shatt-logo">SHA<span>TT</span></div>
-            
+
             <div id="savedAccountsContainer" class="saved-accounts" style="display: none;">
                 <div class="saved-title">🔑 ACCESO RÁPIDO</div>
                 <div class="accounts-grid" id="accountsGrid"></div>
             </div>
-            
+
             <div id="login-form">
                 <h2>Iniciar Sesión</h2>
                 <form onsubmit="entrar(); return false;">
                     <label>Correo Electrónico</label>
                     <input type="email" id="log-email" placeholder="tu@email.com" required autocomplete="email">
                     <label>Contraseña</label>
-                    <input type="password" id="log-pass" placeholder="••••••••" required autocomplete="current-password">
+                    <div class="password-field">
+                        <input type="password" id="log-pass" placeholder="••••••••" required autocomplete="current-password">
+                        <button type="button" class="toggle-pass-btn" id="toggleLoginPass" onclick="togglePassword('log-pass','toggleLoginPass')">👁️ Ver</button>
+                    </div>
                     <button type="submit" class="btn-access">ENTRAR</button>
                 </form>
                 <div class="toggle-link" onclick="toggleMode()">¿No tienes cuenta? Regístrate aquí</div>
                 <div class="recover-link" onclick="recuperarPassword()">🔐 ¿Olvidaste tu contraseña?</div>
             </div>
-            
+
             <div id="register-form" style="display: none;">
                 <h2>Crear Cuenta</h2>
                 <form id="registerForm" onsubmit="event.preventDefault(); mostrarModalTerminosRegistro();">
                     <label>Correo Electrónico *</label>
                     <input type="email" id="reg-email" placeholder="ejemplo@shatt.com" required autocomplete="email">
-                    
                     <label>Contraseña *</label>
-                    <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres" required minlength="6" autocomplete="new-password">
-                    
+                    <div class="password-field">
+                        <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres" required minlength="6" autocomplete="new-password">
+                        <button type="button" class="toggle-pass-btn" id="toggleRegPass" onclick="togglePassword('reg-pass','toggleRegPass')">👁️ Ver</button>
+                    </div>
                     <label>Fecha de Nacimiento *</label>
                     <div class="date-group">
                         <select id="reg-dia" required><option value="">Día</option></select>
@@ -523,14 +1353,11 @@
                         </select>
                         <select id="reg-ano" required><option value="">Año</option></select>
                     </div>
-                    
                     <div id="extra-fields" style="display: none;">
                         <hr>
                         <div class="extra-fields-title">📝 Información adicional (opcional)</div>
-                        
                         <label>Nombre de usuario</label>
                         <input type="text" id="reg-nick" placeholder="Cómo te llamarás en Shatt" autocomplete="nickname">
-                        
                         <label>País</label>
                         <select id="reg-pais">
                             <option value="">Selecciona tu país</option>
@@ -542,90 +1369,66 @@
                             <option>Perú</option><option>Puerto Rico</option><option>República Dominicana</option>
                             <option>Uruguay</option><option>Venezuela</option><option>Otro</option>
                         </select>
-                        
                         <label>Sexo</label>
                         <select id="reg-sexo">
                             <option value="">Selecciona</option>
                             <option>Masculino</option><option>Femenino</option><option>Otro</option><option>Prefiero no decir</option>
                         </select>
-                        
                         <label>Biografía (frase corta)</label>
                         <input type="text" id="reg-bio" placeholder="Una frase sobre ti" autocomplete="off">
-                        
                         <label>Sobre mí</label>
                         <input type="text" id="reg-about" placeholder="Cuéntanos más de ti" autocomplete="off">
                     </div>
-                    
                     <button type="submit" class="btn-access btn-register" id="registerSubmitBtn">CREAR MI SHATT</button>
                 </form>
                 <div class="toggle-link" onclick="toggleMode()">¿Ya eres parte? Inicia sesión</div>
             </div>
-            
-            <!-- ========== ESTADÍSTICAS PEQUEÑAS ABAJO ========== -->
+
             <div class="footer-stats" id="statsBar">
-                <span class="stat-item">
-                    👥 Registrados
-                    <span class="stat-number" id="totalUsuarios">0</span>
-                </span>
-                <span class="stat-item">
-                    <span class="online-dot" id="onlineDot"></span>
-                    <span id="usuariosOnline">0</span> en línea
-                </span>
+                <span class="stat-item">👥 Registrados <span class="stat-number" id="totalUsuarios">0</span></span>
+                <span class="stat-item"><span class="online-dot" id="onlineDot"></span> <span id="usuariosOnline">0</span> en línea</span>
             </div>
         </div>
     </div>
-    
+
     <!-- MODAL DE TÉRMINOS Y CONDICIONES -->
     <div id="termsModal" class="terms-modal">
         <div class="terms-modal-content">
-            <div class="terms-modal-header">
-                <h3>📜 Términos y Condiciones de Uso de "Shatts"</h3>
-            </div>
+            <div class="terms-modal-header"><h3>📜 Términos y Condiciones de Uso de "Shatts"</h3></div>
             <div class="terms-modal-body">
                 <p><strong>Última actualización: Junio 2026</strong></p>
-                
                 <h4>1. Partes, Aceptación y Ámbito Global</h4>
                 <p>Los presentes Términos y Condiciones regulan el acceso, registro y uso de la plataforma web y/o aplicación móvil Shatts (en adelante, "Shatts" o "la Plataforma"). Shatts es un proyecto independiente en fase Beta de desarrollo, de propiedad y operado exclusivamente por su fundador y titular único, Jazz M. (en adelante, "el Administrador"). Al crear una cuenta, el usuario acepta estos términos en su totalidad, con validez legal tanto en la República del Perú como a nivel internacional y global. Si no está de acuerdo, debe abstenerse de usar el servicio.</p>
-                
                 <h4>2. Restricción Absoluta de Edad (+18) y Exclusión Global de Responsabilidad</h4>
                 <p><strong>Mayoría de Edad Obligatoria:</strong> El ingreso, registro y uso de Shatts está estrictamente prohibido para menores de dieciocho (18) años. La plataforma está dirigida exclusivamente a adultos (+18).</p>
                 <p><strong>Declaración de Buena Fe:</strong> Al presionar el botón de registro, el usuario declara bajo juramento, consentimiento propio y principio de buena fe que cuenta con 18 años o más. El Administrador opera bajo la confianza de esta declaración y no tiene la obligación técnica de verificar la edad mediante sistemas biométricos infalibles.</p>
                 <p><strong>Exención de Responsabilidad por Menores (-18):</strong> Si un menor de edad ingresa a Shatts falseando su fecha de nacimiento, suplantando una identidad o evadiendo los filtros, el Administrador queda total, absoluta e irreversiblemente exento de cualquier responsabilidad civil, penal, administrativa o por daños y perjuicios bajo las leyes de Perú y cualquier jurisdicción internacional (incluyendo COPPA en EE. UU. y RGPD en Europa).</p>
                 <p><strong>Responsabilidad de los Tutores:</strong> La supervisión del acceso a internet corresponde exclusivamente a los padres o tutores legales.</p>
                 <p><strong>Eliminación de Cuentas:</strong> El Administrador se reserva el derecho de eliminar de forma inmediata, permanente y sin previo aviso cualquier cuenta si se detecta o sospecha que pertenece a un menor de 18 años.</p>
-                
                 <h4>3. Fase Beta, Servicio Gratuito y Futura Monetización</h4>
                 <p><strong>Proyecto en Inicio:</strong> El usuario comprende que Shatts es un servicio en sus primeras versiones (fase Beta) para compartir fotos, audios, chats y seguidores.</p>
                 <p><strong>Futura Monetización:</strong> Actualmente el servicio es gratuito y no posee cobros. Sin embargo, el Administrador se reserva el derecho explícito de introducir en el futuro funciones de monetización, tales como publicidad, suscripciones premium o compras integradas, notificando a los usuarios mediante la actualización de estos términos sin que esto invalide las cláusulas previas.</p>
                 <p><strong>Limitación Tecnológica:</strong> Al ser un proyecto gestionado por una sola persona, el servicio se ofrece "tal cual está". El Administrador no garantiza que la red sea ininterrumpida o libre de fallas. No se asume responsabilidad por caídas del servidor, hackeos, pérdida de fotos, mensajes eliminados o datos perdidos.</p>
-                
                 <h4>4. Responsabilidad por Contenido y Herramientas de Reporte</h4>
                 <p><strong>Rol de Intermediario:</strong> El Administrador actúa únicamente como un intermediario tecnológico y no pre-aprueba, edita ni controla las fotos, audios o chats de los usuarios. Cada usuario es el único responsable legal de su comportamiento.</p>
                 <p><strong>Función de Reporte en Chats:</strong> Shatts cuenta con una función técnica de reporte dentro de los chats para que los usuarios denuncien comportamientos inapropiados. El Administrador revisará los reportes en un plazo razonable y podrá suspender o eliminar las cuentas infractoras.</p>
                 <p><strong>Contacto Oficial:</strong> Para dudas, reclamos o reportes generales, el único canal de atención es: <strong>jackatmadueno@gmail.com</strong></p>
-                
                 <h4>5. Política de Privacidad y Tratamiento de Datos</h4>
                 <p><strong>Cumplimiento Normativo Nacional e Internacional:</strong> De conformidad con la Ley de Protección de Datos Personales en el Perú (Ley N° 29733), el Reglamento General de Protección de Datos (RGPD) de la Unión Europea, y las leyes de privacidad de EE. UU. (COPPA / CCPA), el usuario otorga su consentimiento previo, expreso, informado e inequívoco para que el Administrador recopile y trate los datos esenciales (nombre de usuario, correo, fotos de perfil, audios y chats) introducidos para el funcionamiento de Shatts.</p>
                 <p><strong>Tratamiento Estricto de Datos de Menores de Edad:</strong> Shatts no solicita, ni almacena, ni trata intencionalmente datos personales de menores de 18 años. Si un menor introduce sus datos simulando ser mayor de edad, el acto se considerará un fraude imputable exclusivamente al usuario y a sus tutores. En cumplimiento con las normativas globales de protección al menor (como COPPA), en cuanto el Administrador tome conocimiento de que existen datos de un menor de 18 años en los servidores, procederá a la destrucción total, segura e irreversible de dicha información de manera inmediata.</p>
                 <p><strong>Seguridad y Derechos Globales (ARCO / RGPD):</strong> El Administrador aplica medidas técnicas razonables para proteger la información dentro de sus capacidades individuales, pero ningún sistema en internet es 100% seguro. Los usuarios (peruanos o internacionales) pueden ejercer en cualquier momento sus derechos de Acceso, Rectificación, Cancelación, Oposición, Portabilidad y Olvido eliminando su propia cuenta desde la aplicación o enviando una solicitud formal al correo electrónico: <strong>jackatmadueno@gmail.com</strong>.</p>
-                
                 <p style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 12px; font-weight: bold;">✅ AL REGISTRARTE EN SHATTS, ACEPTAS ESTOS TÉRMINOS Y CONDICIONES. NO ESTÁS PERMITIDO SI ERES MENOR DE 18 AÑOS.</p>
             </div>
-            <div class="terms-modal-footer">
-                <button class="btn-close-terms" onclick="cerrarTerminos()">Cerrar</button>
-            </div>
+            <div class="terms-modal-footer"><button class="btn-close-terms" onclick="cerrarTerminos()">Cerrar</button></div>
         </div>
     </div>
-    
+
     <!-- MODAL DE DECLARACIÓN JURADA -->
     <div id="declaracionModal" class="terms-modal">
         <div class="terms-modal-content">
-            <div class="terms-modal-header">
-                <h3>🔞 DECLARACIÓN OBLIGATORIA</h3>
-            </div>
+            <div class="terms-modal-header"><h3>🔞 DECLARACIÓN OBLIGATORIA</h3></div>
             <div class="terms-modal-body">
                 <p style="font-size: 16px; margin-bottom: 20px;">Para continuar con la creación de tu cuenta en <strong>Shatts</strong>, debes leer y aceptar lo siguiente:</p>
-                
                 <div style="background: #f0f8ff; padding: 20px; border-radius: 16px; margin-bottom: 20px; border-left: 4px solid #f44336;">
                     <p style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">⚠️ DECLARACIÓN BAJO JURAMENTO</p>
                     <p>Declaro bajo juramento, consentimiento propio y principio de buena fe que:</p>
@@ -637,23 +1440,18 @@
                         <li>✅ Entiendo que si soy menor de edad, mi cuenta será eliminada inmediatamente.</li>
                     </ul>
                 </div>
-                
                 <div class="checkbox-container">
                     <input type="checkbox" id="acceptTermsCheckbox">
                     <label for="acceptTermsCheckbox">
-                        Declaro bajo juramento que soy mayor de edad (+18) y acepto expresamente los 
-                        <span class="terms-link" onclick="mostrarTerminos()">Términos y Condiciones</span> 
-                        y la 
-                        <span class="terms-link" onclick="mostrarPrivacidad()">Política de Privacidad</span> 
+                        Declaro bajo juramento que soy mayor de edad (+18) y acepto expresamente los
+                        <span class="terms-link" onclick="mostrarTerminos()">Términos y Condiciones</span>
+                        y la
+                        <span class="terms-link" onclick="mostrarPrivacidad()">Política de Privacidad</span>
                         de Shatts, asumiendo total responsabilidad sobre el uso de mi cuenta.
                     </label>
                 </div>
-                
                 <div style="background: #ffebee; padding: 15px; border-radius: 12px; margin: 20px 0;">
-                    <p style="color: #c62828; font-size: 13px; margin: 0;">
-                        <strong>⚠️ IMPORTANTE:</strong> Si eres menor de 18 años, NO puedes crear una cuenta en Shatts. 
-                        Si falseas tu edad, tu cuenta será eliminada y podrías ser responsable legalmente.
-                    </p>
+                    <p style="color: #c62828; font-size: 13px; margin: 0;"><strong>⚠️ IMPORTANTE:</strong> Si eres menor de 18 años, NO puedes crear una cuenta en Shatts. Si falseas tu edad, tu cuenta será eliminada y podrías ser responsable legalmente.</p>
                 </div>
             </div>
             <div class="terms-modal-footer">
@@ -663,129 +1461,349 @@
         </div>
     </div>
 
-
     <script>
         const PB_URL = 'https://shatt-social-production.up.railway.app';
         const pb = new PocketBase(PB_URL);
-        
         let cuentasGuardadas = [];
         let datosFormulario = {};
-        
-        // ========== ESTADÍSTICAS EN TIEMPO REAL ==========
+
+        const avatar = document.getElementById('msnAvatar'),
+            avatarOuterWrapper = document.getElementById('avatarOuterWrapper'),
+            normalEyes = document.getElementById('normalEyes'),
+            leftEyeNormal = document.getElementById('leftEyeNormal'),
+            rightEyeNormal = document.getElementById('rightEyeNormal'),
+            closedEyes = document.getElementById('closedEyes'),
+            spyEyes = document.getElementById('spyEyes'),
+            spyEyeCircle = document.getElementById('spyEyeCircle'),
+            lookingUpEyes = document.getElementById('lookingUpEyes'),
+            spiralEyes = document.getElementById('spiralEyes'),
+            whistleMouth = document.getElementById('whistleMouth'),
+            musicNotes = document.getElementById('musicNotes'),
+            bgHead = document.getElementById('bgHead'),
+            bgBody = document.getElementById('bgBody'),
+            sweatDropEl = document.getElementById('sweatDrop'),
+            floatingHands = document.getElementById('floatingHands'),
+            errorToast = document.getElementById('errorToast');
+
+        const emailLogin = document.getElementById('log-email'),
+            passLogin = document.getElementById('log-pass'),
+            emailReg = document.getElementById('reg-email'),
+            passReg = document.getElementById('reg-pass'),
+            diaReg = document.getElementById('reg-dia'),
+            mesReg = document.getElementById('reg-mes'),
+            anoReg = document.getElementById('reg-ano'),
+            allInputs = [emailLogin, passLogin, emailReg, passReg, diaReg, mesReg, anoReg];
+
+        let isDizzy = false,
+            isPasswordVisible = false,
+            isHiding = false,
+            isPeeking = false,
+            isWhistling = false,
+            trackingFrame = null,
+            spyTimeout = null,
+            hideTimeout = null,
+            toastTimeout = null;
+
+        function showErrorToast(msg) {
+            clearTimeout(toastTimeout);
+            errorToast.textContent = msg;
+            errorToast.classList.add('show');
+            toastTimeout = setTimeout(() => errorToast.classList.remove('show'), 2500);
+        }
+
+        function spawnFloatingHands(x, y, sink = false) {
+            const emojis = ['👋', '✋', '🤚', '🖐️', '👋', '🙌', '👏', '👍', '✌️'];
+            for (let i = 0; i < (sink ? 10 : 8); i++) {
+                const h = document.createElement('span');
+                h.className = 'hand-emoji' + (sink ? ' sink' : '');
+                h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                h.style.left = (x + (Math.random() - 0.5) * 140) + 'px';
+                h.style.top = (y + (Math.random() - 0.5) * 50) + 'px';
+                h.style.setProperty('--drift-x', ((Math.random() - 0.5) * 100) + 'px');
+                h.style.setProperty('--spin', ((Math.random() - 0.5) * 80) + 'deg');
+                h.style.setProperty('--spin-end', ((Math.random() - 0.5) * 150) + 'deg');
+                h.style.animationDelay = (Math.random() * 0.5) + 's';
+                floatingHands.appendChild(h);
+                setTimeout(() => { if (h.parentNode) h.parentNode.removeChild(h); }, sink ? 1600 : 2200);
+            }
+            floatingHands.classList.add('show');
+            setTimeout(() => { if (floatingHands.children.length === 0) floatingHands.classList.remove('show'); }, sink ? 1700 :
+                2300);
+        }
+
+        function getCaretCoordinates(el) {
+            const r = el.getBoundingClientRect(),
+                s = window.getComputedStyle(el),
+                pl = parseFloat(s.paddingLeft),
+                pt = parseFloat(s.paddingTop),
+                fs = parseFloat(s.fontSize),
+                lh = parseFloat(s.lineHeight) || fs * 1.4;
+            const m = document.createElement('div');
+            m.style.cssText =
+                'position:absolute;visibility:hidden;white-space:pre-wrap;word-wrap:break-word;font:' + s.font + ';font-size:' +
+                s.fontSize + ';font-family:' + s.fontFamily + ';letter-spacing:' + s.letterSpacing + ';width:' + (r.width - pl -
+                    parseFloat(s.paddingRight)) + 'px;padding:0;border:none;line-height:' + lh + 'px;';
+            document.body.appendChild(m);
+            m.textContent = el.value.substring(0, el.selectionStart);
+            document.body.removeChild(m);
+            const lines = m.textContent ? m.textContent.split('\n') : [''],
+                cl = lines[lines.length - 1];
+            const t = document.createElement('span');
+            t.style.cssText = 'visibility:hidden;position:absolute;font:' + s.font + ';font-size:' + s.fontSize +
+                ';font-family:' + s.fontFamily + ';letter-spacing:' + s.letterSpacing + ';';
+            t.textContent = cl;
+            document.body.appendChild(t);
+            const clw = t.getBoundingClientRect().width;
+            document.body.removeChild(t);
+            return {
+                x: Math.min(Math.max(r.left + pl + clw, r.left + pl), r.right - parseFloat(s.paddingRight)),
+                y: Math.min(r.top + pt + (lines.length - 1) * lh + lh / 2, r.bottom - 5),
+                inputWidth: r.width - pl - parseFloat(s.paddingRight),
+                inputLeft: r.left + pl
+            };
+        }
+
+        function trackEyesToCaret(el, elL, elR, lbx, rbx, bcy) {
+            if (!el || document.activeElement !== el || isHiding || isPeeking || isWhistling) return;
+            const c = getCaretCoordinates(el),
+                ar = avatar.getBoundingClientRect(),
+                acy = ar.top + ar.height / 2,
+                mx = 5,
+                my = 3;
+            const ratio = (c.x - c.inputLeft) / c.inputWidth,
+                dx = Math.max(-mx, Math.min(mx, (ratio - 0.5) * mx * 2)),
+                dy = Math.max(-my, Math.min(my, (c.y - acy) / (ar.height / 2) * my));
+            if (elL) { elL.setAttribute('cx', lbx + dx);
+                elL.setAttribute('cy', bcy + dy); }
+            if (elR) { elR.setAttribute('cx', rbx + dx);
+                elR.setAttribute('cy', bcy + dy); }
+        }
+
+        function startTracking() {
+            if (trackingFrame) cancelAnimationFrame(trackingFrame);
+
+            function track() {
+                if (isDizzy || isHiding || isPeeking || isWhistling) { trackingFrame = requestAnimationFrame(track); return; }
+                const ca = document.activeElement;
+                if (isPasswordVisible && (ca === passLogin || ca === passReg)) trackEyesToCaret(ca, null, spyEyeCircle, null,
+                    114, 60);
+                else if (!isPasswordVisible && (ca === emailLogin || ca === emailReg)) trackEyesToCaret(ca, leftEyeNormal,
+                    rightEyeNormal, 86, 114, 60);
+                trackingFrame = requestAnimationFrame(track);
+            }
+            track();
+        }
+
+        function stopTracking() {
+            if (trackingFrame) { cancelAnimationFrame(trackingFrame);
+                trackingFrame = null; }
+            leftEyeNormal.setAttribute('cx', 86);
+            leftEyeNormal.setAttribute('cy', 60);
+            rightEyeNormal.setAttribute('cx', 114);
+            rightEyeNormal.setAttribute('cy', 60);
+            spyEyeCircle.setAttribute('cx', 114);
+            spyEyeCircle.setAttribute('cy', 60);
+        }
+
+        function hideAllEyes() { normalEyes.setAttribute('opacity', '0');
+            closedEyes.setAttribute('opacity', '0');
+            spyEyes.setAttribute('opacity', '0');
+            lookingUpEyes.setAttribute('opacity', '0'); }
+
+        function showNormalEyes() { hideAllEyes();
+            normalEyes.setAttribute('opacity', '1');
+            whistleMouth.setAttribute('opacity', '0');
+            musicNotes.classList.remove('show');
+            isWhistling = false; }
+
+        function showClosedEyes() { hideAllEyes();
+            closedEyes.setAttribute('opacity', '1');
+            whistleMouth.setAttribute('opacity', '0');
+            musicNotes.classList.remove('show');
+            isWhistling = false; }
+
+        function showSpyEyes() { hideAllEyes();
+            spyEyes.setAttribute('opacity', '1');
+            whistleMouth.setAttribute('opacity', '0');
+            musicNotes.classList.remove('show');
+            isWhistling = false; }
+
+        function showLookingUp() { hideAllEyes();
+            lookingUpEyes.setAttribute('opacity', '1');
+            whistleMouth.setAttribute('opacity', '1');
+            musicNotes.classList.add('show');
+            isWhistling = true; }
+
+        function updateEyeState() {
+            if (isDizzy || isHiding || isPeeking || isWhistling) return;
+            const ca = document.activeElement;
+            if (isPasswordVisible && (ca === passLogin || ca === passReg)) { showSpyEyes();
+                startTracking(); } else if (!isPasswordVisible && (ca === passLogin || ca === passReg)) { showClosedEyes();
+                stopTracking(); } else if (ca === emailLogin || ca === emailReg) { showNormalEyes();
+                startTracking(); } else if (ca === diaReg || ca === mesReg || ca === anoReg) { showLookingUp();
+                stopTracking(); } else { showNormalEyes();
+                stopTracking(); }
+        }
+
+        function triggerErrorAnimation() {
+            if (isDizzy || isHiding) return;
+            isDizzy = true;
+            avatar.classList.add('dizzy');
+            stopTracking();
+            hideAllEyes();
+            spiralEyes.setAttribute('opacity', '1');
+            whistleMouth.setAttribute('opacity', '0');
+            musicNotes.classList.remove('show');
+            isWhistling = false;
+            bgHead.setAttribute('fill', 'url(#bgDizzy)');
+            bgBody.setAttribute('fill', 'url(#bgDizzy)');
+            sweatDropEl.setAttribute('opacity', '1');
+            setTimeout(() => { avatar.classList.add('shake');
+                setTimeout(() => avatar.classList.remove('shake'), 450); }, 350);
+            setTimeout(() => { spiralEyes.setAttribute('opacity', '0');
+                sweatDropEl.setAttribute('opacity', '0');
+                avatar.classList.remove('dizzy');
+                isDizzy = false;
+                bgHead.setAttribute('fill', 'url(#bgBase)');
+                bgBody.setAttribute('fill', 'url(#bgBase)'); if (!isHiding && !isPeeking) updateEyeState(); }, 2800);
+        }
+
+        function hideAvatar() {
+            if (isHiding || isDizzy) return;
+            isHiding = true;
+            isPeeking = false;
+            stopTracking();
+            hideAllEyes();
+            whistleMouth.setAttribute('opacity', '0');
+            musicNotes.classList.remove('show');
+            isWhistling = false;
+            avatarOuterWrapper.classList.remove('floating', 'returning');
+            avatarOuterWrapper.classList.add('hiding');
+            clearTimeout(hideTimeout);
+            hideTimeout = setTimeout(() => { if (isHiding && !isDizzy) { isHiding = false;
+                    isPeeking = true;
+                    avatarOuterWrapper.classList.remove('hiding');
+                    avatarOuterWrapper.classList.add('peeking');
+                    showNormalEyes(); } }, 1600);
+        }
+
+        function returnAvatar() {
+            if (!isPeeking && !isHiding) return;
+            isHiding = false;
+            isPeeking = false;
+            clearTimeout(hideTimeout);
+            avatarOuterWrapper.classList.remove('hiding', 'peeking', 'floating');
+            avatarOuterWrapper.classList.add('returning');
+            setTimeout(() => { avatarOuterWrapper.classList.remove('returning');
+                avatarOuterWrapper.classList.add('floating');
+                updateEyeState(); }, 750);
+        }
+
+        function togglePassword(inputId, btnId) {
+            const inp = document.getElementById(inputId),
+                btn = document.getElementById(btnId);
+            if (inp.type === 'password') { inp.type = 'text';
+                btn.textContent = '🙈 Ocultar';
+                isPasswordVisible = true;
+                updateEyeState(); } else { inp.type = 'password';
+                btn.textContent = '👁️ Ver';
+                isPasswordVisible = false;
+                updateEyeState(); }
+        }
+
+        avatar.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (isDizzy) return;
+            const r = avatar.getBoundingClientRect();
+            if (isPeeking) { spawnFloatingHands(r.left + r.width / 2, r.top, false);
+                returnAvatar(); } else if (!isHiding) { spawnFloatingHands(r.left + r.width / 2, r.top, true);
+                hideAvatar(); }
+        });
+        document.addEventListener('click', (e) => { if (isPeeking && !avatar.contains(e.target) && !e.target.closest(
+                '.password-modal') && !e.target.closest('.terms-modal')) returnAvatar(); });
+
+        allInputs.forEach(inp => {
+            inp.addEventListener('focus', () => { if (!isDizzy && !isHiding && !isPeeking) updateEyeState(); });
+            inp.addEventListener('blur', () => setTimeout(() => { if (!isDizzy && !isHiding && !isPeeking && !
+                    isWhistling) updateEyeState(); }, 150));
+            inp.addEventListener('click', () => { if (!isDizzy && !isHiding && !isPeeking && document.activeElement ===
+                    inp) updateEyeState(); });
+        });
+        [passLogin, passReg].forEach(pe => {
+            pe.addEventListener('input', () => {
+                if (!isDizzy && !isHiding && !isPeeking && !isPasswordVisible && document.activeElement === pe && !
+                    isWhistling) {
+                    clearTimeout(spyTimeout);
+                    spyTimeout = setTimeout(() => {
+                        if (!isDizzy && !isHiding && !isPeeking && !isPasswordVisible && document
+                            .activeElement === pe && !isWhistling) { showSpyEyes();
+                            trackEyesToCaret(pe, null, spyEyeCircle, null, 114, 60);
+                            setTimeout(() => { if (!isDizzy && !isHiding && !isPeeking && !isPasswordVisible &&
+                                    document.activeElement === pe && !isWhistling) showClosedEyes(); },
+                                300); }
+                    }, 2200 + Math.random() * 2500);
+                }
+            });
+        });
+
         async function actualizarEstadisticas() {
             try {
-                // Obtener TODOS los usuarios
-                const users = await pb.collection('usuarios').getFullList({
-                    $autoCancel: false,
-                    fields: 'id,ultimaVez'
-                });
-                
-                // Total de usuarios
+                const users = await pb.collection('usuarios').getFullList({ $autoCancel: false, fields: 'id,ultimaVez' });
                 document.getElementById('totalUsuarios').textContent = users.length;
-                
-                // Usuarios en línea (últimos 5 minutos)
                 const ahora = Date.now();
                 const hace5Min = ahora - (5 * 60 * 1000);
-                
-                const onlineUsers = users.filter(u => 
-                    u.ultimaVez && new Date(u.ultimaVez).getTime() > hace5Min
-                );
-                
+                const onlineUsers = users.filter(u => u.ultimaVez && new Date(u.ultimaVez).getTime() > hace5Min);
                 const onlineCount = onlineUsers.length;
                 document.getElementById('usuariosOnline').textContent = onlineCount;
-                
-                // Punto verde: parpadea si hay usuarios en línea
                 const dot = document.getElementById('onlineDot');
-                if (onlineCount > 0) {
-                    dot.className = 'online-dot active';
-                } else {
-                    dot.className = 'online-dot';
-                }
-                
-            } catch(e) {
-                console.error("Error actualizando estadísticas:", e);
-                // Mostrar "?" si hay error
-                document.getElementById('totalUsuarios').textContent = '?';
-                document.getElementById('usuariosOnline').textContent = '?';
-            }
+                if (onlineCount > 0) { dot.className = 'online-dot active'; } else { dot.className = 'online-dot'; }
+            } catch (e) { document.getElementById('totalUsuarios').textContent = '?';
+                document.getElementById('usuariosOnline').textContent = '?'; }
         }
-        
-        // ========== LLENAR SELECTS DE FECHA ==========
+
         function llenarSelectsFecha() {
             const diaSelect = document.getElementById('reg-dia');
-            if (diaSelect) {
-                for (let i = 1; i <= 31; i++) {
-                    const option = document.createElement('option');
+            if (diaSelect) { for (let i = 1; i <= 31; i++) { const option = document.createElement('option');
                     option.value = i;
                     option.textContent = i;
-                    diaSelect.appendChild(option);
-                }
-            }
-            
+                    diaSelect.appendChild(option); } }
             const anoSelect = document.getElementById('reg-ano');
-            if (anoSelect) {
-                for (let i = 2025; i >= 1900; i--) {
-                    const option = document.createElement('option');
+            if (anoSelect) { for (let i = 2025; i >= 1900; i--) { const option = document.createElement('option');
                     option.value = i;
                     option.textContent = i;
-                    anoSelect.appendChild(option);
-                }
-            }
+                    anoSelect.appendChild(option); } }
         }
-        
-        // ========== CUENTAS GUARDADAS ==========
-        function cargarCuentasGuardadas() {
-            const guardadas = localStorage.getItem('shatt_cuentas');
-            if (guardadas) {
-                cuentasGuardadas = JSON.parse(guardadas);
-            } else {
-                cuentasGuardadas = [];
-            }
-            renderCuentasGuardadas();
-        }
-        
-        function guardarCuentas() {
-            localStorage.setItem('shatt_cuentas', JSON.stringify(cuentasGuardadas));
-            renderCuentasGuardadas();
-        }
-        
-        function agregarCuentaGuardada(userId, email, nick, avatar) {
+
+        function cargarCuentasGuardadas() { const guardadas = localStorage.getItem('shatt_cuentas'); if (guardadas) {
+                cuentasGuardadas = JSON.parse(guardadas); } else { cuentasGuardadas = []; }
+            renderCuentasGuardadas(); }
+
+        function guardarCuentas() { localStorage.setItem('shatt_cuentas', JSON.stringify(cuentasGuardadas));
+            renderCuentasGuardadas(); }
+
+        function agregarCuentaGuardada(userId, email, nick, avatar) { cuentasGuardadas = cuentasGuardadas.filter(c => c
+                .userId !== userId);
+            cuentasGuardadas.unshift({ userId: userId, email: email, nick: nick, avatar: avatar || '' }); if (cuentasGuardadas
+                .length > 5) cuentasGuardadas = cuentasGuardadas.slice(0, 5);
+            guardarCuentas(); }
+
+        function eliminarCuentaGuardada(userId, event) { event.stopPropagation();
             cuentasGuardadas = cuentasGuardadas.filter(c => c.userId !== userId);
-            cuentasGuardadas.unshift({
-                userId: userId,
-                email: email,
-                nick: nick,
-                avatar: avatar || ''
-            });
-            if (cuentasGuardadas.length > 5) cuentasGuardadas = cuentasGuardadas.slice(0, 5);
-            guardarCuentas();
-        }
-        
-        function eliminarCuentaGuardada(userId, event) {
-            event.stopPropagation();
-            cuentasGuardadas = cuentasGuardadas.filter(c => c.userId !== userId);
-            guardarCuentas();
-        }
-        
+            guardarCuentas(); }
+
         function renderCuentasGuardadas() {
             const container = document.getElementById('accountsGrid');
             const savedContainer = document.getElementById('savedAccountsContainer');
             if (!container) return;
-            if (cuentasGuardadas.length === 0) {
-                if (savedContainer) savedContainer.style.display = 'none';
-                return;
-            }
+            if (cuentasGuardadas.length === 0) { if (savedContainer) savedContainer.style.display = 'none'; return; }
             if (savedContainer) savedContainer.style.display = 'block';
-            
             let html = '';
             for (const cuenta of cuentasGuardadas) {
                 const cuentaJson = JSON.stringify(cuenta).replace(/"/g, '&quot;');
                 let avatarHtml = '';
-                if (cuenta.avatar && cuenta.avatar !== '' && cuenta.avatar !== '👤') {
-                    avatarHtml = `<img src="${cuenta.avatar}" class="account-avatar" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(cuenta.nick)}&background=3b5998&color=fff&size=50'">`;
-                } else {
-                    avatarHtml = `<div class="account-avatar" style="display:flex; align-items:center; justify-content:center; background:#eee; font-size:24px;">👤</div>`;
-                }
+                if (cuenta.avatar && cuenta.avatar !== '' && cuenta.avatar !== '👤') { avatarHtml =
+                        `<img src="${cuenta.avatar}" class="account-avatar" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(cuenta.nick)}&background=3b5998&color=fff&size=50'">`; } else { avatarHtml =
+                        `<div class="account-avatar" style="display:flex; align-items:center; justify-content:center; background:#eee; font-size:24px;">👤</div>`; }
                 html += `
                     <div class="account-card" onclick='mostrarModalPassword(${cuentaJson})'>
                         <div class="remove-account" onclick="eliminarCuentaGuardada('${cuenta.userId}', event)">✕</div>
@@ -795,19 +1813,14 @@
                     </div>
                 `;
             }
-            html += `
-                <div class="add-account-btn" onclick="mostrarLoginForm()">
-                    <span>➕</span>
-                    <span>Agregar cuenta</span>
-                </div>
-            `;
+            html +=
+                `<div class="add-account-btn" onclick="mostrarLoginForm()"><span>➕</span><span>Agregar cuenta</span></div>`;
             container.innerHTML = html;
         }
-        
+
         function mostrarModalPassword(cuenta) {
             const existing = document.querySelector('.password-modal');
             if (existing) existing.remove();
-            
             const modal = document.createElement('div');
             modal.className = 'password-modal';
             modal.innerHTML = `
@@ -822,365 +1835,211 @@
                 </div>
             `;
             document.body.appendChild(modal);
-            
             const input = modal.querySelector('#modal-password');
             input.focus();
-            
             modal.querySelector('#confirm-login').onclick = async () => {
                 const pass = input.value;
-                if (!pass) {
-                    alert("Ingresa tu contraseña");
-                    return;
-                }
+                if (!pass) { showErrorToast("Ingresa tu contraseña"); return; }
                 try {
                     await pb.collection('usuarios').authWithPassword(cuenta.email, pass);
                     const user = pb.authStore.model;
-                    
-                    if (user.bloqueado === true) {
-                        pb.authStore.clear();
+                    if (user.bloqueado === true) { pb.authStore.clear();
                         localStorage.removeItem('pocketbase_auth');
-                        alert("🚫 Tu cuenta ha sido bloqueada.");
-                        modal.remove();
-                        return;
-                    }
-                    
+                        showErrorToast("🚫 Tu cuenta ha sido bloqueada.");
+                        modal.remove(); return; }
                     let avatarUrl = '';
                     if (user.pfp) avatarUrl = pb.files.getUrl(user, user.pfp);
-                    
                     let cuentas = JSON.parse(localStorage.getItem('shatt_cuentas') || '[]');
                     cuentas = cuentas.filter(c => c.userId !== user.id);
-                    cuentas.unshift({
-                        userId: user.id,
-                        email: user.email,
-                        nick: user.nick || user.email.split('@')[0],
-                        avatar: avatarUrl
-                    });
+                    cuentas.unshift({ userId: user.id, email: user.email, nick: user.nick || user.email.split('@')[0],
+                        avatar: avatarUrl });
                     if (cuentas.length > 5) cuentas = cuentas.slice(0, 5);
                     localStorage.setItem('shatt_cuentas', JSON.stringify(cuentas));
-                    localStorage.setItem('pocketbase_auth', JSON.stringify({
-                        token: pb.authStore.token,
-                        model: pb.authStore.model
-                    }));
+                    localStorage.setItem('pocketbase_auth', JSON.stringify({ token: pb.authStore.token,
+                        model: pb.authStore.model }));
                     window.location.href = "inicio.html";
-                } catch (error) {
-                    alert("❌ Contraseña incorrecta");
+                } catch (error) { showErrorToast("❌ Contraseña incorrecta");
                     input.value = '';
                     input.focus();
-                }
+                    triggerErrorAnimation(); }
             };
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') modal.querySelector('#confirm-login').click();
-            });
+            input.addEventListener('keypress', (e) => { if (e.key === 'Enter') modal.querySelector('#confirm-login')
+                .click(); });
         }
-        
-        function mostrarLoginForm() {
-            document.getElementById('login-form').style.display = 'block';
+
+        function mostrarLoginForm() { document.getElementById('login-form').style.display = 'block';
             document.getElementById('register-form').style.display = 'none';
             document.getElementById('log-email').value = '';
             document.getElementById('log-pass').value = '';
-        }
-        
-        // ========== FUNCIONES DE MODALES ==========
-        
-        function mostrarTerminos() {
-            document.getElementById('declaracionModal').classList.remove('show');
-            setTimeout(() => {
-                document.getElementById('termsModal').classList.add('show');
-            }, 100);
-        }
-        
-        function mostrarPrivacidad() {
-            document.getElementById('declaracionModal').classList.remove('show');
-            setTimeout(() => {
-                document.getElementById('termsModal').classList.add('show');
-            }, 100);
-        }
-        
-        function cerrarTerminos() {
-            document.getElementById('termsModal').classList.remove('show');
-            setTimeout(() => {
-                document.getElementById('declaracionModal').classList.add('show');
-            }, 100);
-        }
-        
-        function cerrarDeclaracion() {
-            document.getElementById('declaracionModal').classList.remove('show');
-            datosFormulario = {};
-        }
-        
-        // ========== REGISTRO CON TÉRMINOS ==========
+            document.getElementById('toggleLoginPass').textContent = '👁️ Ver';
+            document.getElementById('log-pass').type = 'password';
+            isPasswordVisible = false;
+            updateEyeState(); }
+
+        function mostrarTerminos() { document.getElementById('declaracionModal').classList.remove('show');
+            setTimeout(() => { document.getElementById('termsModal').classList.add('show'); }, 100); }
+
+        function mostrarPrivacidad() { document.getElementById('declaracionModal').classList.remove('show');
+            setTimeout(() => { document.getElementById('termsModal').classList.add('show'); }, 100); }
+
+        function cerrarTerminos() { document.getElementById('termsModal').classList.remove('show');
+            setTimeout(() => { document.getElementById('declaracionModal').classList.add('show'); }, 100); }
+
+        function cerrarDeclaracion() { document.getElementById('declaracionModal').classList.remove('show');
+            datosFormulario = {}; }
+
         function mostrarModalTerminosRegistro() {
             const email = document.getElementById('reg-email').value;
             const pass = document.getElementById('reg-pass').value;
             const dia = document.getElementById('reg-dia').value;
             const mes = document.getElementById('reg-mes').value;
             const ano = document.getElementById('reg-ano').value;
-            
-            if (!email || !pass) {
-                alert("❌ Completa tu correo y contraseña");
-                return;
-            }
-            if (pass.length < 6) {
-                alert("❌ La contraseña debe tener al menos 6 caracteres");
-                return;
-            }
-            if (!dia || !mes || !ano) {
-                alert("❌ Completa tu fecha de nacimiento");
-                return;
-            }
-            
+            if (!email || !pass) { showErrorToast("❌ Completa tu correo y contraseña"); return; }
+            if (pass.length < 6) { showErrorToast("❌ La contraseña debe tener al menos 6 caracteres"); return; }
+            if (!dia || !mes || !ano) { showErrorToast("❌ Completa tu fecha de nacimiento"); return; }
             const fechaNac = new Date(ano, mes - 1, dia);
             const hoy = new Date();
             let edad = hoy.getFullYear() - fechaNac.getFullYear();
             const mesDiff = hoy.getMonth() - fechaNac.getMonth();
             if (mesDiff < 0 || (mesDiff === 0 && hoy.getDate() < fechaNac.getDate())) edad--;
-            
-            if (edad < 18) {
-                alert("❌ Debes tener al menos 18 años para usar Shatts");
-                return;
-            }
-            
-            datosFormulario = {
-                email: email,
-                pass: pass,
-                nick: document.getElementById('reg-nick').value,
-                pais: document.getElementById('reg-pais').value,
-                sexo: document.getElementById('reg-sexo').value,
-                bio: document.getElementById('reg-bio').value,
-                about: document.getElementById('reg-about').value,
-                fechaNacimiento: `${ano}-${mes}-${dia}`,
-                edad: edad
-            };
-            
+            if (edad < 18) { showErrorToast("❌ Debes tener al menos 18 años para usar Shatts"); return; }
+            datosFormulario = { email: email, pass: pass, nick: document.getElementById('reg-nick').value, pais: document
+                    .getElementById('reg-pais').value, sexo: document.getElementById('reg-sexo').value, bio: document
+                    .getElementById('reg-bio').value, about: document.getElementById('reg-about').value,
+                fechaNacimiento: `${ano}-${mes}-${dia}`, edad: edad };
             const check = document.getElementById('acceptTermsCheckbox');
             if (check) check.checked = false;
             const confirmBtn = document.getElementById('confirmarRegistroBtn');
             if (confirmBtn) confirmBtn.disabled = true;
-            
             document.getElementById('declaracionModal').classList.add('show');
             check.onchange = function() { confirmBtn.disabled = !this.checked; };
         }
-        
-        // ========== CONFIRMAR REGISTRO CORREGIDO (CON MENSAJES MEJORADOS) ==========
+
         async function confirmarRegistro() {
             const check = document.getElementById('acceptTermsCheckbox');
-            if (!check.checked) {
-                alert("❌ Debes aceptar los Términos y Condiciones");
-                return;
-            }
-            
+            if (!check.checked) { showErrorToast("❌ Debes aceptar los Términos y Condiciones"); return; }
             const confirmBtn = document.getElementById('confirmarRegistroBtn');
             const originalText = confirmBtn.innerText;
             confirmBtn.innerHTML = '<span class="loading-spinner"></span> CREANDO CUENTA...';
             confirmBtn.disabled = true;
-            
             try {
                 const finalNick = datosFormulario.nick.trim() || datosFormulario.email.split('@')[0];
-                
-                const userData = {
-                    email: datosFormulario.email,
-                    password: datosFormulario.pass,
-                    passwordConfirm: datosFormulario.pass,
-                    nick: finalNick,
-                    bio: datosFormulario.bio || "Sin bio aún",
-                    about: datosFormulario.about || "Hola! Estoy en Shatt",
-                    intGen: "-",
-                    intMus: "-",
-                    pais: datosFormulario.pais || "",
-                    sexo: datosFormulario.sexo || "",
-                    fuma: "No",
-                    toma: "A veces"
-                };
-                
+                const userData = { email: datosFormulario.email, password: datosFormulario.pass, passwordConfirm: datosFormulario
+                        .pass, nick: finalNick, bio: datosFormulario.bio || "Sin bio aún", about: datosFormulario.about ||
+                        "Hola! Estoy en Shatt", intGen: "-", intMus: "-", pais: datosFormulario.pais || "", sexo: datosFormulario
+                        .sexo || "", fuma: "No", toma: "A veces" };
                 await pb.collection('usuarios').create(userData);
                 await pb.collection('usuarios').authWithPassword(datosFormulario.email, datosFormulario.pass);
-                
                 const user = pb.authStore.model;
                 let avatarUrl = '';
                 if (user.pfp) avatarUrl = pb.files.getUrl(user, user.pfp);
                 agregarCuentaGuardada(user.id, user.email, user.nick || user.email.split('@')[0], avatarUrl);
-                
-                localStorage.setItem('pocketbase_auth', JSON.stringify({
-                    token: pb.authStore.token,
-                    model: pb.authStore.model
-                }));
-                
-                alert("🎉 ¡Bienvenido a Shatt! Tu cuenta ha sido creada.");
+                localStorage.setItem('pocketbase_auth', JSON.stringify({ token: pb.authStore.token,
+                    model: pb.authStore.model }));
+                showErrorToast("🎉 ¡Bienvenido a Shatt!");
                 cerrarDeclaracion();
-                window.location.href = "inicio.html";
-                
+                setTimeout(() => { window.location.href = "inicio.html"; }, 800);
             } catch (error) {
-                console.error("Error en registro:", error);
-                
-                let mensaje = "❌ Error al crear la cuenta: ";
-                
-                // ✅ MENSAJES MEJORADOS PARA EL USUARIO
-                if (error.message) {
-                    const msg = error.message.toLowerCase();
-                    
-                    if (msg.includes("unique") || msg.includes("duplicate")) {
-                        if (msg.includes("email")) {
-                            mensaje = "❌ Este correo electrónico ya está registrado. ¿Quieres iniciar sesión?";
-                        } else if (msg.includes("nick") || msg.includes("username")) {
-                            mensaje = "❌ El nombre de usuario ya está en uso. Prueba con otro.";
-                        } else {
-                            mensaje = "❌ El correo o nombre de usuario ya está registrado. Intenta iniciar sesión.";
-                        }
-                    } else if (msg.includes("invalid") && msg.includes("email")) {
-                        mensaje = "❌ El correo electrónico no es válido. Revisa el formato.";
-                    } else if (msg.includes("password")) {
-                        mensaje = "❌ La contraseña debe tener al menos 6 caracteres.";
-                    } else if (msg.includes("nick") || msg.includes("username")) {
-                        mensaje = "❌ El nombre de usuario solo puede contener letras, números y guiones.";
-                    } else {
-                        mensaje += error.message;
-                    }
-                } else {
-                    mensaje += "Error desconocido. Intenta de nuevo.";
-                }
-                
-                alert(mensaje);
+                let mensaje = "❌ Error al crear la cuenta";
+                if (error.message) { const msg = error.message.toLowerCase(); if (msg.includes("unique") || msg.includes(
+                        "duplicate")) { if (msg.includes("email")) { mensaje =
+                            "❌ Este correo electrónico ya está registrado."; } else { mensaje =
+                            "❌ El correo o nombre de usuario ya está registrado."; } } else if (msg.includes(
+                        "invalid") && msg.includes("email")) { mensaje =
+                    "❌ El correo electrónico no es válido."; } else { mensaje = "❌ " + error.message; } }
+                showErrorToast(mensaje);
                 confirmBtn.innerHTML = originalText;
                 confirmBtn.disabled = false;
             }
         }
-        
+
         async function entrar() {
             const email = document.getElementById('log-email').value;
             const pass = document.getElementById('log-pass').value;
-            
-            if (!email || !pass) {
-                alert("❌ Completa todos los campos");
-                return;
-            }
-            
+            if (!email || !pass) { showErrorToast("❌ Completa todos los campos"); return; }
             const btn = document.querySelector('#login-form .btn-access');
             const originalText = btn.innerText;
             btn.innerHTML = '<span class="loading-spinner"></span> INGRESANDO...';
             btn.disabled = true;
-            
             try {
                 await pb.collection('usuarios').authWithPassword(email, pass);
                 const user = pb.authStore.model;
-                
-                if (user.bloqueado === true) {
-                    pb.authStore.clear();
+                if (user.bloqueado === true) { pb.authStore.clear();
                     localStorage.removeItem('pocketbase_auth');
-                    alert("🚫 Tu cuenta ha sido bloqueada por el administrador. No puedes acceder a SHATTS.");
+                    showErrorToast("🚫 Tu cuenta ha sido bloqueada.");
                     btn.innerHTML = originalText;
                     btn.disabled = false;
-                    return;
-                }
-                
+                    triggerErrorAnimation(); return; }
                 let avatarUrl = '';
                 if (user.pfp) avatarUrl = pb.files.getUrl(user, user.pfp);
                 agregarCuentaGuardada(user.id, user.email, user.nick || user.email.split('@')[0], avatarUrl);
-                localStorage.setItem('pocketbase_auth', JSON.stringify({
-                    token: pb.authStore.token,
-                    model: pb.authStore.model
-                }));
+                localStorage.setItem('pocketbase_auth', JSON.stringify({ token: pb.authStore.token,
+                    model: pb.authStore.model }));
                 window.location.href = "inicio.html";
-            } catch (error) {
-                alert("❌ Email o contraseña incorrectos");
+            } catch (error) { showErrorToast("❌ Email o contraseña incorrectos");
                 btn.innerHTML = originalText;
                 btn.disabled = false;
-            }
+                triggerErrorAnimation(); }
         }
-        
+
         function toggleMode() {
             const login = document.getElementById('login-form');
             const register = document.getElementById('register-form');
             const isRegisterVisible = register.style.display !== 'none';
-            
             login.style.display = isRegisterVisible ? 'block' : 'none';
             register.style.display = isRegisterVisible ? 'none' : 'block';
-            
-            if (!isRegisterVisible) {
-                setTimeout(() => {
-                    const extra = document.getElementById('extra-fields');
-                    if (extra) extra.style.display = 'block';
-                }, 100);
-            } else {
-                const extra = document.getElementById('extra-fields');
-                if (extra) extra.style.display = 'none';
+            if (!isRegisterVisible) { setTimeout(() => { const extra = document.getElementById('extra-fields'); if (extra)
+                        extra.style.display = 'block'; }, 100); } else { const extra = document.getElementById(
+                    'extra-fields'); if (extra) extra.style.display = 'none';
                 document.getElementById('reg-email').value = '';
                 document.getElementById('reg-pass').value = '';
                 document.getElementById('reg-nick').value = '';
                 document.getElementById('reg-dia').value = '';
                 document.getElementById('reg-mes').value = '';
                 document.getElementById('reg-ano').value = '';
-            }
+                document.getElementById('toggleRegPass').textContent = '👁️ Ver';
+                document.getElementById('reg-pass').type = 'password';
+                isPasswordVisible = false; }
+            setTimeout(() => updateEyeState(), 150);
         }
-        
-        function escapeHtml(text) {
-            if (!text) return '';
-            return text.replace(/[&<>]/g, function(m) {
-                return m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;';
-            });
-        }
-        
+
+        function escapeHtml(text) { if (!text) return ''; return text.replace(/[&<>]/g, function(m) { return m === '&' ?
+                    '&amp;' : m === '<' ? '&lt;' : '&gt;'; }); }
+
         async function recuperarPassword() {
             const email = prompt("📧 Ingresa tu correo electrónico:");
             if (!email) return;
-            
             try {
-                const todos = await pb.collection('usuarios').getFullList({
-                    $autoCancel: false
-                });
-                
+                const todos = await pb.collection('usuarios').getFullList({ $autoCancel: false });
                 const emailLimpio = email.toLowerCase().trim();
                 const usuario = todos.find(u => u.email && u.email.toLowerCase().trim() === emailLimpio);
-                
-                if (!usuario) {
-                    alert(`❌ El correo "${email}" no está registrado.\n\nSi crees que es un error, contacta al administrador.`);
-                    return;
-                }
-                
-                const token = Array.from(crypto.getRandomValues(new Uint8Array(32)))
-                    .map(b => b.toString(16).padStart(2, '0'))
-                    .join('');
-                
-                await pb.collection('usuarios').update(usuario.id, {
-                    resetToken: token,
-                    resetTokenExpires: new Date(Date.now() + 3600000).toISOString()
-                });
-                
-                const resetLink = `${window.location.origin}/restablecer.html?token=${token}&email=${encodeURIComponent(usuario.email)}`;
-                
-                if (confirm("🔗 ¿Quieres abrir el enlace de recuperación ahora?")) {
-                    window.open(resetLink, '_blank');
-                } else {
-                    alert(`🔗 Copia este enlace:\n\n${resetLink}\n\n(Expira en 1 hora)`);
-                }
-                
-            } catch(e) {
-                console.error("Error:", e);
-                alert("❌ Error al procesar la solicitud: " + e.message);
-            }
+                if (!usuario) { showErrorToast(`❌ El correo "${email}" no está registrado.`); return; }
+                const token = Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b => b.toString(16).padStart(2,
+                    '0')).join('');
+                await pb.collection('usuarios').update(usuario.id, { resetToken: token, resetTokenExpires: new Date(Date
+                        .now() + 3600000).toISOString() });
+                const resetLink =
+                    `${window.location.origin}/restablecer.html?token=${token}&email=${encodeURIComponent(usuario.email)}`;
+                if (confirm("🔗 ¿Quieres abrir el enlace de recuperación ahora?")) { window.open(resetLink, '_blank'); } else {
+                    alert(
+                        `🔗 Copia este enlace:\n\n${resetLink}\n\n(Expira en 1 hora)`); }
+            } catch (e) { showErrorToast("❌ Error al procesar la solicitud: " + e.message); }
         }
-        
-        // ========== EVENTOS ==========
-        document.getElementById('reg-email')?.addEventListener('focus', () => {
-            const extra = document.getElementById('extra-fields');
-            if (extra) extra.style.display = 'block';
-        });
-        document.getElementById('reg-pass')?.addEventListener('focus', () => {
-            const extra = document.getElementById('extra-fields');
-            if (extra) extra.style.display = 'block';
-        });
+
+        document.getElementById('reg-email')?.addEventListener('focus', () => { const extra = document.getElementById(
+                'extra-fields'); if (extra) extra.style.display = 'block'; });
+        document.getElementById('reg-pass')?.addEventListener('focus', () => { const extra = document.getElementById(
+                'extra-fields'); if (extra) extra.style.display = 'block'; });
         document.getElementById('confirmarRegistroBtn')?.addEventListener('click', confirmarRegistro);
-        
-        // ========== INICIALIZAR ==========
+
         llenarSelectsFecha();
         cargarCuentasGuardadas();
-        
-        // ✅ Actualizar estadísticas inmediatamente y cada 30 segundos
         actualizarEstadisticas();
         setInterval(actualizarEstadisticas, 30000);
-        
-        // Exponer funciones globales
+
         window.entrar = entrar;
         window.toggleMode = toggleMode;
+        window.togglePassword = togglePassword;
         window.eliminarCuentaGuardada = eliminarCuentaGuardada;
         window.mostrarModalPassword = mostrarModalPassword;
         window.mostrarLoginForm = mostrarLoginForm;
