@@ -1270,6 +1270,51 @@
         window.toggleZoom = toggleZoom;
         window.abrirBuscadorFullscreen = abrirBuscadorFullscreen;
         window.cerrarBuscadorFullscreen = cerrarBuscadorFullscreen;
+
     </script>
+
+    <script>
+(async function() {
+    // 1. Aplicar caché local primero (instantáneo)
+    var bg = localStorage.getItem('shatt_bg_cache');
+    var dark = localStorage.getItem('shatt_darkmode_cache');
+    var opacity = localStorage.getItem('shatt_opacity_cache');
+    var accent = localStorage.getItem('shatt_accent_cache');
+    var fontSize = localStorage.getItem('shatt_fontsize_cache');
+    
+    if (bg && bg !== 'null') document.body.style.background = bg;
+    if (dark === 'true') document.body.classList.add('dark-mode');
+    if (opacity) document.documentElement.style.setProperty('--panel-opacity', opacity);
+    if (accent) document.documentElement.style.setProperty('--shatt-blue', accent);
+    if (fontSize) document.documentElement.style.fontSize = fontSize + 'px';
+    
+    // 2. Si no hay caché, cargar desde PocketBase
+    if (!bg || bg === 'null') {
+        var saved = localStorage.getItem('pocketbase_auth');
+        if (!saved) return;
+        try {
+            var parsed = JSON.parse(saved);
+            var pb2 = new PocketBase('https://shatt-social-production.up.railway.app');
+            pb2.authStore.save(parsed.token, parsed.model);
+            var user = await pb2.collection('usuarios').getOne(parsed.model.id);
+            
+            if (user.imagen_fondo) {
+                try {
+                    var url = pb2.files.getUrl(user, user.imagen_fondo);
+                    document.body.style.background = 'url(' + url + ') center/cover fixed';
+                    localStorage.setItem('shatt_bg_cache', document.body.style.background);
+                } catch(e) {}
+            } else if (user.color_fondo) {
+                document.body.style.background = user.color_fondo;
+                localStorage.setItem('shatt_bg_cache', user.color_fondo);
+            }
+            if (user.tema === 'dark') document.body.classList.add('dark-mode');
+            if (user.opacidad) document.documentElement.style.setProperty('--panel-opacity', user.opacidad);
+            if (user.accent_color) document.documentElement.style.setProperty('--shatt-blue', user.accent_color);
+            if (user.tamano_fuente) document.documentElement.style.fontSize = user.tamano_fuente + 'px';
+        } catch(e) {}
+    }
+})();
+</script>
 </body>
 </html>
