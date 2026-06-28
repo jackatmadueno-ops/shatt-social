@@ -24,7 +24,7 @@
         }
 
         body { 
-    background: #3a6186; 
+    /*background: #3a6186; */
     background-size: cover; 
     background-attachment: fixed; 
     background-position: center; 
@@ -821,10 +821,10 @@ async function cargarConfiguracionGlobal() {
         }
     });
 
-    // Cargar configuración al inicio
+    /* Cargar configuración al inicio
     document.addEventListener('DOMContentLoaded', function() {
         cargarConfiguracionGlobal();
-    });
+    });*/
 
 
         let currentDiaryUserId = null;
@@ -870,7 +870,13 @@ async function cargarConfiguracionGlobal() {
             });
         }
 
+
+        window.verPerfil = verPerfil;
         // ========== IR AL PERFIL DEL AUTOR ==========
+        function verPerfil(uid) {
+    window.location.href = `perfil.html?uid=${uid}`;
+}
+
         function irAlPerfilAutor() {
             if (autorIdParaPerfil) {
                 window.location.href = `perfil.html?uid=${autorIdParaPerfil}`;
@@ -1065,22 +1071,21 @@ async function guardarConfiguracionGlobal(data) {
 
 // ========== GUARDAR DISEÑO GLOBAL ==========
 async function guardarDisenoGlobal() {
-    const bg = document.body.style.background;
-    const opacity = getComputedStyle(document.documentElement).getPropertyValue('--panel-opacity');
-    const accent = getComputedStyle(document.documentElement).getPropertyValue('--shatt-blue');
-    const isDark = document.body.classList.contains('dark-mode');
-
-    await guardarConfiguracionGlobal({
-        color_fondo: bg,
-        opacidad: parseFloat(opacity) || 1,
-        accent_color: accent || '#3b5998',
-        tema: isDark ? 'dark' : 'light'
-    });
-
-    localStorage.setItem('shatt_bg', bg);
-    localStorage.setItem('shatt_opacity', opacity);
-    mostrarToast("💾 Diseño guardado en la nube");
-    cerrarModalesGlobal();
+    if (!currentUser) { mostrarToast("Inicia sesión"); return; }
+    
+    const data = {
+        tema: document.body.classList.contains('dark-mode') ? 'dark' : 'light',
+        color_fondo: document.body.style.background || '#3a6186',
+        opacidad: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--panel-opacity').trim()) || 1,
+        accent_color: getComputedStyle(document.documentElement).getPropertyValue('--shatt-blue').trim() || '#3b5998',
+        tamano_fuente: parseInt(getComputedStyle(document.documentElement).fontSize) || 16
+    };
+    
+    try {
+        await pb.collection('usuarios').update(currentUser.id, data);
+        mostrarToast("💾 Diseño guardado ☁️");
+        cerrarModalesGlobal();
+    } catch(e) { mostrarToast("Error al guardar"); }
 }
 
 // ========== CARGAR DISEÑO GUARDADO ==========
@@ -1481,7 +1486,7 @@ async function cargarDisenoGuardado() {
             const uid = urlParams.get('uid');
             currentDiaryUserId = uid && uid !== currentUser.id ? uid : currentUser.id;
             autorIdParaPerfil = currentDiaryUserId;
-            await cargarDisenoGuardado();
+            
             await initDiario();
         })();
 
@@ -1560,7 +1565,7 @@ async function cargarDisenoGuardado() {
         window.cerrarSesion = cerrarSesion;
         window.abrirModalPostit = abrirModalPostit;
         window.cerrarModalPostit = cerrarModalPostit;
-        window.verPerfil = verPerfil;
+        
         window.irAlDiario = irAlDiario;
         window.irAlPerfilAutor = irAlPerfilAutor;
         window.addNewPage = abrirTituloNuevoModal;
@@ -1579,6 +1584,26 @@ async function cargarDisenoGuardado() {
         window.abrirModalPostitMovil = abrirModalPostitMovil;
         window.cerrarModalPostitMovil = cerrarModalPostitMovil;
         window.publicarPostitMovil = publicarPostitMovil;
+
+        
     </script>
+
+    <script>
+(function() {
+    var bg = localStorage.getItem('shatt_bg_cache');
+    var dark = localStorage.getItem('shatt_darkmode_cache');
+    var opacity = localStorage.getItem('shatt_opacity_cache');
+    var accent = localStorage.getItem('shatt_accent_cache');
+    var fontSize = localStorage.getItem('shatt_fontsize_cache');
+    
+    if (bg && bg !== 'null' && bg !== 'undefined') {
+        document.body.style.background = bg;
+    }
+    if (dark === 'true') document.body.classList.add('dark-mode');
+    if (opacity) document.documentElement.style.setProperty('--panel-opacity', opacity);
+    if (accent) document.documentElement.style.setProperty('--shatt-blue', accent);
+    if (fontSize) document.documentElement.style.fontSize = fontSize + 'px';
+})();
+</script>
 </body>
 </html>
