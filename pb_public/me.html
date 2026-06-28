@@ -9,12 +9,10 @@
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/plugin/relativeTime.js"></script>
     <script>dayjs.extend(window.dayjs_plugin_relativeTime);</script>
     
-    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
         :root { 
-            --main-blue: #3a6186; 
+            --main-blue: #3a6186;
             --glossy: linear-gradient(180deg, #ffffff 0%, #d1d1d1 100%); 
             --shatt-blue: #3b5998; 
             --panel-opacity: 1; 
@@ -31,505 +29,94 @@
             --spacing-xl: 24px; 
         }
 
-        /* ========== FONDO AZUL SHATT POR DEFECTO ========== */
         body { 
-    background: #3a6186; 
-    background-size: cover; 
-    background-attachment: fixed; 
-    background-position: center; 
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; 
-    margin: 0; 
-    min-height: 100vh; 
-    color: #000; 
-    line-height: 1.5; 
-    transition: background 0.3s ease; 
-    padding-bottom: 70px; 
-}
-
-        body.dark-mode { 
-            background: #0f0f1a !important; 
+            background-size: cover; 
+            background-attachment: fixed; 
+            background-position: center; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; 
+            margin: 0; 
+            min-height: 100vh; 
+            color: #000; 
+            line-height: 1.5; 
+            transition: background 0.3s ease; 
+            padding-bottom: 70px; 
         }
+
+        body.dark-mode { background: #0f0f1a !important; }
         body.dark-mode .hero-section, 
         body.dark-mode .feature-card, 
         body.dark-mode .progress-section, 
         body.dark-mode .note-box,
-        body.dark-mode .panel-retro { 
-            background: rgba(30, 30, 50, 0.95); 
-            color: white; 
-            border-color: #555; 
-        }
-        body.dark-mode .navbar-top { 
-            background: #2a2a3a; 
-            border-color: #555; 
-        }
-        body.dark-mode .navbar-top a, 
-        body.dark-mode .navbar-top span { 
-            color: white; 
-        }
-        body.dark-mode .feature-desc,
-        body.dark-mode .hero-subtitle,
-        body.dark-mode .hero-description { color: #aaa; }
+        body.dark-mode .panel-retro { background: rgba(30, 30, 50, 0.95); color: white; border-color: #555; }
+        body.dark-mode .navbar-top { background: #2a2a3a; border-color: #555; }
+        body.dark-mode .navbar-top a, body.dark-mode .navbar-top span { color: white; }
+        body.dark-mode .feature-desc, body.dark-mode .hero-subtitle, body.dark-mode .hero-description { color: #aaa; }
         body.dark-mode .note-box p { color: #aaa; }
 
-        .app-wrapper { 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            padding: var(--spacing-md); 
-            min-height: 80vh; 
-            display: flex; 
-            flex-direction: column; 
-        }
+        .app-wrapper { max-width: 1200px; margin: 0 auto; padding: var(--spacing-md); min-height: 80vh; display: flex; flex-direction: column; }
+        .logo-shatt { font-size: 24px; font-weight: bold; color: #fff; text-decoration: none; text-shadow: 2px 2px 0px var(--shatt-blue); white-space: nowrap; transition: var(--transition); }
+        .logo-shatt:hover { text-shadow: 3px 3px 0px var(--shatt-blue); transform: translateY(-2px); }
 
-        .logo-shatt { 
-            font-size: 24px; 
-            font-weight: bold; 
-            color: #fff; 
-            text-decoration: none; 
-            text-shadow: 2px 2px 0px var(--shatt-blue); 
-            white-space: nowrap; 
-            transition: var(--transition); 
-        }
-        .logo-shatt:hover { 
-            text-shadow: 3px 3px 0px var(--shatt-blue); 
-            transform: translateY(-2px); 
-        }
-
-        /* ========== NAVBAR SUPERIOR ========== */
         .navbar-top {
-            background: var(--glossy);
-            border: 2px solid #666;
-            border-radius: var(--border-radius);
-            padding: 6px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            box-shadow: var(--shadow-lg);
-            margin-bottom: var(--spacing-xl);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            background: var(--glossy); border: 2px solid #666; border-radius: var(--border-radius);
+            padding: 6px 20px; display: flex; justify-content: space-between; align-items: center;
+            gap: 15px; box-shadow: var(--shadow-lg); margin-bottom: var(--spacing-xl);
+            position: sticky; top: 0; z-index: 100;
         }
+        .nav-links { display: flex; flex-wrap: nowrap; gap: 5px; background: rgba(0,0,0,0.05); padding: 4px 12px; border-radius: 40px; }
+        .nav-links a { text-decoration: none; color: #000; font-weight: bold; padding: 6px 14px; font-size: 13px; white-space: nowrap; border-radius: 30px; transition: var(--transition); }
+        .nav-links a:hover { color: var(--shatt-blue); background: rgba(59,89,152,0.1); }
+        .nav-links a.active { background: var(--shatt-blue); color: white; }
+        .nav-icons { display: flex; align-items: center; gap: 10px; flex-wrap: nowrap; }
+        .nav-icons > * { cursor: pointer; font-size: 18px; transition: var(--transition); padding: 6px; min-width: 36px; min-height: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .nav-icons > *:hover { transform: scale(1.1); background: rgba(255,255,255,0.3); }
 
-        .nav-links {
-            display: flex;
-            flex-wrap: nowrap;
-            gap: 5px;
-            background: rgba(0,0,0,0.05);
-            padding: 4px 12px;
-            border-radius: 40px;
-        }
-
-        .nav-links a { 
-            text-decoration: none; 
-            color: #000; 
-            font-weight: bold; 
-            padding: 6px 14px; 
-            font-size: 13px;
-            white-space: nowrap;
-            border-radius: 30px;
-            transition: var(--transition);
-        }
-
-        .nav-links a:hover { 
-            color: var(--shatt-blue); 
-            background: rgba(59,89,152,0.1); 
-        }
-
-        .nav-links a.active {
-            background: var(--shatt-blue);
-            color: white;
-        }
-
-        .nav-icons { 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            flex-wrap: nowrap;
-        }
-
-        .nav-icons > * { 
-            cursor: pointer; 
-            font-size: 18px; 
-            transition: var(--transition); 
-            padding: 6px;
-            min-width: 36px;
-            min-height: 36px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-        }
-
-        .nav-icons > *:hover { 
-            transform: scale(1.1); 
-            background: rgba(255,255,255,0.3); 
-        }
-
-        /* ========== BARRA INFERIOR (MÓVIL) ========== */
-        .bottom-nav {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--glossy);
-            border-top: 2px solid #000;
-            padding: 6px 12px;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 200;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-        }
-
-        .bottom-nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            text-decoration: none;
-            color: #000;
-            font-size: 18px;
-            font-weight: bold;
-            padding: 6px 12px;
-            border-radius: 30px;
-            transition: var(--transition);
-        }
-
+        .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--glossy); border-top: 2px solid #000; padding: 6px 12px; justify-content: space-around; align-items: center; z-index: 200; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
+        .bottom-nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; text-decoration: none; color: #000; font-size: 18px; font-weight: bold; padding: 6px 12px; border-radius: 30px; transition: var(--transition); }
         .bottom-nav-item span:first-child { font-size: 20px; }
         .bottom-nav-item span:last-child { font-size: 9px; }
         .bottom-nav-item.active { background: var(--shatt-blue); color: white; }
 
-        /* ========== HERO SECTION - DISEÑO MEJORADO ========== */
-        .hero-section {
-            background: rgba(255, 255, 255, var(--panel-opacity));
-            border: 2px solid #000;
-            border-radius: var(--border-radius);
-            padding: var(--spacing-xl);
-            text-align: center;
-            margin-bottom: var(--spacing-xl);
-            box-shadow: var(--shadow-lg);
-            transition: background 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
+        .hero-section { background: rgba(255,255,255,var(--panel-opacity)); border: 2px solid #000; border-radius: var(--border-radius); padding: var(--spacing-xl); text-align: center; margin-bottom: var(--spacing-xl); box-shadow: var(--shadow-lg); transition: background 0.3s ease; position: relative; overflow: hidden; }
+        .hero-icon { font-size: 80px; margin-bottom: 20px; animation: float 3s ease-in-out infinite; display: inline-block; }
+        @keyframes float { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
+        .hero-title { font-size: 42px; font-weight: 900; background: linear-gradient(135deg, #3b5998, #fbc02d); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 15px; letter-spacing: -1px; }
+        .hero-subtitle { font-size: 20px; color: #555; margin-bottom: 25px; font-weight: 500; }
+        .hero-description { font-size: 15px; color: #777; max-width: 600px; margin: 0 auto; line-height: 1.8; }
+        .hero-badge { display: inline-block; background: linear-gradient(135deg, #fbc02d, #f57c00); color: #fff; font-size: 12px; font-weight: bold; padding: 6px 18px; border-radius: 30px; margin-top: 15px; letter-spacing: 1px; text-transform: uppercase; }
 
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 50%, rgba(59, 89, 152, 0.1), transparent 60%);
-            animation: heroGlow 8s ease-in-out infinite;
-        }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-xl); }
+        .feature-card { background: rgba(255,255,255,var(--panel-opacity)); border: 2px solid #000; border-radius: var(--border-radius); padding: var(--spacing-xl); text-align: center; transition: all 0.35s cubic-bezier(0.2,0.9,0.4,1.1); cursor: pointer; position: relative; overflow: hidden; }
+        .feature-card:hover { transform: translateY(-6px) scale(1.01); box-shadow: var(--shadow-lg); border-color: var(--shatt-blue); }
+        .feature-card:active { transform: scale(0.97); }
+        .feature-icon { font-size: 52px; margin-bottom: 15px; display: block; transition: transform 0.3s ease; }
+        .feature-card:hover .feature-icon { transform: scale(1.1) rotate(-5deg); }
+        .feature-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #000; }
+        .feature-desc { font-size: 13px; color: #666; line-height: 1.6; }
+        .feature-badge { display: inline-block; background: linear-gradient(135deg, #fbc02d, #f57c00); color: #fff; font-size: 10px; font-weight: bold; padding: 4px 14px; border-radius: 20px; margin-top: 14px; letter-spacing: 0.5px; }
 
-        @keyframes heroGlow {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(10%, 5%); }
-        }
+        .progress-section { background: rgba(255,255,255,var(--panel-opacity)); border: 2px solid #000; border-radius: var(--border-radius); padding: var(--spacing-xl); text-align: center; margin-bottom: var(--spacing-xl); transition: background 0.3s ease; }
+        .progress-title { font-size: 18px; font-weight: bold; margin-bottom: 18px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .progress-bar-container { background: #e8e8e8; border-radius: 30px; height: 24px; overflow: hidden; margin-bottom: 12px; border: 1px solid #ccc; }
+        .progress-fill { width: 35%; height: 100%; background: linear-gradient(90deg, #3b5998, #fbc02d); border-radius: 30px; position: relative; transition: width 1s ease; }
+        .progress-fill::after { content: '35%'; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); color: #fff; font-size: 11px; font-weight: bold; }
+        .progress-text { font-size: 13px; color: #666; }
 
-        .hero-content {
-            position: relative;
-            z-index: 1;
-        }
+        .note-box { background: rgba(255,255,255,var(--panel-opacity)); border: 2px solid #000; border-radius: var(--border-radius); padding: var(--spacing-lg); text-align: center; border-left: 5px solid #fbc02d; transition: background 0.3s ease; }
+        .note-box p { font-size: 14px; color: #555; line-height: 1.7; }
+        .note-box strong { color: var(--shatt-blue); }
+        .note-box .highlight { color: #f57c00; font-weight: bold; }
 
-        .hero-icon {
-            font-size: 80px;
-            margin-bottom: 20px;
-            animation: float 3s ease-in-out infinite;
-            display: inline-block;
-        }
+        .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); border: 1px solid #fbc02d; color: #fbc02d; padding: 12px 24px; border-radius: 30px; font-size: 13px; z-index: 1000; display: none; max-width: 90%; text-align: center; backdrop-filter: blur(8px); }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-10px) scale(1.05); }
-        }
-
-        .hero-title {
-            font-size: 42px;
-            font-weight: 900;
-            background: linear-gradient(135deg, #3b5998, #fbc02d);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 15px;
-            letter-spacing: -1px;
-        }
-
-        .hero-subtitle {
-            font-size: 20px;
-            color: #555;
-            margin-bottom: 25px;
-            font-weight: 500;
-        }
-
-        .hero-description {
-            font-size: 15px;
-            color: #777;
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.8;
-        }
-
-        .hero-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #fbc02d, #f57c00);
-            color: #fff;
-            font-size: 12px;
-            font-weight: bold;
-            padding: 6px 18px;
-            border-radius: 30px;
-            margin-top: 15px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.03); }
-        }
-
-        /* ========== FEATURES GRID ========== */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: var(--spacing-lg);
-            margin-bottom: var(--spacing-xl);
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, var(--panel-opacity));
-            border: 2px solid #000;
-            border-radius: var(--border-radius);
-            padding: var(--spacing-xl);
-            text-align: center;
-            transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #3b5998, #fbc02d);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .feature-card:hover::after {
-            transform: scaleX(1);
-        }
-
-        .feature-card:hover {
-            transform: translateY(-6px) scale(1.01);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--shatt-blue);
-        }
-
-        .feature-card:active {
-            transform: scale(0.97);
-        }
-
-        .feature-icon {
-            font-size: 52px;
-            margin-bottom: 15px;
-            display: block;
-            transition: transform 0.3s ease;
-        }
-
-        .feature-card:hover .feature-icon {
-            transform: scale(1.1) rotate(-5deg);
-        }
-
-        .feature-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #000;
-        }
-
-        .feature-desc {
-            font-size: 13px;
-            color: #666;
-            line-height: 1.6;
-        }
-
-        .feature-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #fbc02d, #f57c00);
-            color: #fff;
-            font-size: 10px;
-            font-weight: bold;
-            padding: 4px 14px;
-            border-radius: 20px;
-            margin-top: 14px;
-            letter-spacing: 0.5px;
-        }
-
-        /* ========== PROGRESS SECTION ========== */
-        .progress-section {
-            background: rgba(255, 255, 255, var(--panel-opacity));
-            border: 2px solid #000;
-            border-radius: var(--border-radius);
-            padding: var(--spacing-xl);
-            text-align: center;
-            margin-bottom: var(--spacing-xl);
-            transition: background 0.3s ease;
-        }
-
-        .progress-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .progress-bar-container {
-            background: #e8e8e8;
-            border-radius: 30px;
-            height: 24px;
-            overflow: hidden;
-            margin-bottom: 12px;
-            border: 1px solid #ccc;
-        }
-
-        .progress-fill {
-            width: 35%;
-            height: 100%;
-            background: linear-gradient(90deg, #3b5998, #fbc02d);
-            border-radius: 30px;
-            position: relative;
-            transition: width 1s ease;
-        }
-
-        .progress-fill::after {
-            content: '35%';
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #fff;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .progress-text {
-            font-size: 13px;
-            color: #666;
-        }
-
-        /* ========== NOTE BOX ========== */
-        .note-box {
-            background: rgba(255, 255, 255, var(--panel-opacity));
-            border: 2px solid #000;
-            border-radius: var(--border-radius);
-            padding: var(--spacing-lg);
-            text-align: center;
-            border-left: 5px solid #fbc02d;
-            transition: background 0.3s ease;
-        }
-
-        .note-box p {
-            font-size: 14px;
-            color: #555;
-            line-height: 1.7;
-        }
-
-        .note-box strong {
-            color: var(--shatt-blue);
-        }
-
-        .note-box .highlight {
-            color: #f57c00;
-            font-weight: bold;
-        }
-
-        /* ========== TOAST ========== */
-        .toast {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.9);
-            border: 1px solid #fbc02d;
-            color: #fbc02d;
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-size: 13px;
-            z-index: 1000;
-            display: none;
-            max-width: 90%;
-            text-align: center;
-            backdrop-filter: blur(8px);
-        }
-
-        /* ========== MODALES ========== */
-        .overlay { 
-            display: none; 
-            position: fixed; 
-            inset: 0; 
-            background: rgba(0,0,0,0.7); 
-            z-index: 5000; 
-            backdrop-filter: blur(4px); 
-        }
-        .modal { 
-            display: none; 
-            position: fixed; 
-            top: 50%; 
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            background: #f0f0f0; 
-            border: 3px solid #000; 
-            padding: 20px; 
-            z-index: 5001; 
-            width: min(450px, 90%); 
-            max-height: 90vh; 
-            overflow-y: auto; 
-            border-radius: 12px; 
-            color: #000; 
-        }
-        .modal h3 { 
-            margin-bottom: 15px; 
-            border-bottom: 2px solid #000; 
-            padding-bottom: 10px; 
-        }
-        .preset-bg { 
-            width: 45px; 
-            height: 45px; 
-            border: 2px solid #000; 
-            display: inline-block; 
-            cursor: pointer; 
-            margin: 5px; 
-            border-radius: 8px; 
-            transition: transform 0.2s; 
-        }
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 5000; backdrop-filter: blur(4px); }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); background: #f0f0f0; border: 3px solid #000; padding: 20px; z-index: 5001; width: min(450px, 90%); max-height: 90vh; overflow-y: auto; border-radius: 12px; color: #000; }
+        .modal h3 { margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 10px; }
+        .preset-bg { width: 45px; height: 45px; border: 2px solid #000; display: inline-block; cursor: pointer; margin: 5px; border-radius: 8px; transition: transform 0.2s; }
         .preset-bg:hover { transform: scale(1.1); }
-        .btn-retro { 
-            background: #e0e0e0; 
-            border: 2px outset #fff; 
-            padding: 10px 15px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            border-radius: 8px; 
-            transition: all 0.1s; 
-        }
-        .btn-retro:active { 
-            transform: translate(1px, 1px); 
-            border-style: inset; 
-        }
+        .btn-retro { background: #e0e0e0; border: 2px outset #fff; padding: 10px 15px; cursor: pointer; font-weight: bold; border-radius: 8px; transition: all 0.1s; }
+        .btn-retro:active { transform: translate(1px,1px); border-style: inset; }
 
-        /* ========== RESPONSIVE ========== */
         @media (max-width: 768px) {
             .hero-title { font-size: 30px; }
             .hero-icon { font-size: 60px; }
@@ -552,7 +139,6 @@
 </head>
 <body>
     <div class="app-wrapper">
-        <!-- NAVBAR SUPERIOR (SIN PINCEL NI PUERTA) -->
         <div class="navbar-top">
             <a href="inicio.html" class="logo-shatt">Shatt</a>
             <div class="nav-links">
@@ -563,77 +149,54 @@
                 <a href="shatts.html">shatts</a>
             </div>
             <div class="nav-icons">
-                <!-- PINCEL Y PUERTA ELIMINADOS -->
-                <!-- SOLO CASA PARA VOLVER AL INICIO -->
                 <span onclick="window.location.href='inicio.html'">🏠</span>
             </div>
         </div>
 
-        <!-- CONTENIDO - HERO SECTION MEJORADO -->
         <div class="hero-section">
             <div class="hero-content">
                 <div class="hero-icon">🎵</div>
                 <h1 class="hero-title">M.E. — Music Experience</h1>
                 <p class="hero-subtitle">Tu espacio para compartir música y videos</p>
-                <p class="hero-description">
-                    Una plataforma donde los artistas suben sus creaciones,<br>
-                    los fans descubren nueva música y todos conectan a través del ritmo.
-                </p>
+                <p class="hero-description">Una plataforma donde los artistas suben sus creaciones, los fans descubren nueva música y todos conectan a través del ritmo.</p>
                 <span class="hero-badge">🚀 Próximamente</span>
             </div>
         </div>
 
-        <!-- FEATURES -->
         <div class="features-grid">
             <div class="feature-card" onclick="mostrarToast('🎤 Subir música - Próximamente')">
-                <span class="feature-icon">🎤</span>
-                <div class="feature-title">Subir Música</div>
+                <span class="feature-icon">🎤</span><div class="feature-title">Subir Música</div>
                 <div class="feature-desc">Comparte tus canciones, álbumes y sencillos con la comunidad</div>
                 <span class="feature-badge">Próximamente</span>
             </div>
-
             <div class="feature-card" onclick="mostrarToast('🎬 Subir videos - Próximamente')">
-                <span class="feature-icon">🎬</span>
-                <div class="feature-title">Subir Videos</div>
+                <span class="feature-icon">🎬</span><div class="feature-title">Subir Videos</div>
                 <div class="feature-desc">Comparte tus videoclips, presentaciones en vivo y más</div>
                 <span class="feature-badge">Próximamente</span>
             </div>
-
             <div class="feature-card" onclick="mostrarToast('⭐ Sistema de likes - Próximamente')">
-                <span class="feature-icon">⭐</span>
-                <div class="feature-title">Likes y Comentarios</div>
+                <span class="feature-icon">⭐</span><div class="feature-title">Likes y Comentarios</div>
                 <div class="feature-desc">Apoya a tus artistas favoritos con estrellas y comentarios</div>
                 <span class="feature-badge">Próximamente</span>
             </div>
-
             <div class="feature-card" onclick="mostrarToast('🎧 Playlists - Próximamente')">
-                <span class="feature-icon">🎧</span>
-                <div class="feature-title">Playlists</div>
+                <span class="feature-icon">🎧</span><div class="feature-title">Playlists</div>
                 <div class="feature-desc">Crea tus propias listas de reproducción personalizadas</div>
                 <span class="feature-badge">Próximamente</span>
             </div>
         </div>
 
-        <!-- PROGRESS -->
         <div class="progress-section">
             <div class="progress-title">🚀 Estado del desarrollo</div>
-            <div class="progress-bar-container">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
+            <div class="progress-bar-container"><div class="progress-fill" id="progressFill"></div></div>
             <div class="progress-text">M.E. se está construyendo con amor para ti... <strong>¡Pronto estará listo!</strong></div>
         </div>
 
-        <!-- NOTE -->
         <div class="note-box">
-            <p>
-                ✨ <strong>M.E.</strong> será la próxima gran actualización de Shatt.<br>
-                Podrás subir tu música, compartir videos y conectar con otros artistas.<br>
-                📢 <strong class="highlight">¡Mantente atento a las novedades!</strong>
-            </p>
+            <p>✨ <strong>M.E.</strong> será la próxima gran actualización de Shatt. Podrás subir tu música, compartir videos y conectar con otros artistas. 📢 <strong class="highlight">¡Mantente atento a las novedades!</strong></p>
         </div>
     </div>
 
-    <!-- BARRA INFERIOR PARA MÓVIL -->
     <div class="bottom-nav">
         <a href="inicio.html" class="bottom-nav-item"><span>🏠</span><span>Inicio</span></a>
         <a href="mi-perfil.html" class="bottom-nav-item"><span>👤</span><span>Perfil</span></a>
@@ -642,198 +205,67 @@
         <a href="shatts.html" class="bottom-nav-item"><span>💬</span><span>Shatts</span></a>
     </div>
 
-    <!-- MODAL PERSONALIZACIÓN -->
     <div id="modal-overlay" class="overlay" onclick="cerrarModalesGlobal()"></div>
     <div id="design-modal" class="modal">
         <h3>🎨 Personalizar Shatt</h3>
-        <div style="margin-bottom: 15px;">
-            <label>🎨 Colores predefinidos:</label>
-            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
-                <div class="preset-bg" style="background:#3a6186;" onclick="setBgColorGlobal('#3a6186')"></div>
-                <div class="preset-bg" style="background:#ff99cc;" onclick="setBgColorGlobal('#ff99cc')"></div>
-                <div class="preset-bg" style="background:#000;" onclick="setBgColorGlobal('#000')"></div>
-                <div class="preset-bg" style="background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);" onclick="setBgColorGlobal('linear-gradient(135deg, #667eea 0%, #764ba2 100%)')"></div>
-                <div class="preset-bg" style="background:linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" onclick="setBgColorGlobal('linear-gradient(135deg, #f093fb 0%, #f5576c 100%)')"></div>
+        <div style="margin-bottom:15px"><label>🎨 Colores predefinidos:</label>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+                <div class="preset-bg" style="background:#3a6186" onclick="setBgColorGlobal('#3a6186')"></div>
+                <div class="preset-bg" style="background:#ff99cc" onclick="setBgColorGlobal('#ff99cc')"></div>
+                <div class="preset-bg" style="background:#000" onclick="setBgColorGlobal('#000')"></div>
+                <div class="preset-bg" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)" onclick="setBgColorGlobal('linear-gradient(135deg,#667eea 0%,#764ba2 100%)')"></div>
+                <div class="preset-bg" style="background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%)" onclick="setBgColorGlobal('linear-gradient(135deg,#f093fb 0%,#f5576c 100%)')"></div>
             </div>
         </div>
-        <div style="margin-top: 15px;">
-            <label>🎨 Color personalizado:</label>
-            <input type="color" id="custom-color-global" onchange="setBgColorGlobal(this.value)" style="width:100%; margin-top:5px;">
-        </div>
-        <div style="margin-top: 15px;">
-            <label>🖼️ Imagen de fondo:</label>
-            <input type="file" id="bg-image-global" accept="image/*" onchange="setImageBgGlobal(this)" style="margin-top:5px;">
-        </div>
-        <div style="margin-top: 15px;">
-            <label>🔆 Transparencia de paneles:</label>
-            <div style="display:flex; gap: 10px; margin-top:5px;">
-                <input type="range" id="opacity-slider-global" min="0.1" max="1" step="0.1" value="1" oninput="setOpacityGlobal(this.value)" style="flex:1;">
-                <span id="opacity-value-global">100%</span>
-            </div>
-        </div>
-        <div style="margin-top: 20px;">
-            <button class="btn-retro" onclick="guardarDisenoGlobal()" style="background:#4CAF50; color:white;">💾 GUARDAR</button>
-            <button class="btn-retro" onclick="cerrarModalesGlobal()" style="margin-top:10px;">❌ CERRAR</button>
-        </div>
+        <div style="margin-top:15px"><label>🎨 Color personalizado:</label><input type="color" id="custom-color-global" onchange="setBgColorGlobal(this.value)" style="width:100%;margin-top:5px"></div>
+        <div style="margin-top:15px"><label>🖼️ Imagen de fondo:</label><input type="file" id="bg-image-global" accept="image/*" onchange="setImageBgGlobal(this)" style="margin-top:5px"></div>
+        <div style="margin-top:15px"><label>🔆 Transparencia de paneles:</label><div style="display:flex;gap:10px;margin-top:5px"><input type="range" id="opacity-slider-global" min="0.1" max="1" step="0.1" value="1" oninput="setOpacityGlobal(this.value)" style="flex:1"><span id="opacity-value-global">100%</span></div></div>
+        <div style="margin-top:20px"><button class="btn-retro" onclick="guardarDisenoGlobal()" style="background:#4CAF50;color:white">💾 GUARDAR</button><button class="btn-retro" onclick="cerrarModalesGlobal()" style="margin-top:10px">❌ CERRAR</button></div>
     </div>
 
     <div class="toast" id="toast"></div>
 
     <script>
-        // Variables globales (solo una vez)
         let currentUser = null;
-        let palabrasFiltro = [];
-
         const PB_URL = 'https://shatt-social-production.up.railway.app';
         const pb = new PocketBase(PB_URL);
         pb.autoCancellation(false);
 
-            async function cargarConfiguracionGlobal() {
-        const saved = localStorage.getItem('pocketbase_auth');
-        if (!saved) return;
-        
-        try {
-            const { token, model } = JSON.parse(saved);
-            pb.authStore.save(token, model);
-        } catch(e) { return; }
-        
-        if (!pb.authStore.isValid) return;
-        const currentUser = pb.authStore.model;
-        if (!currentUser) return;
-        
-        try {
-            const configs = await pb.collection('configuraciones').getList(1, 1, {
-                filter: `usuario = "${currentUser.id}"`
-            });
-            
-            if (configs.items.length > 0) {
-                const config = configs.items[0];
-                if (config.tema === 'dark') document.body.classList.add('dark-mode');
-                if (config.color_fondo) document.body.style.background = config.color_fondo;
-                if (config.opacidad) document.documentElement.style.setProperty('--panel-opacity', config.opacidad);
-                if (config.accent_color) document.documentElement.style.setProperty('--shatt-blue', config.accent_color);
-                if (config.tamaño_fuente) document.documentElement.style.fontSize = config.tamaño_fuente + 'px';
-                if (config.imagen_fondo) {
-                    try {
-                        const url = pb.files.getUrl(config, config.imagen_fondo);
-                        document.body.style.background = `url(${url}) center/cover fixed`;
-                    } catch(e) {}
-                }
-            }
-        } catch(e) {
-            console.error("Error cargando configuración:", e);
-        }
-    }
-
-    // Sincronizar entre pestañas
-    window.addEventListener('storage', function(e) {
-        if (e.key === 'shatt_config_update') {
-            cargarConfiguracionGlobal();
-        }
-    });
-
-    // Cargar configuración al inicio
-    document.addEventListener('DOMContentLoaded', function() {
-        cargarConfiguracionGlobal();
-    });
-
-
-
-        // ========== FUNCIONES DE UTILIDAD ==========
-        function mostrarToast(mensaje, isError = false) {
+        function mostrarToast(mensaje) {
             const toast = document.getElementById('toast');
-            toast.style.background = isError ? 'rgba(30,10,10,0.95)' : 'rgba(0,0,0,0.9)';
-            toast.style.color = isError ? '#ff8888' : '#fbc02d';
             toast.textContent = mensaje;
             toast.style.display = 'block';
             clearTimeout(toast._timeout);
             toast._timeout = setTimeout(() => toast.style.display = 'none', 2500);
         }
 
-        // ========== DISEÑO / PERSONALIZACIÓN ==========
-        function aplicarDiseno(fondo, opacidad) {
+        // ✅ CARGAR ESTILO DESDE USUARIOS (CAMPOS NUEVOS)
+        async function cargarEstilo() {
+            const saved = localStorage.getItem('pocketbase_auth');
+            if (!saved) return;
             try {
-                if (!fondo || fondo === 'none' || fondo === 'null' || fondo === 'undefined' || fondo === '') {
-                    fondo = '#3a6186';
-                }
-                if (fondo) {
-                    if (fondo.startsWith('url')) {
-                        document.body.style.backgroundImage = fondo;
-                        document.body.style.backgroundSize = 'cover';
-                        document.body.style.backgroundAttachment = 'fixed';
-                        document.body.style.backgroundPosition = 'center';
-                        document.body.style.backgroundColor = 'transparent';
-                    } else if (fondo.startsWith('linear-gradient')) {
-                        document.body.style.background = fondo;
-                        document.body.style.backgroundImage = 'none';
-                    } else {
-                        document.body.style.background = fondo;
-                        document.body.style.backgroundImage = 'none';
-                    }
-                }
-                if (opacidad !== undefined && opacidad !== null) {
-                    const val = parseFloat(opacidad);
-                    if (!isNaN(val) && val > 0) {
-                        document.documentElement.style.setProperty('--panel-opacity', val);
-                        const slider = document.getElementById('opacity-slider-global');
-                        if (slider) slider.value = val;
-                        const opacityValue = document.getElementById('opacity-value-global');
-                        if (opacityValue) opacityValue.textContent = Math.round(val * 100) + '%';
-                    }
-                }
-                document.body.style.backgroundColor = '#3a6186';
-            } catch(e) {
-                console.error("Error aplicando diseño:", e);
-                document.body.style.background = '#3a6186';
-                document.body.style.backgroundImage = 'none';
-            }
-        }
+                const { token, model } = JSON.parse(saved);
+                pb.authStore.save(token, model);
+                currentUser = model;
+            } catch(e) { return; }
 
-        async function cargarDisenoGuardado() {
-            if (!currentUser) return;
             try {
-                let local = localStorage.getItem('shatt_diseno');
-                let fondoAplicado = false;
-                if (local) {
+                const user = await pb.collection('usuarios').getOne(currentUser.id);
+                
+                if (user.imagen_fondo) {
                     try {
-                        let d = JSON.parse(local);
-                        if (d.fondo && d.fondo !== 'none' && d.fondo !== 'null') {
-                            aplicarDiseno(d.fondo, d.opacidad || 1);
-                            fondoAplicado = true;
-                        }
+                        const url = pb.files.getUrl(user, user.imagen_fondo);
+                        document.body.style.background = `url(${url}) center/cover fixed`;
                     } catch(e) {}
+                } else if (user.color_fondo) {
+                    document.body.style.background = user.color_fondo;
                 }
-                if (!fondoAplicado) {
-                    try {
-                        let user = await pb.collection('usuarios').getOne(currentUser.id);
-                        if (user.diseno && user.diseno.fondo && user.diseno.fondo !== 'none') {
-                            aplicarDiseno(user.diseno.fondo, user.diseno.opacidad || 1);
-                            fondoAplicado = true;
-                        }
-                    } catch(e) {}
-                }
-                if (!fondoAplicado) {
-                    aplicarDiseno('#3a6186', 1);
-                }
-                if (localStorage.getItem('shatt_darkmode') === 'true') {
-                    document.body.classList.add('dark-mode');
-                }
-            } catch(e) {
-                console.error("Error cargando diseño:", e);
-                aplicarDiseno('#3a6186', 1);
-            }
-        }
-
-        async function guardarDisenoGlobal() {
-            if (!currentUser) { mostrarToast("No hay usuario logueado", true); return; }
-            let fondoActual = document.body.style.backgroundImage || document.body.style.background || '#3a6186';
-            let opacidad = parseFloat(document.documentElement.style.getPropertyValue('--panel-opacity') || '1');
-            try {
-                await pb.collection('usuarios').update(currentUser.id, { diseno: { fondo: fondoActual, opacidad } });
-                localStorage.setItem('shatt_diseno', JSON.stringify({ fondo: fondoActual, opacidad }));
-                mostrarToast("✅ Diseño guardado");
-                cerrarModalesGlobal();
-            } catch(e) { mostrarToast("Error al guardar", true); }
+                
+                if (user.tema === 'dark') document.body.classList.add('dark-mode');
+                if (user.opacidad) document.documentElement.style.setProperty('--panel-opacity', user.opacidad);
+                if (user.accent_color) document.documentElement.style.setProperty('--shatt-blue', user.accent_color);
+                if (user.tamano_fuente) document.documentElement.style.fontSize = user.tamano_fuente + 'px';
+            } catch(e) {}
         }
 
         function abrirPersonalizacion() {
@@ -867,34 +299,31 @@
             document.getElementById('opacity-value-global').innerText = Math.round(v * 100) + '%';
         }
 
+        async function guardarDisenoGlobal() {
+            if (!currentUser) { mostrarToast("Inicia sesión"); return; }
+            const data = {
+                tema: document.body.classList.contains('dark-mode') ? 'dark' : 'light',
+                color_fondo: document.body.style.background || '#3a6186',
+                opacidad: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--panel-opacity').trim()) || 1,
+                accent_color: getComputedStyle(document.documentElement).getPropertyValue('--shatt-blue').trim() || '#3b5998',
+                tamano_fuente: parseInt(getComputedStyle(document.documentElement).fontSize) || 16
+            };
+            try {
+                await pb.collection('usuarios').update(currentUser.id, data);
+                mostrarToast("✅ Diseño guardado");
+                cerrarModalesGlobal();
+            } catch(e) { mostrarToast("Error al guardar"); }
+        }
+
         function cerrarSesion() { 
-            const cuentasGuardadas = localStorage.getItem('shatt_cuentas');
             pb.authStore.clear();
             localStorage.removeItem('pocketbase_auth');
-            if (cuentasGuardadas) {
-                localStorage.setItem('shatt_cuentas', cuentasGuardadas);
-            }
             window.location.href = "iniciarsesion.html";
         }
 
-        // ========== INICIALIZACIÓN ==========
-        (async function() {
-            const saved = localStorage.getItem('pocketbase_auth');
-            if (saved) {
-                try {
-                    const { token, model } = JSON.parse(saved);
-                    pb.authStore.save(token, model);
-                } catch(e) {}
-            }
-            if (!pb.authStore.isValid || !pb.authStore.model) {
-                window.location.href = "iniciarsesion.html";
-                return;
-            }
-            currentUser = pb.authStore.model;
-            await cargarDisenoGuardado();
-        })();
+        // Inicializar
+        cargarEstilo();
 
-        // ========== EXPOSICIÓN GLOBAL ==========
         window.abrirPersonalizacion = abrirPersonalizacion;
         window.guardarDisenoGlobal = guardarDisenoGlobal;
         window.cerrarModalesGlobal = cerrarModalesGlobal;
