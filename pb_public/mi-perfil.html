@@ -1916,6 +1916,119 @@
         window.cerrarBuscadorFullscreen = cerrarBuscadorFullscreen;
         window.previewPfp = previewPfp;
         window.mostrarInputPais = mostrarInputPais;
+
+        window.abrirBuscadorFullscreen = abrirBuscadorFullscreen;
+        window.cerrarBuscadorFullscreen = cerrarBuscadorFullscreen;
+
+
+        // ========== CARGAR ESTILO DEL USUARIO VISITADO ==========
+async function cargarEstiloVisitante() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const viewingUserId = urlParams.get('uid');
+    
+    if (!viewingUserId) return;
+    
+    console.log('🎨 Cargando estilo de:', viewingUserId);
+    
+    try {
+        const configs = await pb.collection('configuraciones').getList(1, 1, {
+            filter: `usuario = "${viewingUserId}"`
+        });
+        
+        if (configs.items.length > 0) {
+            const config = configs.items[0];
+            console.log('🎨 Config encontrada:', config.tema, config.color_fondo);
+            
+            // Aplicar tema
+            if (config.tema === 'dark') {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+            
+            // Aplicar fondo
+            if (config.imagen_fondo) {
+    try {
+        const url = pb.files.getUrl(config, config.imagen_fondo);
+        document.body.style.setProperty('background', `url(${url}) center/cover fixed`, 'important');
+    } catch(e) {
+        document.body.style.background = '#3a6186';
+    }
+} else if (config.color_fondo && config.color_fondo !== 'url_bg' && config.color_fondo !== 'none') {
+    document.body.style.setProperty('background', config.color_fondo, 'important');
+} else {
+    // 🆕 SIEMPRE tener un color de respaldo
+    document.body.style.background = '#3a6186';
+}
+            
+            // Opacidad
+            if (config.opacidad) {
+                document.documentElement.style.setProperty('--panel-opacity', config.opacidad);
+            }
+            
+            // Acento
+            if (config.accent_color) {
+                document.documentElement.style.setProperty('--shatt-blue', config.accent_color);
+            }
+            
+            console.log('✅ Estilo aplicado');
+        } else {
+            console.log('⚠️ Usuario sin configuración');
+        }
+    } catch(e) {
+        console.error('Error cargando estilo:', e);
+    }
+}
+
+// Ejecutar DESPUÉS de que todo esté cargado
+setTimeout(() => {
+    cargarEstiloVisitante();
+}, 1000);
+
+
     </script>
+    <script>
+(async function() {
+    // 1. Aplicar caché local primero (instantáneo)
+    var bg = localStorage.getItem('shatt_bg_cache');
+    var dark = localStorage.getItem('shatt_darkmode_cache');
+    var opacity = localStorage.getItem('shatt_opacity_cache');
+    var accent = localStorage.getItem('shatt_accent_cache');
+    var fontSize = localStorage.getItem('shatt_fontsize_cache');
+    
+    if (bg && bg !== 'null') document.body.style.background = bg;
+    if (dark === 'true') document.body.classList.add('dark-mode');
+    if (opacity) document.documentElement.style.setProperty('--panel-opacity', opacity);
+    if (accent) document.documentElement.style.setProperty('--shatt-blue', accent);
+    if (fontSize) document.documentElement.style.fontSize = fontSize + 'px';
+    
+    // 2. Si no hay caché, cargar desde PocketBase
+    if (!bg || bg === 'null') {
+        var saved = localStorage.getItem('pocketbase_auth');
+        if (!saved) return;
+        try {
+            var parsed = JSON.parse(saved);
+            var pb2 = new PocketBase('https://shatt-social-production.up.railway.app');
+            pb2.authStore.save(parsed.token, parsed.model);
+            var user = await pb2.collection('usuarios').getOne(parsed.model.id);
+            
+            if (user.imagen_fondo) {
+                try {
+                    var url = pb2.files.getUrl(user, user.imagen_fondo);
+                    document.body.style.background = 'url(' + url + ') center/cover fixed';
+                    localStorage.setItem('shatt_bg_cache', document.body.style.background);
+                } catch(e) {}
+            } else if (user.color_fondo) {
+                document.body.style.background = user.color_fondo;
+                localStorage.setItem('shatt_bg_cache', user.color_fondo);
+            }
+            if (user.tema === 'dark') document.body.classList.add('dark-mode');
+            if (user.opacidad) document.documentElement.style.setProperty('--panel-opacity', user.opacidad);
+            if (user.accent_color) document.documentElement.style.setProperty('--shatt-blue', user.accent_color);
+            if (user.tamano_fuente) document.documentElement.style.fontSize = user.tamano_fuente + 'px';
+        } catch(e) {}
+    }
+})();
+</script>
 </body>
 </html>
