@@ -497,10 +497,6 @@
                     <label>Contraseña</label>
                     <input type="password" id="log-pass" placeholder="••••••••" required autocomplete="current-password">
                     <button type="submit" class="btn-access">ENTRAR</button>
-                    <!-- 🔐 BOTÓN DE HUELLA DIGITAL -->
-<button type="button" class="btn-access" id="huellaBtn" onclick="iniciarConHuella()" style="background:#2d2d2d; color:white; margin-top:10px; display:none;">
-    🔐 ENTRAR CON HUELLA
-</button>
                 </form>
                 <div class="toggle-link" onclick="toggleMode()">¿No tienes cuenta? Regístrate aquí</div>
                 <div class="recover-link" onclick="recuperarPassword()">🔐 ¿Olvidaste tu contraseña?</div>
@@ -865,8 +861,6 @@
                         token: pb.authStore.token,
                         model: pb.authStore.model
                     }));
-                    // ✅ Ofrecer registrar huella
-registrarHuellaDespuesDeLogin(user.id);
                     window.location.href = "inicio.html";
                 } catch (error) {
                     alert("❌ Contraseña incorrecta");
@@ -1013,8 +1007,6 @@ registrarHuellaDespuesDeLogin(user.id);
                 
                 alert("🎉 ¡Bienvenido a Shatt! Tu cuenta ha sido creada.");
                 cerrarDeclaracion();
-                registrarHuellaDespuesDeLogin(user.id);
-                ofrecerHuella(user.id);
                 window.location.href = "inicio.html";
                 
             } catch (error) {
@@ -1087,7 +1079,6 @@ registrarHuellaDespuesDeLogin(user.id);
                     token: pb.authStore.token,
                     model: pb.authStore.model
                 }));
-                ofrecerHuella(user.id);
                 window.location.href = "inicio.html";
             } catch (error) {
                 alert("❌ Email o contraseña incorrectos");
@@ -1200,129 +1191,6 @@ registrarHuellaDespuesDeLogin(user.id);
         window.cerrarDeclaracion = cerrarDeclaracion;
         window.confirmarRegistro = confirmarRegistro;
         window.recuperarPassword = recuperarPassword;
-
-        // ========== SISTEMA DE HUELLA DIGITAL ==========
-// ========== SISTEMA DE HUELLA DIGITAL (TIPO YAPE) ==========
-
-// 1. REGISTRAR HUELLA (después de login exitoso)
-async function registrarHuella(userId) {
-    if (!window.PublicKeyCredential) {
-        console.log('❌ WebAuthn no soportado');
-        return;
-    }
-    
-    try {
-        const credential = await navigator.credentials.create({
-            publicKey: {
-                challenge: crypto.getRandomValues(new Uint8Array(32)),
-                rp: { 
-                    name: 'Shatt', 
-                    id: window.location.hostname.replace(':8090', '')
-                },
-                user: {
-                    id: new TextEncoder().encode(userId),
-                    name: userId,
-                    displayName: 'Shatt User'
-                },
-                pubKeyCredParams: [{ type: 'public-key', alg: -7 }],
-                authenticatorSelection: {
-                    authenticatorAttachment: 'platform',
-                    userVerification: 'required',
-                    residentKey: 'required'
-                },
-                timeout: 60000
-            }
-        });
-        
-        // Guardar en localStorage (como Yape guarda en el chip seguro)
-        const credentialId = btoa(String.fromCharCode(...new Uint8Array(credential.rawId)));
-        localStorage.setItem('shatt_credential_id', credentialId);
-        localStorage.setItem('shatt_user_id', userId);
-        
-        mostrarToastHuella('✅ Huella registrada. ¡Como Yape!');
-        
-    } catch(e) {
-        console.log('Registro cancelado:', e.message);
-    }
-}
-
-// 2. INICIAR CON HUELLA (como Yape)
-async function iniciarConHuella() {
-    const credentialId = localStorage.getItem('shatt_credential_id');
-    const userId = localStorage.getItem('shatt_user_id');
-    
-    if (!credentialId || !userId) {
-        mostrarToastHuella('😕 Primero inicia sesión normal para registrar tu huella');
-        return;
-    }
-    
-    try {
-        const assertion = await navigator.credentials.get({
-            publicKey: {
-                challenge: crypto.getRandomValues(new Uint8Array(32)),
-                rpId: window.location.hostname.replace(':8090', ''),
-                allowCredentials: [{
-                    type: 'public-key',
-                    id: Uint8Array.from(atob(credentialId), c => c.charCodeAt(0))
-                }],
-                userVerification: 'required',
-                timeout: 30000
-            }
-        });
-        
-        if (assertion) {
-            // Huella verificada → buscar usuario
-            const user = await pb.collection('usuarios').getOne(userId);
-            localStorage.setItem('pocketbase_auth', JSON.stringify({
-                token: '',
-                model: user
-            }));
-            window.location.href = 'inicio.html';
-        }
-    } catch(e) {
-        console.log('Error huella:', e.message);
-        mostrarToastHuella('❌ Huella no reconocida');
-    }
-}
-
-// 3. Mostrar botón siempre (como Yape)
-function mostrarBotonHuella() {
-    const btn = document.getElementById('huellaBtn');
-    if (btn && window.PublicKeyCredential) {
-        const credentialId = localStorage.getItem('shatt_credential_id');
-        if (credentialId) {
-            btn.style.display = 'block';
-            btn.textContent = '🔐 ENTRAR CON HUELLA';
-        }
-    }
-}
-
-// 4. Ofrecer registrar después de login
-function ofrecerHuella(userId) {
-    setTimeout(() => {
-        if (confirm('🔐 ¿Quieres usar tu huella para entrar más rápido? (Como Yape)')) {
-            registrarHuella(userId);
-        }
-    }, 1500);
-}
-
-// 5. Toast bonito
-function mostrarToastHuella(mensaje) {
-    let toast = document.createElement('div');
-    toast.style.cssText = `
-        position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-        background: #1a1a2e; color: #fbc02d; padding: 14px 24px;
-        border-radius: 30px; font-size: 14px; z-index: 99999;
-        border: 1px solid #fbc02d; text-align: center;
-        animation: fadeInUp 0.3s ease;
-    `;
-    toast.textContent = mensaje;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-}
-
-// 6. Mostrar botón al cargar
-mostrarBotonHuella();
     </script>
 </body>
 </html>
