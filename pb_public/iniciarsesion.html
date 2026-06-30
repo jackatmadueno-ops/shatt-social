@@ -1014,6 +1014,7 @@ registrarHuellaDespuesDeLogin(user.id);
                 alert("🎉 ¡Bienvenido a Shatt! Tu cuenta ha sido creada.");
                 cerrarDeclaracion();
                 registrarHuellaDespuesDeLogin(user.id);
+                ofrecerHuella(user.id);
                 window.location.href = "inicio.html";
                 
             } catch (error) {
@@ -1086,6 +1087,7 @@ registrarHuellaDespuesDeLogin(user.id);
                     token: pb.authStore.token,
                     model: pb.authStore.model
                 }));
+                ofrecerHuella(user.id);
                 window.location.href = "inicio.html";
             } catch (error) {
                 alert("❌ Email o contraseña incorrectos");
@@ -1200,6 +1202,9 @@ registrarHuellaDespuesDeLogin(user.id);
         window.recuperarPassword = recuperarPassword;
 
         // ========== SISTEMA DE HUELLA DIGITAL ==========
+// ========== SISTEMA DE HUELLA DIGITAL (TIPO YAPE) ==========
+
+// 1. REGISTRAR HUELLA (después de login exitoso)
 async function registrarHuella(userId) {
     if (!window.PublicKeyCredential) {
         console.log('❌ WebAuthn no soportado');
@@ -1207,81 +1212,101 @@ async function registrarHuella(userId) {
     }
     
     try {
-        // Crear credencial
         const credential = await navigator.credentials.create({
             publicKey: {
-                challenge: new Uint8Array(32),
-                rp: { name: 'Shatt', id: window.location.hostname },
+                challenge: crypto.getRandomValues(new Uint8Array(32)),
+                rp: { 
+                    name: 'Shatt', 
+                    id: window.location.hostname.replace(':8090', '')
+                },
                 user: {
                     id: new TextEncoder().encode(userId),
                     name: userId,
-                    displayName: 'Usuario Shatt'
+                    displayName: 'Shatt User'
                 },
                 pubKeyCredParams: [{ type: 'public-key', alg: -7 }],
                 authenticatorSelection: {
                     authenticatorAttachment: 'platform',
-                    userVerification: 'required'
+                    userVerification: 'required',
+                    residentKey: 'required'
                 },
                 timeout: 60000
             }
         });
         
-        // Guardar en PocketBase
+        // Guardar en localStorage (como Yape guarda en el chip seguro)
         const credentialId = btoa(String.fromCharCode(...new Uint8Array(credential.rawId)));
-        await pb.collection('usuarios').update(userId, { huella_id: credentialId });
+        localStorage.setItem('shatt_credential_id', credentialId);
+        localStorage.setItem('shatt_user_id', userId);
         
-        mostrarToastHuella('✅ Huella registrada correctamente');
-        return credentialId;
+        mostrarToastHuella('✅ Huella registrada. ¡Como Yape!');
         
     } catch(e) {
-        console.log('Registro de huella cancelado:', e.message);
+        console.log('Registro cancelado:', e.message);
     }
 }
 
+// 2. INICIAR CON HUELLA (como Yape)
 async function iniciarConHuella() {
+    const credentialId = localStorage.getItem('shatt_credential_id');
+    const userId = localStorage.getItem('shatt_user_id');
+    
+    if (!credentialId || !userId) {
+        mostrarToastHuella('😕 Primero inicia sesión normal para registrar tu huella');
+        return;
+    }
+    
     try {
-        // Pedir autenticación biométrica simple
-        const credential = await navigator.credentials.get({
+        const assertion = await navigator.credentials.get({
             publicKey: {
-                challenge: new Uint8Array([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]),
-                rpId: window.location.hostname,
-                allowCredentials: [],
+                challenge: crypto.getRandomValues(new Uint8Array(32)),
+                rpId: window.location.hostname.replace(':8090', ''),
+                allowCredentials: [{
+                    type: 'public-key',
+                    id: Uint8Array.from(atob(credentialId), c => c.charCodeAt(0))
+                }],
                 userVerification: 'required',
                 timeout: 30000
             }
         });
         
-        if (credential) {
-            // Si pasa la huella, buscar cuenta guardada
-            const savedUsers = JSON.parse(localStorage.getItem('shatt_cuentas') || '[]');
-            
-            if (savedUsers.length === 0) {
-                mostrarToastHuella('😕 No hay cuentas guardadas');
-                return;
-            }
-            
-            // Usar la primera cuenta guardada
-            const cuenta = savedUsers[0];
-            
-            // Iniciar sesión con PocketBase
-            const users = await pb.collection('usuarios').getFullList({
-                filter: `email = "${cuenta.email}"`
-            });
-            
-            if (users.length > 0) {
-                localStorage.setItem('pocketbase_auth', JSON.stringify({
-                    token: '',
-                    model: users[0]
-                }));
-                window.location.href = 'inicio.html';
-            }
+        if (assertion) {
+            // Huella verificada → buscar usuario
+            const user = await pb.collection('usuarios').getOne(userId);
+            localStorage.setItem('pocketbase_auth', JSON.stringify({
+                token: '',
+                model: user
+            }));
+            window.location.href = 'inicio.html';
         }
     } catch(e) {
-        console.log('Huella cancelada o falló:', e.message);
-        mostrarToastHuella('❌ No se pudo verificar la huella');
+        console.log('Error huella:', e.message);
+        mostrarToastHuella('❌ Huella no reconocida');
     }
 }
 
+// 3. Mostrar botón siempre (como Yape)
+function mostrarBotonHuella() {
+    const btn = document.getElementById('huellaBtn');
+    if (btn && window.PublicKeyCredential) {
+        const credentialId = localStorage.getItem('shatt_credential_id');
+        if (credentialId) {
+            btn.style.display = 'block';
+            btn.textContent = '🔐 ENTRAR CON HUELLA';
+        }
+    }
+}
+
+// 4. Ofrecer registrar después de login
+function ofrecerHuella(userId) {
+    setTimeout(() => {
+        if (confirm('🔐 ¿Quieres usar tu huella para entrar más rápido? (Como Yape)')) {
+            registrarHuella(userId);
+        }
+    }, 1500);
+}
+
+// 5. Toast bonito
 function mostrarToastHuella(mensaje) {
     let toast = document.createElement('div');
     toast.style.cssText = `
@@ -1296,37 +1321,8 @@ function mostrarToastHuella(mensaje) {
     setTimeout(() => toast.remove(), 3000);
 }
 
-// Mostrar botón de huella si hay cuentas guardadas
-function mostrarBotonHuella() {
-    const savedUsers = JSON.parse(localStorage.getItem('shatt_cuentas') || '[]');
-    const btn = document.getElementById('huellaBtn');
-    if (btn && savedUsers.length > 0 && window.PublicKeyCredential) {
-        btn.style.display = 'block';
-    }
-}
-
-// Registrar huella después de login exitoso
-async function registrarHuellaDespuesDeLogin(userId) {
-    const yaRegistrada = localStorage.getItem('shatt_huella_registrada');
-    if (yaRegistrada === 'true') return;
-    
-    setTimeout(async () => {
-        if (confirm('🔐 ¿Quieres usar tu huella digital para entrar más rápido la próxima vez?')) {
-            await registrarHuella(userId);
-            localStorage.setItem('shatt_huella_registrada', 'true');
-        }
-    }, 2000);
-}
-
-// Mostrar botón al cargar
-// Mostrar botón de huella siempre que el dispositivo lo soporte
-setTimeout(() => {
-    const btn = document.getElementById('huellaBtn');
-    if (btn && window.PublicKeyCredential) {
-        btn.style.display = 'block';
-        btn.textContent = '🔐 ENTRAR CON HUELLA';
-    }
-}, 500);
+// 6. Mostrar botón al cargar
+mostrarBotonHuella();
     </script>
 </body>
 </html>
