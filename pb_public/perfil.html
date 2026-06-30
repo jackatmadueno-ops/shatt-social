@@ -764,7 +764,9 @@ body.theme-y2k .profile-mobile-card {
     margin-bottom: 16px;
     display: none;
 }
+/* Solo PC */
 @media (min-width: 769px) { .music-player-pc { display: flex !important; } }
+@media (max-width: 768px) { .music-player-pc { display: none !important; } }
 .music-pc-inner { display: flex; align-items: center; gap: 14px; width: 100%; flex-wrap: wrap; }
 .music-pc-icon { font-size: 28px; animation: bounceIcon 0.5s ease infinite alternate; }
 @keyframes bounceIcon { 0% { transform: translateY(0); } 100% { transform: translateY(-4px); } }
@@ -826,9 +828,10 @@ body.theme-y2k .profile-mobile-card {
 .music-toast-info div:first-child { font-size:12px; font-weight:bold; color:#fff; }
 .music-toast-info div:last-child { font-size:10px; color:#aaa; }
 
-@media (max-width:768px) {
-    .music-bubble { display:flex !important; }
-    .music-toast { display:flex !important; }
+@media (max-width: 768px) {
+    .music-player-pc { display: none !important; }
+    .music-bubble { display: flex !important; }
+    .music-toast { display: flex !important; }
 }
 
 /* Temas PC */
@@ -847,6 +850,15 @@ body.theme-metro .music-bubble { background:linear-gradient(135deg,#ff8c00,#ffb7
 body.theme-darkaero .music-bubble { background:linear-gradient(135deg,#00e5ff,#7cff7c); }
 body.theme-y2k .music-bubble { background:linear-gradient(135deg,#ff2d95,#ff80ab); }
 
+/* Ocultar en móvil */
+@media (max-width: 768px) {
+    .music-pc-only { display: none !important; }
+}
+
+/* Mostrar en PC */
+@media (min-width: 769px) {
+    .music-pc-only { display: block !important; }
+}
     </style>
 </head>
 <body>
@@ -914,7 +926,8 @@ body.theme-y2k .music-bubble { background:linear-gradient(135deg,#ff2d95,#ff80ab
                 <div class="panel-retro"><div class="blurb-title">📝 Sobre mí</div><div id="disp-about" style="font-size:14px;line-height:1.5;">Cargando...</div></div>
 
                 <!-- 🎵 MÚSICA DE PERFIL (PC) -->
-            <div id="musicPlayerPC" class="panel-retro">
+            <!-- 🎵 MÚSICA DE PERFIL (PC) -->
+            <div id="musicPlayerPC" class="panel-retro music-pc-only">
                 <div class="blurb-title">🎵 Música de perfil</div>
                 <div style="display:flex; align-items:center; gap:12px; padding:8px 0;">
                     <div style="font-size:32px;">🎵</div>
