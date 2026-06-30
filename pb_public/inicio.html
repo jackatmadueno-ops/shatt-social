@@ -2029,6 +2029,666 @@ body.dark-mode .mention-suggestions-floating .mention-item .mention-item-email {
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
+/* ========== SELECTOR DE TEMAS ========== */
+.theme-selector {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.theme-card {
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    padding: 8px;
+    border-radius: 16px;
+    border: 2px solid transparent;
+    position: relative;
+}
+
+.theme-card:hover {
+    transform: translateY(-3px);
+}
+
+.theme-card:active {
+    transform: scale(0.95);
+}
+
+.theme-card.active {
+    border-color: #fbc02d;
+    background: rgba(251, 192, 45, 0.1);
+    box-shadow: 0 0 20px rgba(251, 192, 45, 0.2);
+}
+
+.theme-card.active::after {
+    content: '✓';
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #fbc02d;
+    color: #000;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popIn {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+}
+
+.theme-preview {
+    width: 60px;
+    height: 40px;
+    border-radius: 10px;
+    margin: 0 auto 6px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.theme-preview.frutiger {
+    background: linear-gradient(135deg, #7CB8E4 0%, #3a6186 100%);
+}
+
+.theme-preview.dorf {
+    background: linear-gradient(135deg, #f4511e 0%, #2d2d2d 100%);
+}
+
+.theme-preview.metro {
+    background: linear-gradient(135deg, #ff8c00 0%, #1a1a1a 100%);
+}
+
+.theme-preview.darkaero {
+    background: linear-gradient(135deg, #00e5ff 0%, #0a0a1a 100%);
+}
+
+.theme-preview.y2k {
+    background: linear-gradient(135deg, #ff2d95 0%, #1a1a2e 100%);
+}
+
+.theme-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.theme-card.active .theme-glow {
+    opacity: 1;
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0%, 100% { transform: translate(-10%, -10%); }
+    50% { transform: translate(10%, 10%); }
+}
+
+.theme-name {
+    font-size: 10px;
+    font-weight: 600;
+    color: #666;
+    display: block;
+}
+
+/* ========== TEMAS GLOBALES ========== */
+/* ============================================= */
+/*  SHATT THEMES - 6 Temas Visuales Completos     */
+/* ============================================= */
+
+/* ========== SELECTOR DE TEMAS ========== */
+.theme-selector {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.theme-card {
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    padding: 8px;
+    border-radius: 16px;
+    border: 2px solid transparent;
+    position: relative;
+    width: 70px;
+}
+.theme-card:hover { transform: translateY(-4px); }
+.theme-card:active { transform: scale(0.93); }
+.theme-card.active {
+    border-color: #fbc02d;
+    background: rgba(251, 192, 45, 0.1);
+    box-shadow: 0 0 20px rgba(251, 192, 45, 0.25);
+}
+.theme-card.active::after {
+    content: '✓';
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    background: #fbc02d;
+    color: #000;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes popIn {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+}
+.theme-preview {
+    width: 54px;
+    height: 36px;
+    border-radius: 10px;
+    margin: 0 auto 6px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+.theme-preview::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transform: skewX(-20deg);
+    animation: glassShine 3s infinite;
+}
+@keyframes glassShine {
+    0%, 100% { left: -100%; }
+    50% { left: 150%; }
+}
+.theme-name {
+    font-size: 9px;
+    font-weight: 700;
+    color: #666;
+    display: block;
+    letter-spacing: 0.3px;
+}
+
+/* Vistas previas */
+.theme-preview.shatt {
+    background: linear-gradient(135deg, #3a6186 0%, #5a8fbf 50%, #3a6186 100%);
+    background-size: 200% 200%;
+    animation: bgMove 3s ease infinite;
+}
+.theme-preview.frutiger {
+    background: linear-gradient(180deg, #87CEEB 0%, #4a90d9 40%, #2d8a4e 70%, #1a5c2a 100%);
+    position: relative;
+}
+.theme-preview.frutiger::before {
+    content: '🐟';
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    font-size: 10px;
+    animation: fishSwim 4s infinite;
+}
+@keyframes fishSwim {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(-15px); }
+}
+.theme-preview.dorf {
+    background: linear-gradient(135deg, #f4511e 0%, #2d2d2d 60%, #1a1a1a 100%);
+    border: 1px solid #f4511e;
+}
+.theme-preview.metro {
+    background: #1a1a1a;
+    position: relative;
+    overflow: hidden;
+}
+.theme-preview.metro::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #ff8c00;
+    animation: metroLine 2s infinite;
+}
+@keyframes metroLine {
+    0% { width: 0; }
+    50% { width: 100%; }
+    100% { width: 0; left: 100%; }
+}
+.theme-preview.darkaero {
+    background: radial-gradient(ellipse at top left, #0a0a1a 0%, #0d1b2a 50%, #1b2838 100%);
+    position: relative;
+}
+.theme-preview.darkaero::before {
+    content: '✦';
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    font-size: 8px;
+    color: #00e5ff;
+    animation: twinkle 1.5s infinite;
+}
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; transform: scale(1.5); }
+}
+.theme-preview.y2k {
+    background: linear-gradient(135deg, #ff2d95 0%, #4a0e4e 50%, #1a1a2e 100%);
+    position: relative;
+    overflow: hidden;
+}
+.theme-preview.y2k::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,255,255,0.05) 3px, rgba(255,255,255,0.05) 4px);
+    animation: scanLines 0.1s infinite;
+}
+@keyframes scanLines {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(4px); }
+}
+@keyframes bgMove {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* ============================================= */
+/* 🔵 TEMA 1: SHATT ORIGINAL                     */
+/* ============================================= */
+body.theme-shatt {
+    --bg-main: #3a6186;
+    --bg-panel: rgba(255, 255, 255, 0.95);
+    --text-main: #000;
+    --accent: #3b5998;
+    --accent-glow: rgba(59, 89, 152, 0.3);
+    --navbar-bg: linear-gradient(180deg, #ffffff 0%, #d1d1d1 100%);
+    --btn-bg: #e0e0e0;
+    --btn-text: #000;
+    --post-bg: rgba(255, 255, 255, 0.95);
+    --border-color: #000;
+    --border-style: 2px solid #000;
+    --shadow: 4px 4px 0px rgba(0,0,0,0.2);
+    --reaction-bg: #f0f0f0;
+    --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --glass: none;
+}
+body.theme-shatt {
+    background: var(--bg-main);
+    font-family: var(--font-main);
+}
+
+/* 🌊 TEMA 2: FRUTIGER AERO */
+body.theme-frutiger {
+    --bg-main: linear-gradient(180deg, #87CEEB 0%, #b8e6f0 30%, #7ec8a0 70%, #3d8b5e 100%);
+    --bg-panel: rgba(255, 255, 255, 0.6);
+    --text-main: #1a3c2a;
+    --accent: #2d8a4e;
+    --accent-glow: rgba(45, 138, 78, 0.4);
+    --navbar-bg: rgba(255, 255, 255, 0.7);
+    --btn-bg: rgba(255, 255, 255, 0.8);
+    --btn-text: #1a3c2a;
+    --post-bg: rgba(255, 255, 255, 0.55);
+    --border-color: rgba(45, 138, 78, 0.5);
+    --border-style: 1.5px solid rgba(45, 138, 78, 0.5);
+    --shadow: 0 8px 32px rgba(45, 138, 78, 0.15);
+    --reaction-bg: rgba(45, 138, 78, 0.1);
+    --font-main: 'Segoe UI', -apple-system, sans-serif;
+    --glass: blur(20px) saturate(180%);
+}
+body.theme-frutiger {
+    background: var(--bg-main);
+    background-attachment: fixed;
+    font-family: var(--font-main);
+}
+body.theme-frutiger::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(255,255,255,0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(135,206,235,0.4) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(144,238,144,0.2) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: -1;
+}
+body.theme-frutiger .panel-retro,
+body.theme-frutiger .post,
+body.theme-frutiger .publish-area {
+    background: rgba(255, 255, 255, 0.5) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.4) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 8px 32px rgba(45, 138, 78, 0.12), inset 0 1px 0 rgba(255,255,255,0.5) !important;
+}
+body.theme-frutiger .navbar-top {
+    background: rgba(255, 255, 255, 0.65) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.5) !important;
+    border-radius: 20px !important;
+}
+body.theme-frutiger .btn-retro {
+    background: rgba(255, 255, 255, 0.7) !important;
+    border: 1.5px solid rgba(45, 138, 78, 0.4) !important;
+    border-radius: 30px !important;
+    box-shadow: 0 4px 15px rgba(45, 138, 78, 0.15) !important;
+    color: #1a3c2a !important;
+}
+body.theme-frutiger .star-rating .star.active {
+    color: #2d8a4e !important;
+    text-shadow: 0 0 10px rgba(45, 138, 78, 0.5) !important;
+}
+
+/* 🏢 TEMA 3: DORFic */
+body.theme-dorf {
+    --bg-main: #1a1a1a;
+    --bg-panel: #2d2d2d;
+    --text-main: #e0e0e0;
+    --accent: #f4511e;
+    --accent-glow: rgba(244, 81, 30, 0.3);
+    --navbar-bg: #141414;
+    --btn-bg: #3d3d3d;
+    --btn-text: #fff;
+    --post-bg: #2d2d2d;
+    --border-color: #f4511e;
+    --border-style: 2px solid #f4511e;
+    --shadow: 6px 6px 0px rgba(244, 81, 30, 0.3);
+    --reaction-bg: #3d3d3d;
+    --font-main: 'Courier New', monospace;
+    --glass: none;
+}
+body.theme-dorf {
+    background: var(--bg-main);
+    font-family: var(--font-main);
+}
+body.theme-dorf::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(244,81,30,0.03) 2px, rgba(244,81,30,0.03) 4px);
+    pointer-events: none;
+    z-index: -1;
+}
+body.theme-dorf .panel-retro,
+body.theme-dorf .post,
+body.theme-dorf .publish-area {
+    background: #2d2d2d !important;
+    border: 2px solid #f4511e !important;
+    border-radius: 0px !important;
+    box-shadow: 6px 6px 0px rgba(244, 81, 30, 0.3) !important;
+    color: #e0e0e0 !important;
+}
+body.theme-dorf .navbar-top {
+    background: #141414 !important;
+    border: 2px solid #f4511e !important;
+    border-radius: 0px !important;
+    color: #fff !important;
+}
+body.theme-dorf .btn-retro {
+    background: #f4511e !important;
+    border: none !important;
+    color: #fff !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%) !important;
+    border-radius: 0 !important;
+}
+body.theme-dorf .navbar-top a,
+body.theme-dorf .navbar-top span { color: #f4511e !important; }
+body.theme-dorf .star-rating .star { color: #555 !important; }
+body.theme-dorf .star-rating .star.active { color: #f4511e !important; }
+
+/* 🪟 TEMA 4: FRUTIGER METRO */
+body.theme-metro {
+    --bg-main: #0f0f0f;
+    --bg-panel: #1a1a1a;
+    --text-main: #fff;
+    --accent: #ff8c00;
+    --accent-glow: rgba(255, 140, 0, 0.3);
+    --navbar-bg: #000;
+    --btn-bg: #ff8c00;
+    --btn-text: #000;
+    --post-bg: #1a1a1a;
+    --border-color: #333;
+    --border-style: 1px solid #333;
+    --shadow: none;
+    --reaction-bg: #252525;
+    --font-main: 'Segoe UI', -apple-system, sans-serif;
+    --glass: none;
+}
+body.theme-metro {
+    background: var(--bg-main);
+    font-family: var(--font-main);
+}
+body.theme-metro .panel-retro,
+body.theme-metro .post,
+body.theme-metro .publish-area {
+    background: #1a1a1a !important;
+    border: 1px solid #333 !important;
+    border-radius: 0px !important;
+    box-shadow: none !important;
+    color: #fff !important;
+}
+body.theme-metro .navbar-top {
+    background: #000 !important;
+    border-bottom: 3px solid #ff8c00 !important;
+    border-radius: 0 !important;
+    color: #fff !important;
+}
+body.theme-metro .btn-retro {
+    background: #ff8c00 !important;
+    border: none !important;
+    color: #000 !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
+}
+body.theme-metro .navbar-top a,
+body.theme-metro .navbar-top span { color: #fff !important; }
+body.theme-metro .navbar-top a.active { background: #ff8c00 !important; color: #000 !important; }
+body.theme-metro .star-rating .star { color: #444 !important; }
+body.theme-metro .star-rating .star.active { color: #ff8c00 !important; }
+
+/* 🌑 TEMA 5: DARK AERO */
+body.theme-darkaero {
+    --bg-main: #06060f;
+    --bg-panel: rgba(15, 15, 35, 0.7);
+    --text-main: #d0e8ff;
+    --accent: #00e5ff;
+    --accent-glow: rgba(0, 229, 255, 0.4);
+    --navbar-bg: rgba(10, 10, 30, 0.8);
+    --btn-bg: rgba(0, 229, 255, 0.15);
+    --btn-text: #00e5ff;
+    --post-bg: rgba(15, 15, 35, 0.65);
+    --border-color: rgba(0, 229, 255, 0.3);
+    --border-style: 1px solid rgba(0, 229, 255, 0.3);
+    --shadow: 0 0 30px rgba(0, 229, 255, 0.1);
+    --reaction-bg: rgba(0, 229, 255, 0.08);
+    --font-main: -apple-system, sans-serif;
+    --glass: blur(24px) saturate(180%);
+}
+body.theme-darkaero {
+    background: var(--bg-main);
+    font-family: var(--font-main);
+}
+body.theme-darkaero::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+        radial-gradient(ellipse at 30% 20%, rgba(0, 229, 255, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 80%, rgba(100, 100, 255, 0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: -1;
+}
+body.theme-darkaero .panel-retro,
+body.theme-darkaero .post,
+body.theme-darkaero .publish-area {
+    background: rgba(15, 15, 35, 0.6) !important;
+    backdrop-filter: blur(24px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+    border: 1px solid rgba(0, 229, 255, 0.25) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 0 30px rgba(0, 229, 255, 0.08), inset 0 1px 0 rgba(255,255,255,0.03) !important;
+    color: #d0e8ff !important;
+}
+body.theme-darkaero .navbar-top {
+    background: rgba(10, 10, 30, 0.75) !important;
+    backdrop-filter: blur(24px) !important;
+    border: 1px solid rgba(0, 229, 255, 0.3) !important;
+    border-radius: 18px !important;
+}
+body.theme-darkaero .btn-retro {
+    background: rgba(0, 229, 255, 0.12) !important;
+    border: 1px solid rgba(0, 229, 255, 0.35) !important;
+    border-radius: 30px !important;
+    color: #00e5ff !important;
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.1) !important;
+}
+body.theme-darkaero .navbar-top a,
+body.theme-darkaero .navbar-top span { color: #d0e8ff !important; }
+body.theme-darkaero .star-rating .star { color: rgba(0, 229, 255, 0.3) !important; }
+body.theme-darkaero .star-rating .star.active { color: #00e5ff !important; text-shadow: 0 0 12px rgba(0, 229, 255, 0.6) !important; }
+
+/* 🌀 TEMA 6: Y2K CYBER */
+body.theme-y2k {
+    --bg-main: #1a1a2e;
+    --bg-panel: rgba(25, 25, 45, 0.9);
+    --text-main: #fff;
+    --accent: #ff2d95;
+    --accent-glow: rgba(255, 45, 149, 0.4);
+    --navbar-bg: linear-gradient(180deg, #2a2a4a 0%, #1a1a2e 100%);
+    --btn-bg: rgba(255, 45, 149, 0.2);
+    --btn-text: #ff2d95;
+    --post-bg: rgba(25, 25, 45, 0.85);
+    --border-color: rgba(255, 45, 149, 0.5);
+    --border-style: 2px solid rgba(255, 45, 149, 0.5);
+    --shadow: 0 0 20px rgba(255, 45, 149, 0.2);
+    --reaction-bg: rgba(255, 45, 149, 0.1);
+    --font-main: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+    --glass: blur(10px);
+}
+body.theme-y2k {
+    background: var(--bg-main);
+    font-family: var(--font-main);
+}
+body.theme-y2k::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+        repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,45,149,0.04) 3px, rgba(255,45,149,0.04) 6px);
+    pointer-events: none;
+    z-index: -1;
+}
+body.theme-y2k .panel-retro,
+body.theme-y2k .post,
+body.theme-y2k .publish-area {
+    background: rgba(25, 25, 45, 0.8) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 2px solid rgba(255, 45, 149, 0.4) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 0 25px rgba(255, 45, 149, 0.2), 0 0 5px rgba(255, 45, 149, 0.1) !important;
+    color: #fff !important;
+}
+body.theme-y2k .navbar-top {
+    background: linear-gradient(180deg, #2a2a4a 0%, #1a1a2e 100%) !important;
+    border: 2px solid rgba(255, 45, 149, 0.5) !important;
+    border-radius: 16px !important;
+}
+body.theme-y2k .btn-retro {
+    background: rgba(255, 45, 149, 0.2) !important;
+    border: 2px solid rgba(255, 45, 149, 0.5) !important;
+    border-radius: 25px !important;
+    color: #ff2d95 !important;
+    text-shadow: 0 0 8px rgba(255, 45, 149, 0.5) !important;
+    box-shadow: 0 0 15px rgba(255, 45, 149, 0.25) !important;
+}
+body.theme-y2k .navbar-top a,
+body.theme-y2k .navbar-top span { color: #fff !important; }
+body.theme-y2k .navbar-top a.active {
+    background: #ff2d95 !important;
+    color: #000 !important;
+    box-shadow: 0 0 15px rgba(255, 45, 149, 0.6) !important;
+}
+body.theme-y2k .star-rating .star { color: rgba(255, 45, 149, 0.3) !important; }
+body.theme-y2k .star-rating .star.active { color: #ff2d95 !important; text-shadow: 0 0 10px rgba(255, 45, 149, 0.7) !important; }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .theme-card { width: 60px; padding: 6px; }
+    .theme-preview { width: 44px; height: 30px; }
+    .theme-name { font-size: 8px; }
+}
+
+.post-text {
+    position: relative;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+}
+
+.post-text.truncated {
+    max-height: 80px;
+}
+
+.post-text.truncated::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(transparent, var(--post-bg, white));
+    pointer-events: none;
+}
+
+.post-text.expanded {
+    max-height: 2000px;
+}
+
+.text-toggle-btn {
+    display: inline-block;
+    margin-top: 4px;
+    color: var(--shatt-blue);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    background: none;
+    border: none;
+    padding: 4px 0;
+}
+
+.text-toggle-btn:hover {
+    text-decoration: underline;
+}
+
+.post-text {
+    transition: max-height 0.4s steps(20, end), opacity 0.3s ease;
+    overflow: hidden;
+}
+
+
     </style>
 </head>
 <body>
@@ -2274,6 +2934,31 @@ body.dark-mode .mention-suggestions-floating .mention-item .mention-item-email {
         </div>
     </div>
     
+        <!-- 🎭 SELECTOR DE TEMAS -->
+<div style="margin-bottom: 20px;">
+    <label style="font-weight: bold; font-size: 13px; display: block; margin-bottom: 10px;">🎭 Tema visual</label>
+    <div class="theme-selector">
+        <div class="theme-card active" data-theme="shatt" onclick="cambiarTema('shatt', this)">
+            <div class="theme-preview shatt"></div><span class="theme-name">🔵 Shatt</span>
+        </div>
+        <div class="theme-card" data-theme="frutiger" onclick="cambiarTema('frutiger', this)">
+            <div class="theme-preview frutiger"></div><span class="theme-name">🌊 Aero</span>
+        </div>
+        <div class="theme-card" data-theme="dorf" onclick="cambiarTema('dorf', this)">
+            <div class="theme-preview dorf"></div><span class="theme-name">🏢 DORF</span>
+        </div>
+        <div class="theme-card" data-theme="metro" onclick="cambiarTema('metro', this)">
+            <div class="theme-preview metro"></div><span class="theme-name">🪟 Metro</span>
+        </div>
+        <div class="theme-card" data-theme="darkaero" onclick="cambiarTema('darkaero', this)">
+            <div class="theme-preview darkaero"></div><span class="theme-name">🌑 Dark</span>
+        </div>
+        <div class="theme-card" data-theme="y2k" onclick="cambiarTema('y2k', this)">
+            <div class="theme-preview y2k"></div><span class="theme-name">🌀 Y2K</span>
+        </div>
+    </div>
+</div>
+
     <!-- Fondos predefinidos -->
     <div class="settings-section">
         <div class="settings-section-title">🎨 FONDOS RÁPIDOS</div>
@@ -2623,13 +3308,103 @@ function setFontSizeGlobal(size) {
     mostrarToast("📏 Tamaño de fuente actualizado");
 }
 
+// =============================================
+//  SHATT THEMES - Sistema de 6 Temas
+// =============================================
+
+let temaActual = 'shatt';
+
+const TEMAS = {
+    shatt:    { nombre: '🔵 Shatt',    acento: '#3b5998', fondo: '#3a6186' },
+    frutiger: { nombre: '🌊 Aero',     acento: '#2d8a4e', fondo: 'linear-gradient(180deg, #87CEEB 0%, #7ec8a0 100%)' },
+    dorf:     { nombre: '🏢 DORF',     acento: '#f4511e', fondo: '#1a1a1a' },
+    metro:    { nombre: '🪟 Metro',    acento: '#ff8c00', fondo: '#0f0f0f' },
+    darkaero: { nombre: '🌑 Dark',     acento: '#00e5ff', fondo: '#06060f' },
+    y2k:      { nombre: '🌀 Y2K',      acento: '#ff2d95', fondo: '#1a1a2e' }
+};
+
+function cambiarTema(tema, el) {
+    // Quitar todos los temas
+    document.body.classList.remove('theme-shatt', 'theme-frutiger', 'theme-dorf', 'theme-metro', 'theme-darkaero', 'theme-y2k');
+    
+    // Aplicar nuevo tema
+    document.body.classList.add('theme-' + tema);
+    temaActual = tema;
+    
+    // Animar selección
+    document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    el.style.animation = 'none';
+    el.offsetHeight;
+    el.style.animation = 'popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    
+    const config = TEMAS[tema];
+    
+    // Aplicar acento
+    document.documentElement.style.setProperty('--shatt-blue', config.acento);
+    
+    // Aplicar fondo
+    if (tema === 'frutiger') {
+        document.body.style.background = config.fondo;
+        document.body.style.backgroundAttachment = 'fixed';
+    } else {
+        document.body.style.background = config.fondo;
+    }
+    
+    // Animación de transición en el body
+    document.body.style.transition = 'background 0.6s ease, font-family 0.4s ease';
+    setTimeout(() => { document.body.style.transition = ''; }, 700);
+    
+    // Guardar
+    if (typeof currentUser !== 'undefined' && currentUser) {
+        try {
+            if (typeof pb !== 'undefined') {
+                pb.collection('usuarios').update(currentUser.id, { tema_global: tema }).catch(() => {});
+            }
+        } catch(e) {}
+    }
+    localStorage.setItem('shatt_tema_global', tema);
+    
+    // Toast
+    if (typeof mostrarToast === 'function') {
+        mostrarToast(config.nombre + ' aplicado');
+    }
+}
+
+function cargarTemaGuardado() {
+    const tema = localStorage.getItem('shatt_tema_global') || 'shatt';
+    temaActual = tema;
+    document.body.classList.add('theme-' + tema);
+    
+    if (TEMAS[tema]) {
+        document.documentElement.style.setProperty('--shatt-blue', TEMAS[tema].acento);
+        if (tema !== 'frutiger') {
+            document.body.style.background = TEMAS[tema].fondo;
+        } else {
+            document.body.style.background = TEMAS[tema].fondo;
+            document.body.style.backgroundAttachment = 'fixed';
+        }
+    }
+    
+    // Marcar en el selector
+    setTimeout(() => {
+        document.querySelectorAll('.theme-card').forEach(card => {
+            card.classList.toggle('active', card.dataset.theme === tema);
+        });
+    }, 300);
+}
+
+// Exponer globalmente
+window.cambiarTema = cambiarTema;
+window.cargarTemaGuardado = cargarTemaGuardado;
+
 async function guardarDisenoGlobal() {
     if (!recuperarSesion()) {
         mostrarToast("❌ Error: Inicia sesión primero");
         return;
     }
     
-    const data = {
+    const diseno = {
         tema: document.body.classList.contains('dark-mode') ? 'dark' : 'light',
         color_fondo: document.body.style.background || '#3a6186',
         opacidad: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--panel-opacity').trim()) || 1,
@@ -2640,37 +3415,38 @@ async function guardarDisenoGlobal() {
     const fileInput = document.getElementById('bg-image-nube');
     
     try {
-        // Guardar en PocketBase
         if (fileInput && fileInput.files && fileInput.files[0]) {
             const formData = new FormData();
             formData.append('imagen_fondo', fileInput.files[0]);
-            formData.append('tema', data.tema);
-            formData.append('color_fondo', 'url_bg');
-            formData.append('opacidad', data.opacidad);
-            formData.append('accent_color', data.accent_color);
-            formData.append('tamano_fuente', data.tamano_fuente);
+            formData.append('diseno', JSON.stringify({...diseno, color_fondo: 'url_bg'}));
             await pb.collection('usuarios').update(currentUser.id, formData);
             
-            // Aplicar al instante
-            const url = URL.createObjectURL(fileInput.files[0]);
-            document.body.style.background = `url(${url}) center/cover fixed`;
-            localStorage.setItem('shatt_bg_cache', `url(${url}) center/cover fixed`);
-        } else {
-            await pb.collection('usuarios').update(currentUser.id, data);
             
-            // Aplicar al instante
-            document.body.style.background = data.color_fondo;
-            localStorage.setItem('shatt_bg_cache', data.color_fondo);
+            
+            const url = URL.createObjectURL(fileInput.files[0]);
+            // Liberar el blob después de usarlo
+            setTimeout(() => URL.revokeObjectURL(url), 2000);
+            //localStorage.setItem('shatt_bg_cache', `url(${url}) center/cover fixed`);
+            document.body.style.background = `url(${url}) center/cover fixed`;
+        } else {
+            await pb.collection('usuarios').update(currentUser.id, { diseno: diseno });
+            document.body.style.background = diseno.color_fondo;
+            localStorage.setItem('shatt_bg_cache', diseno.color_fondo);
         }
         
-        // Actualizar otras cachés
-        localStorage.setItem('shatt_darkmode_cache', data.tema === 'dark' ? 'true' : 'false');
-        localStorage.setItem('shatt_opacity_cache', data.opacidad);
-        localStorage.setItem('shatt_accent_cache', data.accent_color);
-        localStorage.setItem('shatt_fontsize_cache', data.tamano_fuente);
+        localStorage.setItem('shatt_darkmode_cache', diseno.tema === 'dark' ? 'true' : 'false');
+        localStorage.setItem('shatt_opacity_cache', diseno.opacidad);
+        localStorage.setItem('shatt_accent_cache', diseno.accent_color);
+        localStorage.setItem('shatt_fontsize_cache', diseno.tamano_fuente);
         
         mostrarToast("💾 Diseño guardado ☁️");
+        
         cerrarModalesGlobal();
+        // Refrescar automáticamente para limpiar blobs y cargar desde PocketBase
+            setTimeout(() => {
+            location.reload();
+        }, 800);
+
     } catch(e) {
         console.error("Error guardando:", e);
         mostrarToast("❌ Error al guardar");
@@ -3465,7 +4241,13 @@ if (imagenes.length > 0) {
                 <button class="post-menu-btn" data-post-id="${post.id}" data-author-id="${autorId}">⋮</button>
             </div>
         </div>
-        <div class="post-text">${escapeHtml(post.texto || '')}</div>
+
+
+        <div class="post-text" id="text-${post.id}" style="max-height: ${(post.texto || '').length > 200 ? '198px' : 'none'}; overflow: hidden; transition: max-height 0.4s ease;">
+    ${escapeHtml(post.texto || '')}
+</div>
+${(post.texto || '').length > 200 ? `<button class="text-toggle-btn" onclick="toggleTexto('${post.id}')">Seguir leyendo... 📖</button>` : ''}
+
         ${imagenHtml}
         ${audioHtml}
         <div class="interaction-bar">
@@ -3589,6 +4371,70 @@ function toggleCommentBox(btn, postId) {
         if (cNum) btn.innerHTML = `💬 <span class="c-num">${cNum.textContent}</span>`;
     }
 }
+
+
+// ========== FUNCIONES DE COMPARTIR ==========
+let currentSharePostId = null;
+
+function mostrarModalCompartir(postId) {
+    currentSharePostId = postId;
+    const link = `${location.origin}/post.html?id=${postId}`;
+    
+    document.getElementById('share-link-container').textContent = link;
+    document.getElementById('qr-container').style.display = 'none';
+    document.getElementById('share-modal').style.display = 'block';
+    document.getElementById('modal-overlay').style.display = 'block';
+}
+
+function cerrarShareModal() {
+    document.getElementById('share-modal').style.display = 'none';
+    document.getElementById('modal-overlay').style.display = 'none';
+    currentSharePostId = null;
+}
+
+function getShareLink() {
+    return `${location.origin}/post.html?id=${currentSharePostId}`;
+}
+
+function compartirEmail() {
+    const link = getShareLink();
+    window.open(`mailto:?subject=${encodeURIComponent('Mira esta publicación en Shatt')}&body=${encodeURIComponent('¡Hola!\n\nTe comparto esta publicación:\n\n' + link)}`, '_blank');
+    cerrarShareModal();
+}
+
+function compartirWhatsApp() {
+    const link = getShareLink();
+    const text = encodeURIComponent(`¡Mira esto en Shatt! 📱\n\n${link}`);
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    window.open(isMobile ? `https://wa.me/?text=${text}` : `https://web.whatsapp.com/send?text=${text}`, '_blank');
+    cerrarShareModal();
+}
+
+function compartirQR() {
+    const link = getShareLink();
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(link)}`;
+    document.getElementById('qr-container').style.display = 'block';
+    document.getElementById('qr-code').innerHTML = `<img src="${qrUrl}" alt="QR" style="width: 200px; height: 200px;">`;
+}
+
+function copiarEnlaceClipboard() {
+    navigator.clipboard.writeText(getShareLink()).then(() => {
+        mostrarToast("✅ Enlace copiado");
+    }).catch(() => {
+        mostrarToast("❌ Error al copiar");
+    });
+    cerrarShareModal();
+}
+
+// Exponer al window
+window.mostrarModalCompartir = mostrarModalCompartir;
+window.cerrarShareModal = cerrarShareModal;
+window.compartirEmail = compartirEmail;
+window.compartirWhatsApp = compartirWhatsApp;
+window.compartirQR = compartirQR;
+window.copiarEnlaceClipboard = copiarEnlaceClipboard;
+
+
 
 // ========== MENÚ MODAL ==========
 let currentMenuPostId = null;
@@ -4666,6 +5512,65 @@ function handleStarTouch(el, stars) {
     rate(postId, stars);
 }
 
+function toggleTexto(postId) {
+    const el = document.getElementById('text-' + postId);
+    const btn = el.nextElementSibling;
+    const lineHeight = 22;
+    const linesPerBlock = 9;
+    const blockHeight = lineHeight * linesPerBlock;
+    
+    if (el.classList.contains('expanded-full')) {
+        // Contraer con animación de escritura inversa
+        el.style.maxHeight = blockHeight + 'px';
+        el.classList.remove('expanded-full');
+        el.classList.add('truncated');
+        btn.textContent = 'Seguir leyendo... 📖';
+        typewriterCollapse(el, blockHeight);
+        return;
+    }
+    
+    el.classList.remove('truncated');
+    
+    const currentMax = parseInt(el.style.maxHeight) || blockHeight;
+    const fullHeight = el.scrollHeight;
+    const newMax = currentMax + blockHeight;
+    
+    if (newMax >= fullHeight) {
+        el.style.maxHeight = fullHeight + 'px';
+        el.classList.add('expanded-full');
+        btn.textContent = 'Ocultar 📕';
+    } else {
+        el.style.maxHeight = newMax + 'px';
+        btn.textContent = 'Seguir leyendo... 📖';
+    }
+    
+    // Efecto typewriter
+    typewriterExpand(el, currentMax, Math.min(newMax, fullHeight));
+}
+
+// Efecto de máquina de escribir al expandir
+function typewriterExpand(el, fromHeight, toHeight) {
+    const chars = el.textContent.length;
+    const duration = Math.min(600, chars * 2); // Más texto = más duración
+    el.style.transition = 'none';
+    el.style.maxHeight = fromHeight + 'px';
+    el.style.opacity = '0.7';
+    
+    requestAnimationFrame(() => {
+        el.style.transition = `max-height ${duration}ms steps(${Math.min(chars, 40)}, end), opacity 0.3s ease`;
+        el.style.maxHeight = toHeight + 'px';
+        el.style.opacity = '1';
+    });
+}
+
+// Efecto de máquina de escribir al colapsar
+function typewriterCollapse(el, toHeight) {
+    el.style.transition = 'max-height 0.3s steps(20, end), opacity 0.2s ease';
+    el.style.opacity = '0.8';
+    el.style.maxHeight = toHeight + 'px';
+    setTimeout(() => { el.style.opacity = '1'; }, 300);
+}
+
 // ========== INICIALIZACIÓN ==========
 (async function() {
     const saved = localStorage.getItem('pocketbase_auth');
@@ -4673,6 +5578,8 @@ function handleStarTouch(el, stars) {
     if (!pb.authStore.isValid) { window.location.href = "iniciarsesion.html"; return; }
     currentUser = pb.authStore.model;
     if (currentUser && currentUser.bloqueado === true) { alert("🚫 Cuenta bloqueada."); pb.authStore.clear(); localStorage.removeItem('pocketbase_auth'); window.location.href = "iniciarsesion.html"; return; }
+
+    cargarTemaGuardado();
 
     /*await cargarConfiguracionGlobal();*/
     await inicializarMencionesGlobal();
@@ -4923,7 +5830,6 @@ window.guardarTodoNube = guardarTodoNube;
     var accent = localStorage.getItem('shatt_accent_cache');
     var fontSize = localStorage.getItem('shatt_fontsize_cache');
     
-    // Solo aplicar si NO es blob
     if (bg && bg !== 'null' && !bg.includes('blob:')) {
         document.body.style.background = bg;
     } else {
@@ -4934,7 +5840,6 @@ window.guardarTodoNube = guardarTodoNube;
     if (accent) document.documentElement.style.setProperty('--shatt-blue', accent);
     if (fontSize) document.documentElement.style.fontSize = fontSize + 'px';
     
-    // Cargar desde PocketBase
     var saved = localStorage.getItem('pocketbase_auth');
     if (saved) {
         try {
@@ -4949,14 +5854,19 @@ window.guardarTodoNube = guardarTodoNube;
                         document.body.style.background = 'url(' + url + ') center/cover fixed';
                         localStorage.setItem('shatt_bg_cache', 'url(' + url + ') center/cover fixed');
                     } catch(e) {}
-                } else if (user.color_fondo && user.color_fondo !== 'url_bg') {
-                    document.body.style.background = user.color_fondo;
-                    localStorage.setItem('shatt_bg_cache', user.color_fondo);
+                } else if (user.diseno && user.diseno.color_fondo && user.diseno.color_fondo !== 'url_bg') {
+                    document.body.style.background = user.diseno.color_fondo;
+                    localStorage.setItem('shatt_bg_cache', user.diseno.color_fondo);
                 }
-                if (user.tema === 'dark') document.body.classList.add('dark-mode');
-                if (user.opacidad) document.documentElement.style.setProperty('--panel-opacity', user.opacidad);
-                if (user.accent_color) document.documentElement.style.setProperty('--shatt-blue', user.accent_color);
-                if (user.tamano_fuente) document.documentElement.style.fontSize = user.tamano_fuente + 'px';
+                if (user.tema_global) {
+                    document.body.classList.add('theme-' + user.tema_global);
+                }
+                if (user.diseno) {
+                    if (user.diseno.tema === 'dark') document.body.classList.add('dark-mode');
+                    if (user.diseno.opacidad) document.documentElement.style.setProperty('--panel-opacity', user.diseno.opacidad);
+                    if (user.diseno.accent_color) document.documentElement.style.setProperty('--shatt-blue', user.diseno.accent_color);
+                    if (user.diseno.tamano_fuente) document.documentElement.style.fontSize = user.diseno.tamano_fuente + 'px';
+                }
             });
         } catch(e) {}
     }
