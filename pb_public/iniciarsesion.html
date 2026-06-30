@@ -1239,17 +1239,11 @@ async function registrarHuella(userId) {
 }
 
 async function iniciarConHuella() {
-    const savedUsers = JSON.parse(localStorage.getItem('shatt_cuentas') || '[]');
-    if (savedUsers.length === 0) {
-        mostrarToastHuella('😕 No hay cuentas guardadas');
-        return;
-    }
-    
     try {
-        // Pedir huella
-        const assertion = await navigator.credentials.get({
+        // Pedir autenticación biométrica simple
+        const credential = await navigator.credentials.get({
             publicKey: {
-                challenge: new Uint8Array(32),
+                challenge: new Uint8Array([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]),
                 rpId: window.location.hostname,
                 allowCredentials: [],
                 userVerification: 'required',
@@ -1257,34 +1251,34 @@ async function iniciarConHuella() {
             }
         });
         
-        if (assertion) {
-            // Buscar usuario por huella
-            const credentialId = btoa(String.fromCharCode(...new Uint8Array(assertion.rawId)));
+        if (credential) {
+            // Si pasa la huella, buscar cuenta guardada
+            const savedUsers = JSON.parse(localStorage.getItem('shatt_cuentas') || '[]');
             
+            if (savedUsers.length === 0) {
+                mostrarToastHuella('😕 No hay cuentas guardadas');
+                return;
+            }
+            
+            // Usar la primera cuenta guardada
+            const cuenta = savedUsers[0];
+            
+            // Iniciar sesión con PocketBase
             const users = await pb.collection('usuarios').getFullList({
-                filter: `huella_id != ""`
+                filter: `email = "${cuenta.email}"`
             });
             
-            const user = users.find(u => u.huella_id === credentialId);
-            
-            if (user) {
-                // Guardar sesión
-                const cuenta = savedUsers.find(c => c.userId === user.id);
-                if (cuenta) {
-                    localStorage.setItem('pocketbase_auth', JSON.stringify({
-                        token: '', // Se actualizará al entrar
-                        model: user
-                    }));
-                    window.location.href = 'inicio.html';
-                } else {
-                    mostrarToastHuella('⚠️ Cuenta no encontrada en este dispositivo');
-                }
-            } else {
-                mostrarToastHuella('🔍 Huella no reconocida');
+            if (users.length > 0) {
+                localStorage.setItem('pocketbase_auth', JSON.stringify({
+                    token: '',
+                    model: users[0]
+                }));
+                window.location.href = 'inicio.html';
             }
         }
     } catch(e) {
-        console.log('Inicio con huella cancelado:', e.message);
+        console.log('Huella cancelada o falló:', e.message);
+        mostrarToastHuella('❌ No se pudo verificar la huella');
     }
 }
 
@@ -1325,7 +1319,14 @@ async function registrarHuellaDespuesDeLogin(userId) {
 }
 
 // Mostrar botón al cargar
-mostrarBotonHuella();
+// Mostrar botón de huella siempre que el dispositivo lo soporte
+setTimeout(() => {
+    const btn = document.getElementById('huellaBtn');
+    if (btn && window.PublicKeyCredential) {
+        btn.style.display = 'block';
+        btn.textContent = '🔐 ENTRAR CON HUELLA';
+    }
+}, 500);
     </script>
 </body>
 </html>
