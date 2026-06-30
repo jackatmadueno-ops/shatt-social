@@ -9,6 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/dayjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/plugin/relativeTime.js"></script>
     <script>dayjs.extend(window.dayjs_plugin_relativeTime);</script>
+    <script src="https://www.youtube.com/iframe_api"></script>
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -753,6 +754,98 @@ body.theme-y2k .profile-mobile-card {
     color: #fff !important;
 }
 
+/* ========== REPRODUCTOR PC ========== */
+.music-player-pc {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 12px 18px;
+    margin-bottom: 16px;
+    display: none;
+}
+@media (min-width: 769px) { .music-player-pc { display: flex !important; } }
+.music-pc-inner { display: flex; align-items: center; gap: 14px; width: 100%; flex-wrap: wrap; }
+.music-pc-icon { font-size: 28px; animation: bounceIcon 0.5s ease infinite alternate; }
+@keyframes bounceIcon { 0% { transform: translateY(0); } 100% { transform: translateY(-4px); } }
+.music-pc-info { flex: 1; min-width: 120px; }
+.music-pc-song { font-size: 14px; font-weight: bold; color: #fff; }
+.music-pc-artist { font-size: 11px; color: #aaa; }
+.music-pc-controls { display: flex; gap: 8px; }
+.music-pc-controls button {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    color: #fff; width: 34px; height: 30px; border-radius: 20px;
+    cursor: pointer; font-size: 13px; transition: all 0.2s;
+}
+.music-pc-controls button:hover { background: rgba(255,255,255,0.2); }
+.music-pc-posted { font-size: 10px; color: #555; width: 100%; text-align: center; margin-top: 4px; }
+
+/* ========== BURBUJA MÓVIL ========== */
+.music-bubble {
+    position: fixed; bottom: 90px; right: 16px; width: 46px; height: 46px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%; display: none; align-items: center; justify-content: center;
+    cursor: pointer; z-index: 999; box-shadow: 0 4px 20px rgba(102,126,234,0.4);
+    animation: floatBubble 3s ease-in-out infinite, pulseBubble 2s infinite;
+}
+.music-bubble:active { transform: scale(0.88); }
+.music-bubble-icon { font-size: 18px; }
+@keyframes floatBubble { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+@keyframes pulseBubble { 0%,100%{box-shadow:0 4px 20px rgba(102,126,234,0.4)} 50%{box-shadow:0 4px 30px rgba(102,126,234,0.7)} }
+
+.music-panel {
+    position: fixed; bottom: 150px; right: 16px;
+    background: rgba(20,20,40,0.95); backdrop-filter: blur(20px);
+    border-radius: 20px; z-index: 998; box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.1); display: none;
+    min-width: 200px; max-width: 260px;
+}
+.music-panel-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; font-size: 11px; color: #aaa;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.music-panel-header button { background:none; border:none; color:#aaa; cursor:pointer; font-size:14px; }
+.music-panel-body { padding: 14px; text-align: center; }
+.music-panel-song { font-size:14px; font-weight:bold; color:#fff; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.music-panel-artist { font-size:11px; color:#aaa; margin-bottom:12px; }
+.music-panel-controls { display:flex; gap:8px; justify-content:center; }
+.music-panel-controls button {
+    background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2);
+    color:#fff; width:36px; height:32px; border-radius:25px; cursor:pointer; font-size:13px;
+}
+
+.music-toast {
+    position:fixed; bottom:150px; right:16px;
+    background:rgba(20,20,40,0.95); backdrop-filter:blur(20px);
+    border-radius:20px; padding:12px 16px; z-index:997; display:none;
+    align-items:center; gap:10px; box-shadow:0 8px 40px rgba(0,0,0,0.5);
+    border:1px solid rgba(255,255,255,0.1); max-width:240px;
+}
+.music-toast-icon { font-size:22px; }
+.music-toast-info div:first-child { font-size:12px; font-weight:bold; color:#fff; }
+.music-toast-info div:last-child { font-size:10px; color:#aaa; }
+
+@media (max-width:768px) {
+    .music-bubble { display:flex !important; }
+    .music-toast { display:flex !important; }
+}
+
+/* Temas PC */
+body.theme-shatt .music-player-pc { border-color: rgba(59,89,152,0.3); }
+body.theme-frutiger .music-player-pc { border-color: rgba(45,138,78,0.3); }
+body.theme-dorf .music-player-pc { border-color: rgba(244,81,30,0.3); }
+body.theme-metro .music-player-pc { border-color: rgba(255,140,0,0.3); }
+body.theme-darkaero .music-player-pc { border-color: rgba(0,229,255,0.3); }
+body.theme-y2k .music-player-pc { border-color: rgba(255,45,149,0.3); }
+
+/* Temas burbuja */
+body.theme-shatt .music-bubble { background:linear-gradient(135deg,#3b5998,#5a8fbf); }
+body.theme-frutiger .music-bubble { background:linear-gradient(135deg,#2d8a4e,#7ec8a0); }
+body.theme-dorf .music-bubble { background:linear-gradient(135deg,#f4511e,#ff8a65); }
+body.theme-metro .music-bubble { background:linear-gradient(135deg,#ff8c00,#ffb74d); }
+body.theme-darkaero .music-bubble { background:linear-gradient(135deg,#00e5ff,#7cff7c); }
+body.theme-y2k .music-bubble { background:linear-gradient(135deg,#ff2d95,#ff80ab); }
 
     </style>
 </head>
@@ -819,6 +912,24 @@ body.theme-y2k .profile-mobile-card {
             </div>
             <div class="right-col">
                 <div class="panel-retro"><div class="blurb-title">📝 Sobre mí</div><div id="disp-about" style="font-size:14px;line-height:1.5;">Cargando...</div></div>
+
+                <!-- 🎵 MÚSICA DE PERFIL (PC) -->
+            <div id="musicPlayerPC" class="panel-retro">
+                <div class="blurb-title">🎵 Música de perfil</div>
+                <div style="display:flex; align-items:center; gap:12px; padding:8px 0;">
+                    <div style="font-size:32px;">🎵</div>
+                    <div style="flex:1;">
+                        <div style="font-weight:bold; font-size:14px;" id="musicPCSong">♫ Sin canción</div>
+                        <div style="font-size:11px; color:#888;" id="musicPCArtist">🎤 Sin artista</div>
+                    </div>
+
+                    <div style="display:flex; gap:6px;">
+                        <button onclick="togglePCPlay()" id="pcPlayBtn" style="background:#e0e0e0; border:2px outset #fff; border-radius:20px; width:36px; height:32px; cursor:pointer; font-size:14px;">▶️</button>
+                        <button onclick="togglePCMute()" id="pcMuteBtn" style="background:#e0e0e0; border:2px outset #fff; border-radius:20px; width:36px; height:32px; cursor:pointer; font-size:14px;">🔊</button>
+                    </div>
+                </div>
+                    <div style="font-size:10px; color:#aaa; text-align:center;" id="musicPCPosted"></div>
+            </div>
                 <div class="panel-retro"><div class="blurb-title">🎯 Intereses</div><div id="intereses-content" class="blurb-content"><div class="info-item"><span class="info-label">General:</span><span class="info-value" id="disp-int-gen">-</span></div><div class="info-item"><span class="info-label">Música:</span><span class="info-value" id="disp-int-mus">-</span></div></div></div>
                 <div class="panel-retro friends-section-mobile"><div class="blurb-title" onclick="toggleCollapsible('amigos-mobile-content')" style="cursor:pointer;">👥 Amigos <span id="amigos-mobile-count">(0)</span><span class="toggle-icon" id="amigos-mobile-icon">▼</span></div><div id="amigos-mobile-content" class="blurb-content"><div id="amigos-mobile-container" class="amigos-list"><div style="text-align:center;padding:20px;">Cargando...</div></div></div></div>
                 <div class="panel-retro"><div class="blurb-title">📱 Publicaciones</div><div class="tab-buttons"><div class="tab-btn active" data-tab="todas" onclick="cambiarTab('todas',this)">Todas</div><div class="tab-btn" data-tab="texto" onclick="cambiarTab('texto',this)">Texto</div><div class="tab-btn" data-tab="imagen" onclick="cambiarTab('imagen',this)">Imágenes</div><div class="tab-btn" data-tab="audio" onclick="cambiarTab('audio',this)">Audios</div></div><div id="publicaciones-container" class="publicaciones-grid"><div style="text-align:center;padding:40px;grid-column:1/-1;">Cargando publicaciones...</div></div></div>
@@ -843,6 +954,37 @@ body.theme-y2k .profile-mobile-card {
         <div style="margin-top:15px;"><label>🔆 Transparencia:</label><div style="display:flex;gap:10px;margin-top:5px;"><input type="range" id="opacity-slider-global" min="0.1" max="1" step="0.1" value="1" oninput="setOpacityGlobal(this.value)" style="flex:1;"><span id="opacity-value-global">100%</span></div></div>
         <div style="margin-top:20px;"><button class="btn-retro" onclick="guardarDisenoGlobal()" style="background:#4CAF50;color:white;">💾 GUARDAR</button><button class="btn-retro" onclick="cerrarModalesGlobal()" style="margin-top:10px;">❌ CERRAR</button></div>
     </div>
+
+    
+<!-- 🫧 BURBUJA MUSICAL - MÓVIL -->
+<div id="musicBubble" class="music-bubble" onclick="toggleMusicPanel(event)">
+    <span class="music-bubble-icon">🎵</span>
+</div>
+<div id="musicPanel" class="music-panel">
+    <div class="music-panel-header">
+        <span>🎵 Sonando ahora</span>
+        <button onclick="cerrarMusicPanel()">✕</button>
+    </div>
+    <div class="music-panel-body">
+        <div class="music-panel-song" id="musicPanelSong">♫ Sin canción</div>
+        <div class="music-panel-artist" id="musicPanelArtist">🎤 Sin artista</div>
+        <div class="music-panel-controls">
+            <button onclick="toggleMiniPlay()" id="miniPlayBtn">⏸️</button>
+            <button onclick="toggleMiniMute()" id="miniMuteBtn">🔊</button>
+            <button onclick="cerrarMusicPanel()">❌</button>
+        </div>
+    </div>
+</div>
+<div id="musicToast" class="music-toast">
+    <div class="music-toast-icon">🎵</div>
+    <div class="music-toast-info">
+        <div id="musicToastSong">♫ Cargando...</div>
+        <div id="musicToastArtist">🎤 Cargando...</div>
+    </div>
+</div>
+
+<!-- 🎵 REPRODUCTOR OCULTO DE YOUTUBE -->
+<div id="youtubePlayer" style="position:fixed; bottom:-200px; left:0; width:1px; height:1px; opacity:0; pointer-events:none; z-index:-1;"></div>
 
 <script>
     let currentUser = null;
@@ -1147,6 +1289,150 @@ profileUserId = uidParam;
     window.marcarTodasComoLeidas = marcarTodasComoLeidas;
     window.abrirBuscadorFullscreen = abrirBuscadorFullscreen;
     window.cerrarBuscadorFullscreen = cerrarBuscadorFullscreen;
+
+// ========== REPRODUCTOR DE MÚSICA (YOUTUBE OCULTO) ==========
+let youtubePlayer = null;
+let musicPlaying = false;
+let musicMuted = false;
+let musicaActual = { titulo: '', artista: '', url: '', videoId: '' };
+
+// Cargar API de YouTube
+function onYouTubeIframeAPIReady() {
+    console.log('✅ YouTube API lista');
+}
+
+async function cargarMusicaPerfil(uid) {
+    try {
+        const user = await pb.collection('usuarios').getOne(uid);
+        if (!user.musica_perfil) return;
+        
+        const p = user.musica_perfil.split('||');
+        if (p.length < 3) return;
+        
+        musicaActual = {
+            titulo: p[0],
+            artista: p[1],
+            url: p[2],
+            videoId: ''
+        };
+        
+        // Extraer ID de YouTube
+        if (p[2].includes('youtu.be/')) {
+            musicaActual.videoId = p[2].split('youtu.be/')[1]?.split('?')[0];
+        } else if (p[2].includes('watch?v=')) {
+            musicaActual.videoId = p[2].split('watch?v=')[1]?.split('&')[0];
+        } else if (p[2].includes('/shorts/')) {
+            musicaActual.videoId = p[2].split('/shorts/')[1]?.split('?')[0];
+        }
+        
+        // Mostrar en PC
+        document.getElementById('musicPCSong').textContent = '♪ ' + musicaActual.titulo;
+        document.getElementById('musicPCArtist').textContent = '🎤 ' + musicaActual.artista;
+        document.getElementById('musicPCPosted').textContent = 'Puesto por: @' + (user.nick || user.email?.split('@')[0]);
+        document.getElementById('musicPlayerPC').style.display = 'block';
+        
+        // Mostrar en móvil
+        document.getElementById('musicPanelSong').textContent = musicaActual.titulo;
+        document.getElementById('musicPanelArtist').textContent = musicaActual.artista;
+        document.getElementById('musicToastSong').textContent = '♪ ' + musicaActual.titulo;
+        document.getElementById('musicToastArtist').textContent = '🎤 ' + musicaActual.artista;
+        document.getElementById('musicToast').style.display = 'flex';
+        setTimeout(() => { document.getElementById('musicToast').style.display = 'none'; }, 3000);
+        
+        // Crear reproductor de YouTube oculto
+        if (musicaActual.videoId) {
+            crearYoutubePlayer(musicaActual.videoId);
+        }
+        
+    } catch(e) {}
+}
+
+function crearYoutubePlayer(videoId) {
+    // Eliminar player anterior
+    if (youtubePlayer) {
+        youtubePlayer.destroy();
+        youtubePlayer = null;
+    }
+    
+    document.getElementById('youtubePlayer').innerHTML = '';
+    
+    youtubePlayer = new YT.Player('youtubePlayer', {
+        videoId: videoId,
+        width: 1,
+        height: 1,
+        playerVars: {
+            autoplay: 1,
+            controls: 0,
+            disablekb: 1,
+            fs: 0,
+            iv_load_policy: 3,
+            modestbranding: 1,
+            rel: 0,
+            showinfo: 0
+            
+        },
+        events: {
+            onReady: function(event) {
+                event.target.setVolume(40);
+                event.target.playVideo();
+                musicPlaying = true;
+                document.getElementById('pcPlayBtn').textContent = '⏸️';
+                document.getElementById('miniPlayBtn').textContent = '⏸️';
+            },
+            onStateChange: function(event) {
+                // -1: sin empezar, 0: terminado, 1: reproduciendo, 2: pausado
+                if (event.data === 0) {
+                    // Terminó, reiniciar si hay repeat
+                    event.target.playVideo();
+                }
+            }
+        }
+    });
+}
+
+function togglePCPlay() {
+    if (!youtubePlayer) return;
+    if (musicPlaying) {
+        youtubePlayer.pauseVideo();
+        document.getElementById('pcPlayBtn').textContent = '▶️';
+        document.getElementById('miniPlayBtn').textContent = '▶️';
+    } else {
+        youtubePlayer.playVideo();
+        document.getElementById('pcPlayBtn').textContent = '⏸️';
+        document.getElementById('miniPlayBtn').textContent = '⏸️';
+    }
+    musicPlaying = !musicPlaying;
+}
+
+function togglePCMute() {
+    if (!youtubePlayer) return;
+    musicMuted = !musicMuted;
+    if (musicMuted) {
+        youtubePlayer.mute();
+    } else {
+        youtubePlayer.unMute();
+    }
+    document.getElementById('pcMuteBtn').textContent = musicMuted ? '🔇' : '🔊';
+    document.getElementById('miniMuteBtn').textContent = musicMuted ? '🔇' : '🔊';
+}
+
+function toggleMusicPanel(e) {
+    if (e) e.stopPropagation();
+    const panel = document.getElementById('musicPanel');
+    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+}
+
+function cerrarMusicPanel() {
+    document.getElementById('musicPanel').style.display = 'none';
+}
+
+function toggleMiniPlay() { togglePCPlay(); }
+function toggleMiniMute() { togglePCMute(); }
+
+// Cargar al iniciar
+if (profileUserId) {
+    setTimeout(() => cargarMusicaPerfil(profileUserId), 1500);
+}
 </script>
 <script>
 (function() {
