@@ -385,6 +385,504 @@
             .bottom-nav-item span:last-child { font-size: 8px; }
             .post-avatar { width: 40px; height: 40px; }
         }
+
+        /* ============================================= */
+/*  SHATT THEMES - 6 Temas Visuales Completos     */
+/* ============================================= */
+
+/* ========== SELECTOR DE TEMAS ========== */
+.theme-selector {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.theme-card {
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    padding: 8px;
+    border-radius: 16px;
+    border: 2px solid transparent;
+    position: relative;
+    width: 70px;
+}
+.theme-card:hover { transform: translateY(-4px); }
+.theme-card:active { transform: scale(0.93); }
+.theme-card.active {
+    border-color: #fbc02d;
+    background: rgba(251, 192, 45, 0.1);
+    box-shadow: 0 0 20px rgba(251, 192, 45, 0.25);
+}
+.theme-card.active::after {
+    content: '✓';
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    background: #fbc02d;
+    color: #000;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes popIn {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+}
+.theme-preview {
+    width: 54px;
+    height: 36px;
+    border-radius: 10px;
+    margin: 0 auto 6px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+.theme-preview::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transform: skewX(-20deg);
+    animation: glassShine 3s infinite;
+}
+@keyframes glassShine {
+    0%, 100% { left: -100%; }
+    50% { left: 150%; }
+}
+.theme-name {
+    font-size: 9px;
+    font-weight: 700;
+    color: #666;
+    display: block;
+    letter-spacing: 0.3px;
+}
+
+/* Vistas previas */
+.theme-preview.shatt {
+    background: linear-gradient(135deg, #3a6186 0%, #5a8fbf 50%, #3a6186 100%);
+    background-size: 200% 200%;
+    animation: bgMove 3s ease infinite;
+}
+.theme-preview.frutiger {
+    background: linear-gradient(180deg, #87CEEB 0%, #4a90d9 40%, #2d8a4e 70%, #1a5c2a 100%);
+    position: relative;
+}
+.theme-preview.frutiger::before {
+    content: '🐟';
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    font-size: 10px;
+    animation: fishSwim 4s infinite;
+}
+@keyframes fishSwim {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(-15px); }
+}
+.theme-preview.dorf {
+    background: linear-gradient(135deg, #f4511e 0%, #2d2d2d 60%, #1a1a1a 100%);
+    border: 1px solid #f4511e;
+}
+.theme-preview.metro {
+    background: #1a1a1a;
+    position: relative;
+    overflow: hidden;
+}
+.theme-preview.metro::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #ff8c00;
+    animation: metroLine 2s infinite;
+}
+@keyframes metroLine {
+    0% { width: 0; }
+    50% { width: 100%; }
+    100% { width: 0; left: 100%; }
+}
+.theme-preview.darkaero {
+    background: radial-gradient(ellipse at top left, #0a0a1a 0%, #0d1b2a 50%, #1b2838 100%);
+    position: relative;
+}
+.theme-preview.darkaero::before {
+    content: '✦';
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    font-size: 8px;
+    color: #00e5ff;
+    animation: twinkle 1.5s infinite;
+}
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; transform: scale(1.5); }
+}
+.theme-preview.y2k {
+    background: linear-gradient(135deg, #ff2d95 0%, #4a0e4e 50%, #1a1a2e 100%);
+    position: relative;
+    overflow: hidden;
+}
+.theme-preview.y2k::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,255,255,0.05) 3px, rgba(255,255,255,0.05) 4px);
+    animation: scanLines 0.1s infinite;
+}
+@keyframes scanLines {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(4px); }
+}
+@keyframes bgMove {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* ============================================= */
+/* 🔵 TEMA 1: SHATT ORIGINAL                     */
+/* ============================================= */
+body.theme-shatt {
+    --bg-main: #3a6186;
+    --bg-panel: rgba(255, 255, 255, 0.95);
+    --text-main: #000;
+    --accent: #3b5998;
+    --accent-glow: rgba(59, 89, 152, 0.3);
+    --navbar-bg: linear-gradient(180deg, #ffffff 0%, #d1d1d1 100%);
+    --btn-bg: #e0e0e0;
+    --btn-text: #000;
+    --post-bg: rgba(255, 255, 255, 0.95);
+    --border-color: #000;
+    --border-style: 2px solid #000;
+    --shadow: 4px 4px 0px rgba(0,0,0,0.2);
+    --reaction-bg: #f0f0f0;
+    --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --glass: none;
+}
+body.theme-shatt {
+    background: var(--bg-main);
+    font-family: var(--font-main);
+}
+
+/* 🌊 TEMA 2: FRUTIGER AERO */
+body.theme-frutiger {
+    --bg-main: linear-gradient(180deg, #87CEEB 0%, #b8e6f0 30%, #7ec8a0 70%, #3d8b5e 100%);
+    --bg-panel: rgba(255, 255, 255, 0.6);
+    --text-main: #1a3c2a;
+    --accent: #2d8a4e;
+    --accent-glow: rgba(45, 138, 78, 0.4);
+    --navbar-bg: rgba(255, 255, 255, 0.7);
+    --btn-bg: rgba(255, 255, 255, 0.8);
+    --btn-text: #1a3c2a;
+    --post-bg: rgba(255, 255, 255, 0.55);
+    --border-color: rgba(45, 138, 78, 0.5);
+    --border-style: 1.5px solid rgba(45, 138, 78, 0.5);
+    --shadow: 0 8px 32px rgba(45, 138, 78, 0.15);
+    --reaction-bg: rgba(45, 138, 78, 0.1);
+    --font-main: 'Segoe UI', -apple-system, sans-serif;
+    --glass: blur(20px) saturate(180%);
+}
+body.theme-frutiger {
+    background: var(--bg-main);
+    background-attachment: fixed;
+    font-family: var(--font-main);
+}
+body.theme-frutiger::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(255,255,255,0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(135,206,235,0.4) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(144,238,144,0.2) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: -1;
+}
+body.theme-frutiger .panel-retro,
+body.theme-frutiger .post,
+body.theme-frutiger .publish-area {
+    background: rgba(255, 255, 255, 0.5) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.4) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 8px 32px rgba(45, 138, 78, 0.12), inset 0 1px 0 rgba(255,255,255,0.5) !important;
+}
+body.theme-frutiger .navbar-top {
+    background: rgba(255, 255, 255, 0.65) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.5) !important;
+    border-radius: 20px !important;
+}
+body.theme-frutiger .btn-retro {
+    background: rgba(255, 255, 255, 0.7) !important;
+    border: 1.5px solid rgba(45, 138, 78, 0.4) !important;
+    border-radius: 30px !important;
+    box-shadow: 0 4px 15px rgba(45, 138, 78, 0.15) !important;
+    color: #1a3c2a !important;
+}
+body.theme-frutiger .star-rating .star.active {
+    color: #2d8a4e !important;
+    text-shadow: 0 0 10px rgba(45, 138, 78, 0.5) !important;
+}
+
+/* 🏢 TEMA 3: DORFic */
+body.theme-dorf {
+    --bg-main: #1a1a1a;
+    --bg-panel: #2d2d2d;
+    --text-main: #e0e0e0;
+    --accent: #f4511e;
+    --accent-glow: rgba(244, 81, 30, 0.3);
+    --navbar-bg: #141414;
+    --btn-bg: #3d3d3d;
+    --btn-text: #fff;
+    --post-bg: #2d2d2d;
+    --border-color: #f4511e;
+    --border-style: 2px solid #f4511e;
+    --shadow: 6px 6px 0px rgba(244, 81, 30, 0.3);
+    --reaction-bg: #3d3d3d;
+    --font-main: 'Courier New', monospace;
+    --glass: none;
+}
+body.theme-dorf {
+    background: var(--bg-main);
+    font-family: var(--font-main);
+}
+body.theme-dorf::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(244,81,30,0.03) 2px, rgba(244,81,30,0.03) 4px);
+    pointer-events: none;
+    z-index: -1;
+}
+body.theme-dorf .panel-retro,
+body.theme-dorf .post,
+body.theme-dorf .publish-area {
+    background: #2d2d2d !important;
+    border: 2px solid #f4511e !important;
+    border-radius: 0px !important;
+    box-shadow: 6px 6px 0px rgba(244, 81, 30, 0.3) !important;
+    color: #e0e0e0 !important;
+}
+body.theme-dorf .navbar-top {
+    background: #141414 !important;
+    border: 2px solid #f4511e !important;
+    border-radius: 0px !important;
+    color: #fff !important;
+}
+body.theme-dorf .btn-retro {
+    background: #f4511e !important;
+    border: none !important;
+    color: #fff !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%) !important;
+    border-radius: 0 !important;
+}
+body.theme-dorf .navbar-top a,
+body.theme-dorf .navbar-top span { color: #f4511e !important; }
+body.theme-dorf .star-rating .star { color: #555 !important; }
+body.theme-dorf .star-rating .star.active { color: #f4511e !important; }
+
+/* 🪟 TEMA 4: FRUTIGER METRO */
+body.theme-metro {
+    --bg-main: #0f0f0f;
+    --bg-panel: #1a1a1a;
+    --text-main: #fff;
+    --accent: #ff8c00;
+    --accent-glow: rgba(255, 140, 0, 0.3);
+    --navbar-bg: #000;
+    --btn-bg: #ff8c00;
+    --btn-text: #000;
+    --post-bg: #1a1a1a;
+    --border-color: #333;
+    --border-style: 1px solid #333;
+    --shadow: none;
+    --reaction-bg: #252525;
+    --font-main: 'Segoe UI', -apple-system, sans-serif;
+    --glass: none;
+}
+body.theme-metro {
+    background: var(--bg-main);
+    font-family: var(--font-main);
+}
+body.theme-metro .panel-retro,
+body.theme-metro .post,
+body.theme-metro .publish-area {
+    background: #1a1a1a !important;
+    border: 1px solid #333 !important;
+    border-radius: 0px !important;
+    box-shadow: none !important;
+    color: #fff !important;
+}
+body.theme-metro .navbar-top {
+    background: #000 !important;
+    border-bottom: 3px solid #ff8c00 !important;
+    border-radius: 0 !important;
+    color: #fff !important;
+}
+body.theme-metro .btn-retro {
+    background: #ff8c00 !important;
+    border: none !important;
+    color: #000 !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
+}
+body.theme-metro .navbar-top a,
+body.theme-metro .navbar-top span { color: #fff !important; }
+body.theme-metro .navbar-top a.active { background: #ff8c00 !important; color: #000 !important; }
+body.theme-metro .star-rating .star { color: #444 !important; }
+body.theme-metro .star-rating .star.active { color: #ff8c00 !important; }
+
+/* 🌑 TEMA 5: DARK AERO */
+body.theme-darkaero {
+    --bg-main: #06060f;
+    --bg-panel: rgba(15, 15, 35, 0.7);
+    --text-main: #d0e8ff;
+    --accent: #00e5ff;
+    --accent-glow: rgba(0, 229, 255, 0.4);
+    --navbar-bg: rgba(10, 10, 30, 0.8);
+    --btn-bg: rgba(0, 229, 255, 0.15);
+    --btn-text: #00e5ff;
+    --post-bg: rgba(15, 15, 35, 0.65);
+    --border-color: rgba(0, 229, 255, 0.3);
+    --border-style: 1px solid rgba(0, 229, 255, 0.3);
+    --shadow: 0 0 30px rgba(0, 229, 255, 0.1);
+    --reaction-bg: rgba(0, 229, 255, 0.08);
+    --font-main: -apple-system, sans-serif;
+    --glass: blur(24px) saturate(180%);
+}
+body.theme-darkaero {
+    background: var(--bg-main);
+    font-family: var(--font-main);
+}
+body.theme-darkaero::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+        radial-gradient(ellipse at 30% 20%, rgba(0, 229, 255, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 80%, rgba(100, 100, 255, 0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: -1;
+}
+body.theme-darkaero .panel-retro,
+body.theme-darkaero .post,
+body.theme-darkaero .publish-area {
+    background: rgba(15, 15, 35, 0.6) !important;
+    backdrop-filter: blur(24px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+    border: 1px solid rgba(0, 229, 255, 0.25) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 0 30px rgba(0, 229, 255, 0.08), inset 0 1px 0 rgba(255,255,255,0.03) !important;
+    color: #d0e8ff !important;
+}
+body.theme-darkaero .navbar-top {
+    background: rgba(10, 10, 30, 0.75) !important;
+    backdrop-filter: blur(24px) !important;
+    border: 1px solid rgba(0, 229, 255, 0.3) !important;
+    border-radius: 18px !important;
+}
+body.theme-darkaero .btn-retro {
+    background: rgba(0, 229, 255, 0.12) !important;
+    border: 1px solid rgba(0, 229, 255, 0.35) !important;
+    border-radius: 30px !important;
+    color: #00e5ff !important;
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.1) !important;
+}
+body.theme-darkaero .navbar-top a,
+body.theme-darkaero .navbar-top span { color: #d0e8ff !important; }
+body.theme-darkaero .star-rating .star { color: rgba(0, 229, 255, 0.3) !important; }
+body.theme-darkaero .star-rating .star.active { color: #00e5ff !important; text-shadow: 0 0 12px rgba(0, 229, 255, 0.6) !important; }
+
+/* 🌀 TEMA 6: Y2K CYBER */
+body.theme-y2k {
+    --bg-main: #1a1a2e;
+    --bg-panel: rgba(25, 25, 45, 0.9);
+    --text-main: #fff;
+    --accent: #ff2d95;
+    --accent-glow: rgba(255, 45, 149, 0.4);
+    --navbar-bg: linear-gradient(180deg, #2a2a4a 0%, #1a1a2e 100%);
+    --btn-bg: rgba(255, 45, 149, 0.2);
+    --btn-text: #ff2d95;
+    --post-bg: rgba(25, 25, 45, 0.85);
+    --border-color: rgba(255, 45, 149, 0.5);
+    --border-style: 2px solid rgba(255, 45, 149, 0.5);
+    --shadow: 0 0 20px rgba(255, 45, 149, 0.2);
+    --reaction-bg: rgba(255, 45, 149, 0.1);
+    --font-main: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+    --glass: blur(10px);
+}
+body.theme-y2k {
+    background: var(--bg-main);
+    font-family: var(--font-main);
+}
+body.theme-y2k::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+        repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,45,149,0.04) 3px, rgba(255,45,149,0.04) 6px);
+    pointer-events: none;
+    z-index: -1;
+}
+body.theme-y2k .panel-retro,
+body.theme-y2k .post,
+body.theme-y2k .publish-area {
+    background: rgba(25, 25, 45, 0.8) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 2px solid rgba(255, 45, 149, 0.4) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 0 25px rgba(255, 45, 149, 0.2), 0 0 5px rgba(255, 45, 149, 0.1) !important;
+    color: #fff !important;
+}
+body.theme-y2k .navbar-top {
+    background: linear-gradient(180deg, #2a2a4a 0%, #1a1a2e 100%) !important;
+    border: 2px solid rgba(255, 45, 149, 0.5) !important;
+    border-radius: 16px !important;
+}
+body.theme-y2k .btn-retro {
+    background: rgba(255, 45, 149, 0.2) !important;
+    border: 2px solid rgba(255, 45, 149, 0.5) !important;
+    border-radius: 25px !important;
+    color: #ff2d95 !important;
+    text-shadow: 0 0 8px rgba(255, 45, 149, 0.5) !important;
+    box-shadow: 0 0 15px rgba(255, 45, 149, 0.25) !important;
+}
+body.theme-y2k .navbar-top a,
+body.theme-y2k .navbar-top span { color: #fff !important; }
+body.theme-y2k .navbar-top a.active {
+    background: #ff2d95 !important;
+    color: #000 !important;
+    box-shadow: 0 0 15px rgba(255, 45, 149, 0.6) !important;
+}
+body.theme-y2k .star-rating .star { color: rgba(255, 45, 149, 0.3) !important; }
+body.theme-y2k .star-rating .star.active { color: #ff2d95 !important; text-shadow: 0 0 10px rgba(255, 45, 149, 0.7) !important; }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .theme-card { width: 60px; padding: 6px; }
+    .theme-preview { width: 44px; height: 30px; }
+    .theme-name { font-size: 8px; }
+}
+
     </style>
 </head>
 <body>
@@ -1314,6 +1812,12 @@
             if (user.tamano_fuente) document.documentElement.style.fontSize = user.tamano_fuente + 'px';
         } catch(e) {}
     }
+})();
+</script>
+<script>
+(function() {
+    var tema = localStorage.getItem('shatt_tema_global') || 'shatt';
+    document.body.classList.add('theme-' + tema);
 })();
 </script>
 </body>
