@@ -6,8 +6,8 @@
     <title>Shatt | Acceso Oficial</title>
     <script src="https://unpkg.com/pocketbase@0.21.5/dist/pocketbase.umd.js"></script>
     
-    
     <style>
+        /* ========== ESTILO WINDOWS 7 PARA LOGIN ========== */
         * {
             margin: 0;
             padding: 0;
@@ -18,20 +18,18 @@
         :root { 
             --bg: #3a6186; 
             --shatt-blue: #3b5998; 
-            --border-pc: 2px solid #000;
-            --shadow-pc: 6px 6px 0px #000;
-            --accent: #fbc02d;
-            --radius: 12px;
-            --radius-sm: 8px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --win7-blue: #2a6b9e;
+            --win7-light: #e8edf3;
+            --win7-border: #8a9bb5;
+            --win7-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            --radius: 10px;
+            --transition: all 0.2s ease;
             --online-color: #22c55e;
         }
-        
+
         body { 
-            background: var(--bg); 
-            background-size: cover;
-            background-attachment: fixed;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; 
+            background: linear-gradient(135deg, #2a4a6a 0%, #1a2a3a 100%);
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -39,22 +37,652 @@
             margin: 0;
             padding: 20px;
         }
-        
+
+        /* ========== VENTANA WINDOWS 7 ========== */
+        .login-window {
+            background: var(--win7-light);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            animation: fadeInUp 0.4s ease;
+        }
+
+        /* Barra de título Windows 7 */
+        .window-header {
+            background: linear-gradient(180deg, #4a8bc2 0%, #2a6b9e 50%, #1a4a7a 100%);
+            color: white;
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 600;
+            user-select: none;
+            cursor: default;
+        }
+
+        .window-header .win-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .window-header .win-btn {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .window-header .win-btn.close { background: #e74c3c; }
+        .window-header .win-btn.close:hover { background: #c0392b; transform: scale(1.1); }
+        .window-header .win-btn.minimize { background: #f39c12; }
+        .window-header .win-btn.minimize:hover { background: #d68910; transform: scale(1.1); }
+        .window-header .win-btn.maximize { background: #27ae60; }
+        .window-header .win-btn.maximize:hover { background: #1e8449; transform: scale(1.1); }
+
+        /* Contenido */
+        .content { padding: 24px 28px 20px 28px; }
+
+        /* Logo */
+        .shatt-logo {
+            text-align: center;
+            margin-bottom: 12px;
+            font-weight: 900;
+            font-size: 34px;
+            color: #1a1a2e;
+            letter-spacing: -1px;
+        }
+        .shatt-logo span { color: var(--shatt-blue); }
+        .shatt-logo .sub {
+            display: block;
+            font-size: 11px;
+            font-weight: 400;
+            color: #888;
+            letter-spacing: 2px;
+            margin-top: -4px;
+        }
+
+        /* ========== CARRUSEL 3D ESTILO WINDOWS 7 ========== */
+        .carousel-3d-container {
+            perspective: 1200px;
+            margin: 10px auto 20px auto;
+            width: 100%;
+            max-width: 400px;
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: visible;
+            touch-action: pan-y;
+        }
+
+        .carousel-3d {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        /* Perfil estilo Windows 7 - Cuadrado con bordes redondeados */
+        .carousel-item {
+            position: absolute;
+            width: 120px;
+            height: 140px;
+            left: 50%;
+            top: 50%;
+            margin-left: -60px;
+            margin-top: -70px;
+            background: white;
+            border-radius: 10px 10px 10px 10px;
+            border: 2px solid #b8c4d4;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 10px 8px 8px 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backface-visibility: visible;
+            text-align: center;
+            background: linear-gradient(180deg, #f5f7fa 0%, #e8ecf0 100%);
+            overflow: hidden;
+        }
+
+        /* Borde ondeado estilo Windows 7 */
+        .carousel-item::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--win7-blue) 10%, 
+                var(--win7-blue) 30%, 
+                transparent 35%,
+                transparent 65%,
+                var(--win7-blue) 70%,
+                var(--win7-blue) 90%,
+                transparent 100%
+            );
+            border-radius: 0 0 10px 10px;
+            opacity: 0.4;
+        }
+
+        .carousel-item:hover {
+            border-color: var(--win7-blue);
+            box-shadow: 0 4px 16px rgba(42, 107, 158, 0.25), inset 0 1px 0 rgba(255,255,255,0.8);
+        }
+
+        .carousel-item.active {
+            border-color: var(--win7-blue);
+            box-shadow: 0 6px 24px rgba(42, 107, 158, 0.35), inset 0 1px 0 rgba(255,255,255,0.8);
+            transform: scale(1.05);
+        }
+
+        /* La foto ocupa todo el espacio disponible */
+        .carousel-item .avatar-wrapper {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 8px 8px 4px 4px;
+            overflow: hidden;
+            background: #d0d7e5;
+            border: 1px solid #b8c4d4;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .carousel-item .avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .carousel-item .avatar-wrapper .avatar-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            color: #666;
+            background: linear-gradient(135deg, #e8ecf0, #d0d7e5);
+        }
+
+        /* Nombre debajo de la foto - sin correo */
+        .carousel-item .name {
+            font-size: 12px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-top: 6px;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex-shrink: 0;
+            padding: 0 2px;
+        }
+
+        /* Flechas del carrusel - solo visibles en escritorio */
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.92);
+            border: 1px solid #b8c4d4;
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            color: #333;
+            user-select: none;
+            font-weight: bold;
+        }
+
+        .carousel-arrow:hover {
+            background: white;
+            border-color: var(--win7-blue);
+            box-shadow: 0 4px 12px rgba(42, 107, 158, 0.2);
+        }
+
+        .carousel-arrow:active {
+            transform: translateY(-50%) scale(0.92);
+        }
+
+        .carousel-arrow.prev {
+            left: -8px;
+        }
+
+        .carousel-arrow.next {
+            right: -8px;
+        }
+
+        .carousel-arrow.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* ========== FORMULARIOS ========== */
+        .form-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #d8dfe8;
+        }
+
+        .form-section h2 {
+            font-size: 18px;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .form-section label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .form-section input,
+        .form-section select {
+            width: 100%;
+            padding: 10px 14px;
+            margin-bottom: 14px;
+            border: 1px solid #d0d7e5;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-section input:focus,
+        .form-section select:focus {
+            border-color: var(--win7-blue);
+            box-shadow: 0 0 0 3px rgba(42, 107, 158, 0.1);
+        }
+
+        .form-section .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(180deg, #5a9bd5 0%, #3a7bb5 50%, #2a6b9e 100%);
+            border: 1px solid #1a5a8a;
+            border-radius: 6px;
+            color: white;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .form-section .btn-primary:hover {
+            background: linear-gradient(180deg, #6aabd5 0%, #4a8bc5 50%, #3a7bb5 100%);
+        }
+
+        .form-section .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .form-section .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Fecha de nacimiento */
+        .date-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .date-group select { flex: 1; margin-bottom: 0; }
+
+        /* Link de cambio */
+        .toggle-link {
+            text-align: center;
+            font-size: 13px;
+            color: var(--win7-blue);
+            cursor: pointer;
+            font-weight: 600;
+            padding: 10px;
+            margin-top: 12px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .toggle-link:hover {
+            background: rgba(42, 107, 158, 0.08);
+        }
+
+        .recover-link {
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+
+        .recover-link:hover {
+            color: var(--win7-blue);
+            text-decoration: underline;
+        }
+
+        /* ========== ESTADÍSTICAS ========== */
+        .footer-stats {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid #d8dfe8;
+            font-size: 12px;
+            color: #777;
+        }
+
+        .footer-stats .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .footer-stats .stat-number {
+            font-weight: 700;
+            background: rgba(0,0,0,0.05);
+            padding: 0 8px;
+            border-radius: 10px;
+            font-size: 13px;
+        }
+
+        .footer-stats .online-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #94a3b8;
+            transition: all 0.3s;
+        }
+
+        .footer-stats .online-dot.active {
+            background: var(--online-color);
+            animation: pulse-dot 1.5s infinite;
+            box-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
+        }
+
+        /* ========== MODAL DE CONTRASEÑA ========== */
+        .password-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(6px);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .password-modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 28px;
+            width: 90%;
+            max-width: 340px;
+            text-align: center;
+            animation: popIn 0.2s ease;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .password-modal-content h3 {
+            margin-bottom: 8px;
+            color: #1a1a2e;
+        }
+
+        .password-modal-content .sub {
+            color: #888;
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+
+        .password-modal-content input {
+            width: 100%;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            border: 1px solid #d0d7e5;
+            border-radius: 6px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .password-modal-content input:focus {
+            border-color: var(--win7-blue);
+            box-shadow: 0 0 0 3px rgba(42, 107, 158, 0.1);
+        }
+
+        .password-modal-content .error-msg {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .password-modal-content .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .password-modal-content .btn-cancel {
+            padding: 10px 24px;
+            background: #e8ecf0;
+            border: 1px solid #c8d0d8;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .password-modal-content .btn-cancel:hover {
+            background: #d8dce0;
+        }
+
+        .password-modal-content .btn-confirm {
+            padding: 10px 24px;
+            background: linear-gradient(180deg, #5a9bd5 0%, #3a7bb5 50%, #2a6b9e 100%);
+            border: 1px solid #1a5a8a;
+            border-radius: 6px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .password-modal-content .btn-confirm:hover {
+            background: linear-gradient(180deg, #6aabd5 0%, #4a8bc5 50%, #3a7bb5 100%);
+        }
+
+        /* ========== MODAL DE TÉRMINOS ========== */
+        .terms-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(6px);
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .terms-modal.show { display: flex; }
+
+        .terms-modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 750px;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: popIn 0.2s ease;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .terms-modal-header {
+            background: linear-gradient(180deg, #4a8bc2 0%, #2a6b9e 50%, #1a4a7a 100%);
+            padding: 16px 20px;
+            color: white;
+            border-radius: 12px 12px 0 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .terms-modal-header h3 { margin: 0; font-size: 18px; }
+
+        .terms-modal-body { padding: 24px; }
+
+        .terms-modal-body h4 { color: var(--win7-blue); margin: 16px 0 8px 0; }
+
+        .terms-modal-body p { margin-bottom: 10px; line-height: 1.6; color: #333; }
+
+        .terms-modal-body ul { margin: 8px 0 12px 20px; }
+
+        .terms-modal-body li { margin-bottom: 4px; line-height: 1.5; }
+
+        .terms-modal-footer {
+            padding: 16px 20px;
+            background: #f5f7fa;
+            border-radius: 0 0 12px 12px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            flex-wrap: wrap;
+            border-top: 1px solid #d8dfe8;
+        }
+
+        .terms-modal-footer button {
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .terms-modal-footer .btn-close-terms {
+            background: #e8ecf0;
+            color: #555;
+        }
+
+        .terms-modal-footer .btn-close-terms:hover {
+            background: #d8dce0;
+        }
+
+        .terms-modal-footer .btn-accept-terms {
+            background: linear-gradient(180deg, #5a9bd5 0%, #3a7bb5 50%, #2a6b9e 100%);
+            color: white;
+        }
+
+        .terms-modal-footer .btn-accept-terms:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .checkbox-container {
+            margin: 16px 0;
+            padding: 14px 16px;
+            background: #f5f7fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .checkbox-container input {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            cursor: pointer;
+            accent-color: var(--win7-blue);
+        }
+
+        .checkbox-container label {
+            flex: 1;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 1.4;
+            cursor: pointer;
+        }
+
+        /* ========== TOAST ========== */
+        .custom-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2e;
+            color: #fbc02d;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 99999;
+            border: 1px solid #fbc02d;
+            text-align: center;
+            animation: fadeInUp 0.3s ease;
+            max-width: 90%;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+
+        .custom-toast.error {
+            background: #2d1a1a;
+            color: #ff6b6b;
+            border-color: #ff6b6b;
+        }
+
+        /* ========== ANIMACIONES ========== */
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-        
+
+        @keyframes popIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
         @keyframes pulse-dot {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.3; transform: scale(0.7); }
         }
-        
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         .loading-spinner {
             display: inline-block;
             width: 18px;
@@ -66,1043 +694,704 @@
             margin-right: 8px;
             vertical-align: middle;
         }
-        
-        .login-window {
-            animation: fadeInUp 0.5s ease;
-            position: relative;
-            z-index: 10;
-        }
-        
-        /* PC */
-        @media (min-width: 769px) {
-            body { padding: 40px; }
-            .login-window { 
-                background: #f0f2f5; 
-                border: var(--border-pc); 
-                box-shadow: var(--shadow-pc); 
-                width: 100%;
-                max-width: 550px;
-                border-radius: var(--radius); 
-                overflow: hidden;
-            }
-            .window-header { 
-                background: var(--shatt-blue); 
-                color: white; 
-                padding: 14px 24px; 
-                font-weight: bold; 
-                font-size: 14px; 
-                display: flex; 
-                justify-content: space-between; 
-                align-items: center;
-                font-family: monospace;
-            }
-            .content { padding: 28px 24px; }
-            .shatt-logo { 
-                text-align: center; 
-                margin-bottom: 16px; 
-                font-weight: 900; 
-                font-size: 32px; 
-                color: #000; 
-                letter-spacing: -1px;
-            }
-            .shatt-logo span { color: var(--shatt-blue); }
-            
-            /* ESTADÍSTICAS PEQUEÑAS ABAJO */
-            .footer-stats {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 16px;
-                margin-top: 18px;
-                padding-top: 14px;
-                border-top: 1px solid rgba(0,0,0,0.08);
-                font-size: 12px;
-                color: #666;
-            }
-            .footer-stats .stat-item {
-                display: flex;
-                align-items: center;
-                gap: 5px;
-            }
-            .footer-stats .stat-number {
-                font-weight: 700;
-                background: rgba(0,0,0,0.05);
-                padding: 0 8px;
-                border-radius: 12px;
-                font-size: 13px;
-            }
-            .footer-stats .online-dot {
-                display: inline-block;
-                width: 8px;
-                height: 8px;
-                border-radius: 50%;
-                background: #94a3b8;
-                flex-shrink: 0;
-                transition: all 0.3s;
-            }
-            .footer-stats .online-dot.active {
-                background: var(--online-color);
-                animation: pulse-dot 1.5s infinite;
-                box-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
-            }
-            
-            h2 { margin: 0 0 20px 0; color: #000; font-size: 20px; text-align: center; font-weight: 700; }
-            label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px; color: #333; text-transform: uppercase; }
-            input, select { 
-                width: 100%; 
-                padding: 12px 16px; 
-                margin-bottom: 18px; 
-                border: var(--border-pc); 
-                border-radius: var(--radius-sm); 
-                outline: none; 
-                background: white;
-                font-size: 14px;
-            }
-            input:focus, select:focus { border-color: var(--accent); }
-            .date-group {
-                display: flex;
-                gap: 12px;
-                margin-bottom: 18px;
-            }
-            .date-group select {
-                flex: 1;
-                margin-bottom: 0;
-            }
-            .btn-access { 
-                width: 100%; 
-                padding: 12px; 
-                background: var(--accent); 
-                border: var(--border-pc); 
-                border-radius: var(--radius-sm); 
-                font-weight: 900; 
-                font-size: 15px;
-                cursor: pointer; 
-                box-shadow: 3px 3px 0px #000;
-                transition: all 0.1s ease;
-            }
-            .btn-access:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
-            .btn-register { background: var(--shatt-blue); color: white; }
-            .toggle-link { margin-top: 20px; text-align: center; font-size: 12px; color: var(--shatt-blue); cursor: pointer; text-decoration: underline; font-weight: 600; }
-            hr { margin: 20px 0; border: 1px solid #ddd; }
-            .saved-accounts { margin-bottom: 24px; }
-            .saved-title { font-size: 11px; font-weight: 700; color: #666; text-transform: uppercase; margin-bottom: 12px; }
-            .accounts-grid { display: flex; flex-wrap: wrap; gap: 12px; }
-            .account-card {
-                flex: 1;
-                min-width: 100px;
-                background: white;
-                border: var(--border-pc);
-                border-radius: var(--radius-sm);
-                padding: 12px 8px;
-                text-align: center;
-                cursor: pointer;
-                position: relative;
-                transition: all 0.2s ease;
-            }
-            .account-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-pc); }
-            .account-avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--shatt-blue); object-fit: cover; margin: 0 auto 8px; display: block; background: #eee; }
-            .account-nick { font-size: 12px; font-weight: bold; }
-            .account-email { font-size: 9px; color: #666; }
-            .remove-account {
-                position: absolute;
-                top: -8px;
-                right: -8px;
-                width: 22px;
-                height: 22px;
-                background: #ff4444;
-                color: white;
-                border-radius: 50%;
-                font-size: 12px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                border: 1px solid #000;
-            }
-            .add-account-btn {
-                flex: 1;
-                min-width: 100px;
-                background: #e0e0e0;
-                border: var(--border-pc);
-                border-radius: var(--radius-sm);
-                padding: 12px 8px;
-                text-align: center;
-                cursor: pointer;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                gap: 6px;
-                transition: all 0.2s ease;
-            }
-            .add-account-btn:hover { background: #d0d0d0; transform: translateY(-2px); }
-            .add-account-btn span:first-child { font-size: 24px; }
-            .add-account-btn span:last-child { font-size: 11px; font-weight: bold; }
-            .recover-link { text-align: center; margin-top: 10px; font-size: 12px; color: var(--shatt-blue); cursor: pointer; text-decoration: none; opacity: 0.7; }
-            .recover-link:hover { opacity: 1; text-decoration: underline; }
-        }
-        
-        /* MÓVIL */
+
+        /* ========== RESPONSIVE ========== */
         @media (max-width: 768px) {
-            body { padding: 16px; align-items: flex-start; padding-top: 30px; background: linear-gradient(135deg, #3a6186 0%, #2a4a6a 100%); }
-            .login-window { background: rgba(255, 255, 255, 0.98); border: none; border-radius: 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); width: 100%; overflow: hidden; }
-            .window-header { background: linear-gradient(135deg, var(--shatt-blue), #2a4880); color: white; padding: 18px 20px; font-weight: 600; font-size: 15px; display: flex; justify-content: space-between; align-items: center; }
-            .content { padding: 24px 20px; }
-            .shatt-logo { text-align: center; margin-bottom: 12px; font-weight: 900; font-size: 34px; color: #1a1a2e; }
-            .shatt-logo span { color: var(--shatt-blue); }
-            
-            /* ESTADÍSTICAS PEQUEÑAS ABAJO */
-            .footer-stats {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 14px;
-                margin-top: 16px;
-                padding-top: 12px;
-                border-top: 1px solid rgba(0,0,0,0.06);
-                font-size: 11px;
-                color: #888;
-            }
-            .footer-stats .stat-item {
-                display: flex;
-                align-items: center;
-                gap: 4px;
-            }
-            .footer-stats .stat-number {
-                font-weight: 700;
-                background: rgba(0,0,0,0.05);
-                padding: 0 6px;
-                border-radius: 10px;
-                font-size: 12px;
-            }
-            .footer-stats .online-dot {
-                display: inline-block;
-                width: 7px;
-                height: 7px;
-                border-radius: 50%;
-                background: #94a3b8;
-                flex-shrink: 0;
-                transition: all 0.3s;
-            }
-            .footer-stats .online-dot.active {
-                background: var(--online-color);
-                animation: pulse-dot 1.5s infinite;
-                box-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
+            /* Ocultar flechas en móvil */
+            .carousel-arrow {
+                display: none !important;
             }
             
-            h2 { margin: 0 0 16px 0; color: #1a1a2e; font-size: 22px; text-align: center; font-weight: 700; }
-            .saved-accounts { margin-bottom: 20px; }
-            .saved-title { font-size: 12px; font-weight: 600; color: #666; margin-bottom: 12px; }
-            .accounts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; }
-            .account-card { background: white; border: 1px solid #e0e0e0; border-radius: 16px; padding: 12px 8px; text-align: center; cursor: pointer; position: relative; transition: all 0.2s ease; }
-            .account-card:active { transform: scale(0.98); }
-            .account-avatar { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--shatt-blue); object-fit: cover; margin: 0 auto 8px; display: block; background: #eee; }
-            .account-nick { font-size: 13px; font-weight: bold; }
-            .account-email { font-size: 10px; color: #888; }
-            .remove-account {
-                position: absolute;
-                top: -8px;
-                right: -8px;
-                width: 24px;
-                height: 24px;
-                background: #ff4444;
-                color: white;
-                border-radius: 50%;
-                font-size: 12px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            .carousel-3d-container {
+                touch-action: pan-y;
+                -webkit-overflow-scrolling: touch;
             }
-            .add-account-btn { background: #f0f0f0; border: 1px dashed #ccc; border-radius: 16px; padding: 12px 8px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s ease; }
-            .add-account-btn:active { transform: scale(0.98); }
-            .add-account-btn span:first-child { font-size: 28px; }
-            .add-account-btn span:last-child { font-size: 11px; font-weight: 600; color: #666; }
-            label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #444; }
-            input, select { width: 100%; padding: 14px 16px; margin-bottom: 16px; border: 1.5px solid #e0e0e0; border-radius: 14px; background: #ffffff; font-size: 16px; }
-            .date-group { display: flex; gap: 10px; margin-bottom: 16px; }
-            .date-group select { flex: 1; margin-bottom: 0; }
-            .btn-access { width: 100%; padding: 16px; background: linear-gradient(135deg, #fbc02d, #f9a825); border: none; border-radius: 30px; font-weight: 700; font-size: 17px; cursor: pointer; color: #1a1a2e; margin-top: 8px; transition: all 0.2s ease; }
-            .btn-access:active { transform: scale(0.98); }
-            .btn-register { background: linear-gradient(135deg, var(--shatt-blue), #2a4880); color: white; }
-            .toggle-link { margin-top: 20px; text-align: center; font-size: 13px; color: var(--shatt-blue); cursor: pointer; font-weight: 600; padding: 10px; background: rgba(59, 89, 152, 0.08); border-radius: 30px; transition: all 0.2s ease; }
-            .toggle-link:active { background: rgba(59, 89, 152, 0.15); transform: scale(0.98); }
-            hr { margin: 20px 0; border: none; height: 1px; background: linear-gradient(90deg, transparent, #ddd, transparent); }
-            .extra-fields-title { font-size: 13px; font-weight: 600; color: var(--shatt-blue); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--accent); display: inline-block; }
-            .recover-link {
-                display: block;
-                text-align: center;
-                margin-top: 10px;
-                font-size: 12px;
-                color: var(--shatt-blue);
-                cursor: pointer;
-                text-decoration: none;
-                opacity: 0.7;
-            }
-            .recover-link:active { opacity: 1; }
         }
-        
-        /* MODALES */
-        .password-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            z-index: 99999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.2s ease;
+
+        @media (max-width: 480px) {
+            body { padding: 12px; align-items: flex-start; padding-top: 30px; }
+            .content { padding: 16px 16px 20px 16px; }
+            .shatt-logo { font-size: 28px; }
+            
+            .carousel-3d-container { height: 190px; max-width: 320px; }
+            .carousel-item { width: 100px; height: 120px; margin-left: -50px; margin-top: -60px; padding: 8px 6px; }
+            .carousel-item .avatar-wrapper { border-radius: 6px 6px 3px 3px; }
+            .carousel-item .avatar-wrapper .avatar-placeholder { font-size: 34px; }
+            .carousel-item .name { font-size: 10px; max-width: 80px; margin-top: 4px; }
+            
+            .form-section input,
+            .form-section select { font-size: 16px; padding: 12px 14px; }
+            .window-header .win-btn { width: 14px; height: 14px; }
+            .footer-stats { gap: 12px; font-size: 10px; }
         }
-        
-        .password-modal-content {
-            background: white;
-            border-radius: 24px;
-            padding: 28px;
-            width: 90%;
-            max-width: 340px;
-            text-align: center;
-            animation: zoomIn 0.2s ease;
-        }
-        
-        .password-modal-content .cancel {
-            background: #e0e0e0;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-right: 10px;
-        }
-        
-        .password-modal-content #confirm-login {
-            background: var(--shatt-blue);
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        
-        .password-modal-content input {
-            width: 100%;
-            padding: 14px 16px;
-            margin-bottom: 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 14px;
-            font-size: 16px;
-            outline: none;
-        }
-        .password-modal-content input:focus { border-color: var(--shatt-blue); }
-        
-        .terms-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(8px);
-            z-index: 99999;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.2s ease;
-        }
-        
-        .terms-modal.show { display: flex; }
-        
-        .terms-modal-content {
-            background: white;
-            border-radius: 28px;
-            width: 90%;
-            max-width: 750px;
-            max-height: 85vh;
-            overflow-y: auto;
-            animation: zoomIn 0.2s ease;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-        }
-        
-        .terms-modal-header {
-            background: linear-gradient(135deg, var(--shatt-blue), #2a4880);
-            padding: 20px;
-            color: white;
-            border-radius: 28px 28px 0 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .terms-modal-header h3 { margin: 0; font-size: 20px; }
-        .terms-modal-body { padding: 24px; }
-        .terms-modal-body h4 { color: var(--shatt-blue); margin: 20px 0 10px 0; }
-        .terms-modal-body p { margin-bottom: 12px; line-height: 1.6; color: #333; }
-        .terms-modal-body ul { margin: 10px 0 15px 25px; }
-        .terms-modal-body li { margin-bottom: 6px; line-height: 1.5; }
-        .terms-modal-footer {
-            padding: 16px 20px;
-            background: #f8f9fa;
-            border-radius: 0 0 28px 28px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .terms-modal-footer button { padding: 10px 24px; border-radius: 30px; font-weight: bold; cursor: pointer; border: none; transition: all 0.2s; }
-        .terms-modal-footer button:hover { transform: scale(1.02); }
-        .terms-modal-footer .btn-close-terms { background: #ccc; color: #333; }
-        .terms-modal-footer .btn-accept-terms { background: #4CAF50; color: white; }
-        
-        .checkbox-container {
-            margin: 20px 0;
-            padding: 15px;
-            background: #f5f5f5;
-            border-radius: 16px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-        }
-        .checkbox-container input { width: 22px; height: 22px; margin-top: 2px; cursor: pointer; }
-        .checkbox-container label { flex: 1; font-size: 14px; font-weight: normal; line-height: 1.4; cursor: pointer; }
-        .terms-link { color: var(--shatt-blue); text-decoration: underline; cursor: pointer; font-weight: bold; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes zoomIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+
+        @media (max-width: 380px) {
+            .carousel-item { width: 80px; height: 100px; margin-left: -40px; margin-top: -50px; padding: 6px 4px; }
+            .carousel-item .avatar-wrapper .avatar-placeholder { font-size: 28px; }
+            .carousel-item .name { font-size: 9px; max-width: 65px; }
+            .carousel-3d-container { height: 160px; max-width: 260px; }
         }
     </style>
 </head>
 <body>
     <div class="login-window">
         <div class="window-header">
-            <span>Shatt Identity Manager</span>
-            <span>✕</span>
+            <span>🔵 Shatt Identity Manager</span>
+            <div class="win-buttons">
+                <span class="win-btn minimize"></span>
+                <span class="win-btn maximize"></span>
+                <span class="win-btn close"></span>
+            </div>
         </div>
         <div class="content">
-            <div class="shatt-logo">SHA<span>TT</span></div>
-            
-            <div id="savedAccountsContainer" class="saved-accounts" style="display: none;">
-                <div class="saved-title">🔑 ACCESO RÁPIDO</div>
-                <div class="accounts-grid" id="accountsGrid"></div>
+            <div class="shatt-logo">
+                SHA<span>TT</span>
+                <span class="sub">★ CONECTA CON EL MUNDO ★</span>
             </div>
-            
+
+            <!-- ========== CARRUSEL 3D ESTILO WINDOWS 7 ========== -->
+            <div id="carouselContainer" class="carousel-3d-container" style="display: none;">
+                <button class="carousel-arrow prev" id="carouselPrev" onclick="moverCarrusel(-1)">‹</button>
+                <div class="carousel-3d" id="carousel3d"></div>
+                <button class="carousel-arrow next" id="carouselNext" onclick="moverCarrusel(1)">›</button>
+            </div>
+
+            <!-- ========== FORMULARIO DE LOGIN ========== -->
             <div id="login-form">
-                <h2>Iniciar Sesión</h2>
-                <form onsubmit="entrar(); return false;">
-                    <label>Correo Electrónico</label>
-                    <input type="email" id="log-email" placeholder="tu@email.com" required autocomplete="email">
-                    <label>Contraseña</label>
-                    <input type="password" id="log-pass" placeholder="••••••••" required autocomplete="current-password">
-                    <button type="submit" class="btn-access">ENTRAR</button>
-                </form>
-                <div class="toggle-link" onclick="toggleMode()">¿No tienes cuenta? Regístrate aquí</div>
-                <div class="recover-link" onclick="recuperarPassword()">🔐 ¿Olvidaste tu contraseña?</div>
+                <div class="form-section">
+                    <h2 id="loginTitle">🔐 Iniciar Sesión</h2>
+                    <form onsubmit="entrar(); return false;">
+                        <label id="userLabel">📧 Correo Electrónico o @usuario</label>
+                        <input type="text" id="log-email" placeholder="tu@email.com o @usuario" required autocomplete="username">
+                        
+                        <label>🔒 Contraseña</label>
+                        <input type="password" id="log-pass" placeholder="••••••••" required autocomplete="current-password">
+                        
+                        <button type="submit" class="btn-primary">🔑 ENTRAR</button>
+                    </form>
+                    <div class="toggle-link" onclick="toggleMode()">¿No tienes cuenta? Regístrate aquí</div>
+                    <div class="recover-link" onclick="recuperarPassword()">🔐 ¿Olvidaste tu contraseña?</div>
+                </div>
             </div>
-            
+
+            <!-- ========== FORMULARIO DE REGISTRO ========== -->
             <div id="register-form" style="display: none;">
-                <h2>Crear Cuenta</h2>
-                <form id="registerForm" onsubmit="event.preventDefault(); mostrarModalTerminosRegistro();">
-                    <label>Correo Electrónico *</label>
-                    <input type="email" id="reg-email" placeholder="ejemplo@shatt.com" required autocomplete="email">
-                    
-                    <label>Contraseña *</label>
-                    <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres" required minlength="6" autocomplete="new-password">
-                    
-                    <label>Fecha de Nacimiento *</label>
-                    <div class="date-group">
-                        <select id="reg-dia" required><option value="">Día</option></select>
-                        <select id="reg-mes" required>
-                            <option value="">Mes</option>
-                            <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option>
-                            <option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option>
-                            <option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option>
-                            <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
-                        </select>
-                        <select id="reg-ano" required><option value="">Año</option></select>
-                    </div>
-                    
-                    <div id="extra-fields" style="display: none;">
-                        <hr>
-                        <div class="extra-fields-title">📝 Información adicional (opcional)</div>
+                <div class="form-section">
+                    <h2>✨ Crear tu cuenta</h2>
+                    <form id="registerForm" onsubmit="event.preventDefault(); mostrarModalTerminosRegistro();">
+                        <label>📧 Correo Electrónico</label>
+                        <input type="email" id="reg-email" placeholder="ejemplo@shatt.com" required autocomplete="email">
                         
-                        <label>Nombre de usuario</label>
-                        <input type="text" id="reg-nick" placeholder="Cómo te llamarás en Shatt" autocomplete="nickname">
+                        <label>🔒 Contraseña</label>
+                        <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres" required minlength="6" autocomplete="new-password">
                         
-                        <label>País</label>
-                        <select id="reg-pais">
-                            <option value="">Selecciona tu país</option>
-                            <option>Argentina</option><option>Bolivia</option><option>Chile</option>
-                            <option>Colombia</option><option>Costa Rica</option><option>Cuba</option>
-                            <option>Ecuador</option><option>El Salvador</option><option>España</option>
-                            <option>Guatemala</option><option>Honduras</option><option>México</option>
-                            <option>Nicaragua</option><option>Panamá</option><option>Paraguay</option>
-                            <option>Perú</option><option>Puerto Rico</option><option>República Dominicana</option>
-                            <option>Uruguay</option><option>Venezuela</option><option>Otro</option>
-                        </select>
-                        
-                        <label>Sexo</label>
-                        <select id="reg-sexo">
-                            <option value="">Selecciona</option>
-                            <option>Masculino</option><option>Femenino</option><option>Otro</option><option>Prefiero no decir</option>
-                        </select>
-                        
-                        <label>Biografía (frase corta)</label>
-                        <input type="text" id="reg-bio" placeholder="Una frase sobre ti" autocomplete="off">
-                        
-                        <label>Sobre mí</label>
-                        <input type="text" id="reg-about" placeholder="Cuéntanos más de ti" autocomplete="off">
-                    </div>
-                    
-                    <button type="submit" class="btn-access btn-register" id="registerSubmitBtn">CREAR MI SHATT</button>
-                </form>
-                <div class="toggle-link" onclick="toggleMode()">¿Ya eres parte? Inicia sesión</div>
+                        <label>📅 Fecha de Nacimiento</label>
+                        <div class="date-group">
+                            <select id="reg-dia" required><option value="">Día</option></select>
+                            <select id="reg-mes" required>
+                                <option value="">Mes</option>
+                                <option value="1">Enero</option><option value="2">Febrero</option>
+                                <option value="3">Marzo</option><option value="4">Abril</option>
+                                <option value="5">Mayo</option><option value="6">Junio</option>
+                                <option value="7">Julio</option><option value="8">Agosto</option>
+                                <option value="9">Septiembre</option><option value="10">Octubre</option>
+                                <option value="11">Noviembre</option><option value="12">Diciembre</option>
+                            </select>
+                            <select id="reg-ano" required><option value="">Año</option></select>
+                        </div>
+
+                        <div id="extra-fields" style="display: none;">
+                            <hr style="margin:16px 0; border:none; border-top:1px solid #d8dfe8;">
+                            <div style="font-size:12px; font-weight:600; color:#888; margin-bottom:12px;">📝 INFORMACIÓN ADICIONAL (opcional)</div>
+                            
+                            <label>👤 Nombre de usuario</label>
+                            <input type="text" id="reg-nick" placeholder="Cómo te llamarás en Shatt" autocomplete="nickname">
+                            
+                            <label>🌍 País</label>
+                            <select id="reg-pais">
+                                <option value="">Selecciona tu país</option>
+                                <option>Argentina</option><option>Bolivia</option><option>Chile</option>
+                                <option>Colombia</option><option>Costa Rica</option><option>Cuba</option>
+                                <option>Ecuador</option><option>El Salvador</option><option>España</option>
+                                <option>Guatemala</option><option>Honduras</option><option>México</option>
+                                <option>Nicaragua</option><option>Panamá</option><option>Paraguay</option>
+                                <option>Perú</option><option>Puerto Rico</option><option>República Dominicana</option>
+                                <option>Uruguay</option><option>Venezuela</option><option>Otro</option>
+                            </select>
+                            
+                            <label>⚥ Sexo</label>
+                            <select id="reg-sexo">
+                                <option value="">Selecciona</option>
+                                <option>Masculino</option><option>Femenino</option>
+                                <option>Otro</option><option>Prefiero no decir</option>
+                            </select>
+                            
+                            <label>✏️ Biografía</label>
+                            <input type="text" id="reg-bio" placeholder="Una frase sobre ti">
+                        </div>
+
+                        <!-- ========== TÉRMINOS Y CONDICIONES ========== -->
+                        <div style="margin: 12px 0 16px 0; padding: 12px 14px; background: #f5f7fa; border-radius: 8px; border-left: 4px solid var(--win7-blue);">
+                            <label style="display: flex; align-items: flex-start; gap: 10px; font-size: 13px; font-weight: normal; color: #333; cursor: pointer;">
+                                <input type="checkbox" id="regTermsCheckbox" style="width: 18px; height: 18px; margin-top: 2px; flex-shrink: 0;">
+                                <span>Acepto los <strong style="color: var(--win7-blue); cursor: pointer;" onclick="event.preventDefault(); mostrarTerminosCompletos();">Términos y Condiciones</strong> y la <strong style="color: var(--win7-blue); cursor: pointer;" onclick="event.preventDefault(); mostrarPrivacidadCompleta();">Política de Privacidad</strong>.</span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="registerSubmitBtn">🚀 CREAR MI CUENTA</button>
+                    </form>
+                    <div class="toggle-link" onclick="toggleMode()">¿Ya tienes cuenta? Inicia sesión</div>
+                </div>
             </div>
-            
-            <!-- ========== ESTADÍSTICAS PEQUEÑAS ABAJO ========== -->
+
+            <!-- ========== ESTADÍSTICAS ========== -->
             <div class="footer-stats" id="statsBar">
-                <span class="stat-item">
-                    👥 Registrados
-                    <span class="stat-number" id="totalUsuarios">0</span>
-                </span>
-                <span class="stat-item">
-                    <span class="online-dot" id="onlineDot"></span>
-                    <span id="usuariosOnline">0</span> en línea
-                </span>
-            </div>
-        </div>
-    </div>
-    
-    <!-- MODAL DE TÉRMINOS Y CONDICIONES -->
-    <div id="termsModal" class="terms-modal">
-        <div class="terms-modal-content">
-            <div class="terms-modal-header">
-                <h3>📜 Términos y Condiciones de Uso de "Shatts"</h3>
-            </div>
-            <div class="terms-modal-body">
-                <p><strong>Última actualización: Junio 2026</strong></p>
-                
-                <h4>1. Partes, Aceptación y Ámbito Global</h4>
-                <p>Los presentes Términos y Condiciones regulan el acceso, registro y uso de la plataforma web y/o aplicación móvil Shatts (en adelante, "Shatts" o "la Plataforma"). Shatts es un proyecto independiente en fase Beta de desarrollo, de propiedad y operado exclusivamente por su fundador y titular único, Jazz M. (en adelante, "el Administrador"). Al crear una cuenta, el usuario acepta estos términos en su totalidad, con validez legal tanto en la República del Perú como a nivel internacional y global. Si no está de acuerdo, debe abstenerse de usar el servicio.</p>
-                
-                <h4>2. Restricción Absoluta de Edad (+18) y Exclusión Global de Responsabilidad</h4>
-                <p><strong>Mayoría de Edad Obligatoria:</strong> El ingreso, registro y uso de Shatts está estrictamente prohibido para menores de dieciocho (18) años. La plataforma está dirigida exclusivamente a adultos (+18).</p>
-                <p><strong>Declaración de Buena Fe:</strong> Al presionar el botón de registro, el usuario declara bajo juramento, consentimiento propio y principio de buena fe que cuenta con 18 años o más. El Administrador opera bajo la confianza de esta declaración y no tiene la obligación técnica de verificar la edad mediante sistemas biométricos infalibles.</p>
-                <p><strong>Exención de Responsabilidad por Menores (-18):</strong> Si un menor de edad ingresa a Shatts falseando su fecha de nacimiento, suplantando una identidad o evadiendo los filtros, el Administrador queda total, absoluta e irreversiblemente exento de cualquier responsabilidad civil, penal, administrativa o por daños y perjuicios bajo las leyes de Perú y cualquier jurisdicción internacional (incluyendo COPPA en EE. UU. y RGPD en Europa).</p>
-                <p><strong>Responsabilidad de los Tutores:</strong> La supervisión del acceso a internet corresponde exclusivamente a los padres o tutores legales.</p>
-                <p><strong>Eliminación de Cuentas:</strong> El Administrador se reserva el derecho de eliminar de forma inmediata, permanente y sin previo aviso cualquier cuenta si se detecta o sospecha que pertenece a un menor de 18 años.</p>
-                
-                <h4>3. Fase Beta, Servicio Gratuito y Futura Monetización</h4>
-                <p><strong>Proyecto en Inicio:</strong> El usuario comprende que Shatts es un servicio en sus primeras versiones (fase Beta) para compartir fotos, audios, chats y seguidores.</p>
-                <p><strong>Futura Monetización:</strong> Actualmente el servicio es gratuito y no posee cobros. Sin embargo, el Administrador se reserva el derecho explícito de introducir en el futuro funciones de monetización, tales como publicidad, suscripciones premium o compras integradas, notificando a los usuarios mediante la actualización de estos términos sin que esto invalide las cláusulas previas.</p>
-                <p><strong>Limitación Tecnológica:</strong> Al ser un proyecto gestionado por una sola persona, el servicio se ofrece "tal cual está". El Administrador no garantiza que la red sea ininterrumpida o libre de fallas. No se asume responsabilidad por caídas del servidor, hackeos, pérdida de fotos, mensajes eliminados o datos perdidos.</p>
-                
-                <h4>4. Responsabilidad por Contenido y Herramientas de Reporte</h4>
-                <p><strong>Rol de Intermediario:</strong> El Administrador actúa únicamente como un intermediario tecnológico y no pre-aprueba, edita ni controla las fotos, audios o chats de los usuarios. Cada usuario es el único responsable legal de su comportamiento.</p>
-                <p><strong>Función de Reporte en Chats:</strong> Shatts cuenta con una función técnica de reporte dentro de los chats para que los usuarios denuncien comportamientos inapropiados. El Administrador revisará los reportes en un plazo razonable y podrá suspender o eliminar las cuentas infractoras.</p>
-                <p><strong>Contacto Oficial:</strong> Para dudas, reclamos o reportes generales, el único canal de atención es: <strong>jackatmadueno@gmail.com</strong></p>
-                
-                <h4>5. Política de Privacidad y Tratamiento de Datos</h4>
-                <p><strong>Cumplimiento Normativo Nacional e Internacional:</strong> De conformidad con la Ley de Protección de Datos Personales en el Perú (Ley N° 29733), el Reglamento General de Protección de Datos (RGPD) de la Unión Europea, y las leyes de privacidad de EE. UU. (COPPA / CCPA), el usuario otorga su consentimiento previo, expreso, informado e inequívoco para que el Administrador recopile y trate los datos esenciales (nombre de usuario, correo, fotos de perfil, audios y chats) introducidos para el funcionamiento de Shatts.</p>
-                <p><strong>Tratamiento Estricto de Datos de Menores de Edad:</strong> Shatts no solicita, ni almacena, ni trata intencionalmente datos personales de menores de 18 años. Si un menor introduce sus datos simulando ser mayor de edad, el acto se considerará un fraude imputable exclusivamente al usuario y a sus tutores. En cumplimiento con las normativas globales de protección al menor (como COPPA), en cuanto el Administrador tome conocimiento de que existen datos de un menor de 18 años en los servidores, procederá a la destrucción total, segura e irreversible de dicha información de manera inmediata.</p>
-                <p><strong>Seguridad y Derechos Globales (ARCO / RGPD):</strong> El Administrador aplica medidas técnicas razonables para proteger la información dentro de sus capacidades individuales, pero ningún sistema en internet es 100% seguro. Los usuarios (peruanos o internacionales) pueden ejercer en cualquier momento sus derechos de Acceso, Rectificación, Cancelación, Oposición, Portabilidad y Olvido eliminando su propia cuenta desde la aplicación o enviando una solicitud formal al correo electrónico: <strong>jackatmadueno@gmail.com</strong>.</p>
-                
-                <p style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 12px; font-weight: bold;">✅ AL REGISTRARTE EN SHATTS, ACEPTAS ESTOS TÉRMINOS Y CONDICIONES. NO ESTÁS PERMITIDO SI ERES MENOR DE 18 AÑOS.</p>
-            </div>
-            <div class="terms-modal-footer">
-                <button class="btn-close-terms" onclick="cerrarTerminos()">Cerrar</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- MODAL DE DECLARACIÓN JURADA -->
-    <div id="declaracionModal" class="terms-modal">
-        <div class="terms-modal-content">
-            <div class="terms-modal-header">
-                <h3>🔞 DECLARACIÓN OBLIGATORIA</h3>
-            </div>
-            <div class="terms-modal-body">
-                <p style="font-size: 16px; margin-bottom: 20px;">Para continuar con la creación de tu cuenta en <strong>Shatts</strong>, debes leer y aceptar lo siguiente:</p>
-                
-                <div style="background: #f0f8ff; padding: 20px; border-radius: 16px; margin-bottom: 20px; border-left: 4px solid #f44336;">
-                    <p style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">⚠️ DECLARACIÓN BAJO JURAMENTO</p>
-                    <p>Declaro bajo juramento, consentimiento propio y principio de buena fe que:</p>
-                    <ul style="margin: 15px 0 0 25px;">
-                        <li>✅ Soy mayor de DIECIOCHO (18) AÑOS de edad.</li>
-                        <li>✅ Acepto expresamente los <strong class="terms-link" onclick="mostrarTerminos()" style="cursor:pointer;">Términos y Condiciones</strong> de Shatts.</li>
-                        <li>✅ Acepto expresamente la <strong class="terms-link" onclick="mostrarPrivacidad()" style="cursor:pointer;">Política de Privacidad</strong> de Shatts.</li>
-                        <li>✅ Asumo TOTAL RESPONSABILIDAD sobre el uso de mi cuenta y el contenido que publique.</li>
-                        <li>✅ Entiendo que si soy menor de edad, mi cuenta será eliminada inmediatamente.</li>
-                    </ul>
-                </div>
-                
-                <div class="checkbox-container">
-                    <input type="checkbox" id="acceptTermsCheckbox">
-                    <label for="acceptTermsCheckbox">
-                        Declaro bajo juramento que soy mayor de edad (+18) y acepto expresamente los 
-                        <span class="terms-link" onclick="mostrarTerminos()">Términos y Condiciones</span> 
-                        y la 
-                        <span class="terms-link" onclick="mostrarPrivacidad()">Política de Privacidad</span> 
-                        de Shatts, asumiendo total responsabilidad sobre el uso de mi cuenta.
-                    </label>
-                </div>
-                
-                <div style="background: #ffebee; padding: 15px; border-radius: 12px; margin: 20px 0;">
-                    <p style="color: #c62828; font-size: 13px; margin: 0;">
-                        <strong>⚠️ IMPORTANTE:</strong> Si eres menor de 18 años, NO puedes crear una cuenta en Shatts. 
-                        Si falseas tu edad, tu cuenta será eliminada y podrías ser responsable legalmente.
-                    </p>
-                </div>
-            </div>
-            <div class="terms-modal-footer">
-                <button class="btn-close-terms" onclick="cerrarDeclaracion()">❌ Cancelar</button>
-                <button class="btn-close-terms btn-accept-terms" id="confirmarRegistroBtn" disabled>✅ Aceptar y Crear Cuenta</button>
+                <span class="stat-item">👥 Registrados <span class="stat-number" id="totalUsuarios">0</span></span>
+                <span class="stat-item"><span class="online-dot" id="onlineDot"></span> <span id="usuariosOnline">0</span> en línea</span>
             </div>
         </div>
     </div>
 
+    <!-- ========== MODAL DE TÉRMINOS COMPLETOS ========== -->
+    <div id="termsModalCompleto" class="terms-modal">
+        <div class="terms-modal-content">
+            <div class="terms-modal-header"><h3>📜 Términos y Condiciones</h3></div>
+            <div class="terms-modal-body">
+                <p><strong>Última actualización: Julio 2026</strong></p>
+                
+                <h4>1. Aceptación</h4>
+                <p>Al crear una cuenta en Shatt, aceptas estos términos en su totalidad. Si no estás de acuerdo, no debes usar la plataforma.</p>
+                
+                <h4>2. Restricción de Edad</h4>
+                <p>El acceso está prohibido para menores de 18 años. Al registrarte, declaras bajo juramento que eres mayor de edad.</p>
+                
+                <h4>3. Responsabilidad del Usuario</h4>
+                <p>Eres el único responsable del contenido que publicas. No debes compartir contenido ilegal, ofensivo o que infrinja derechos de terceros.</p>
+                
+                <h4>4. Privacidad de Datos</h4>
+                <p>Tus datos personales serán tratados con confidencialidad. No compartiremos tu información con terceros sin tu consentimiento.</p>
+                
+                <h4>5. Conducta</h4>
+                <ul>
+                    <li>Trata a los demás con respeto.</li>
+                    <li>No acoses ni intimides a otros usuarios.</li>
+                    <li>No uses lenguaje ofensivo o discriminatorio.</li>
+                </ul>
+                
+                <h4>6. Suspensión de Cuenta</h4>
+                <p>Nos reservamos el derecho de suspender o eliminar cuentas que violen estos términos.</p>
+                
+                <h4>7. Modificaciones</h4>
+                <p>Podemos actualizar estos términos en cualquier momento. Te notificaremos con antelación.</p>
+            </div>
+            <div class="terms-modal-footer">
+                <button class="btn-close-terms" onclick="cerrarTerminosCompletos()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL DE PRIVACIDAD COMPLETA ========== -->
+    <div id="privacidadModalCompleto" class="terms-modal">
+        <div class="terms-modal-content">
+            <div class="terms-modal-header"><h3>🔒 Política de Privacidad</h3></div>
+            <div class="terms-modal-body">
+                <p><strong>Última actualización: Julio 2026</strong></p>
+                
+                <h4>1. Datos que Recopilamos</h4>
+                <p>Recopilamos la siguiente información:</p>
+                <ul>
+                    <li>Correo electrónico</li>
+                    <li>Nombre de usuario</li>
+                    <li>Fecha de nacimiento</li>
+                    <li>País y sexo (opcional)</li>
+                    <li>Contenido que publicas</li>
+                </ul>
+                
+                <h4>2. Uso de los Datos</h4>
+                <ul>
+                    <li>Para gestionar tu cuenta y autenticación</li>
+                    <li>Para mostrar tu contenido en la plataforma</li>
+                    <li>Para mejorar nuestros servicios</li>
+                </ul>
+                
+                <h4>3. Protección de Datos</h4>
+                <p>Utilizamos medidas de seguridad para proteger tu información contra accesos no autorizados.</p>
+                
+                <h4>4. Tus Derechos</h4>
+                <ul>
+                    <li>Acceder, modificar o eliminar tus datos</li>
+                    <li>Solicitar la eliminación de tu cuenta</li>
+                    <li>Revocar tu consentimiento</li>
+                </ul>
+                
+                <h4>5. Contacto</h4>
+                <p>Si tienes preguntas sobre tu privacidad, contáctanos a través de la plataforma.</p>
+            </div>
+            <div class="terms-modal-footer">
+                <button class="btn-close-terms" onclick="cerrarPrivacidadCompleta()">Cerrar</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         const PB_URL = 'https://shatt-social-production.up.railway.app';
         const pb = new PocketBase(PB_URL);
-        
         let cuentasGuardadas = [];
         let datosFormulario = {};
-        
-        // ========== ESTADÍSTICAS EN TIEMPO REAL ==========
+        let currentAngle = 0;
+        let totalItems = 0;
+        let carouselItems = [];
+        let isAnimating = false;
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        // ========== TOAST ==========
+        function mostrarToast(mensaje, isError = false) {
+            const old = document.querySelector('.custom-toast');
+            if (old) old.remove();
+            const toast = document.createElement('div');
+            toast.className = 'custom-toast' + (isError ? ' error' : '');
+            toast.textContent = mensaje;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // ========== ESTADÍSTICAS ==========
         async function actualizarEstadisticas() {
             try {
-                // Obtener TODOS los usuarios
-                const users = await pb.collection('usuarios').getFullList({
-                    $autoCancel: false,
-                    fields: 'id,ultimaVez'
-                });
-                
-                // Total de usuarios
+                const users = await pb.collection('usuarios').getFullList({ $autoCancel: false, fields: 'id,ultimaVez' });
                 document.getElementById('totalUsuarios').textContent = users.length;
-                
-                // Usuarios en línea (últimos 5 minutos)
                 const ahora = Date.now();
-                const hace5Min = ahora - (5 * 60 * 1000);
-                
-                const onlineUsers = users.filter(u => 
-                    u.ultimaVez && new Date(u.ultimaVez).getTime() > hace5Min
-                );
-                
-                const onlineCount = onlineUsers.length;
-                document.getElementById('usuariosOnline').textContent = onlineCount;
-                
-                // Punto verde: parpadea si hay usuarios en línea
+                const onlineUsers = users.filter(u => u.ultimaVez && new Date(u.ultimaVez).getTime() > ahora - 300000);
+                document.getElementById('usuariosOnline').textContent = onlineUsers.length;
                 const dot = document.getElementById('onlineDot');
-                if (onlineCount > 0) {
-                    dot.className = 'online-dot active';
-                } else {
-                    dot.className = 'online-dot';
-                }
-                
+                dot.className = onlineUsers.length > 0 ? 'online-dot active' : 'online-dot';
             } catch(e) {
-                console.error("Error actualizando estadísticas:", e);
-                // Mostrar "?" si hay error
                 document.getElementById('totalUsuarios').textContent = '?';
                 document.getElementById('usuariosOnline').textContent = '?';
             }
         }
-        
-        // ========== LLENAR SELECTS DE FECHA ==========
+
         function llenarSelectsFecha() {
-            const diaSelect = document.getElementById('reg-dia');
-            if (diaSelect) {
-                for (let i = 1; i <= 31; i++) {
-                    const option = document.createElement('option');
-                    option.value = i;
-                    option.textContent = i;
-                    diaSelect.appendChild(option);
-                }
-            }
+            const ds = document.getElementById('reg-dia');
+            if (ds) for (let i = 1; i <= 31; i++) { const o = document.createElement('option'); o.value = i; o.textContent = i; ds.appendChild(o); }
+            const as = document.getElementById('reg-ano');
+            if (as) for (let i = 2025; i >= 1900; i--) { const o = document.createElement('option'); o.value = i; o.textContent = i; as.appendChild(o); }
+        }
+
+        // ========== CARRUSEL 3D ==========
+        function cargarCarrusel() {
+            const container = document.getElementById('carousel3d');
+            const wrapper = document.getElementById('carouselContainer');
+            const prevBtn = document.getElementById('carouselPrev');
+            const nextBtn = document.getElementById('carouselNext');
             
-            const anoSelect = document.getElementById('reg-ano');
-            if (anoSelect) {
-                for (let i = 2025; i >= 1900; i--) {
-                    const option = document.createElement('option');
-                    option.value = i;
-                    option.textContent = i;
-                    anoSelect.appendChild(option);
+            if (!container) return;
+
+            cuentasGuardadas = JSON.parse(localStorage.getItem('shatt_cuentas') || '[]');
+
+            if (cuentasGuardadas.length === 0) {
+                wrapper.style.display = 'none';
+                return;
+            }
+
+            wrapper.style.display = 'block';
+            container.innerHTML = '';
+            carouselItems = [];
+            totalItems = cuentasGuardadas.length;
+
+            // Mostrar/ocultar flechas según cantidad (solo escritorio)
+            if (totalItems <= 1 || window.innerWidth <= 768) {
+                prevBtn.classList.add('hidden');
+                nextBtn.classList.add('hidden');
+            } else {
+                prevBtn.classList.remove('hidden');
+                nextBtn.classList.remove('hidden');
+            }
+
+            cuentasGuardadas.forEach((cu, index) => {
+                const item = document.createElement('div');
+                item.className = 'carousel-item';
+                item.dataset.index = index;
+                item.dataset.email = cu.email;
+                item.dataset.nick = cu.nick;
+                item.dataset.avatar = cu.avatar || '';
+
+                const avatarHtml = cu.avatar && cu.avatar !== '👤' 
+                    ? `<img src="${cu.avatar}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(cu.nick)}&background=3b5998&color=fff&size=120'">` 
+                    : `<div class="avatar-placeholder">👤</div>`;
+
+                item.innerHTML = `
+                    <div class="avatar-wrapper">${avatarHtml}</div>
+                    <div class="name">@${escapeHtml(cu.nick)}</div>
+                `;
+
+                item.onclick = function() {
+                    const email = this.dataset.email;
+                    const nick = this.dataset.nick;
+                    document.getElementById('log-email').value = email;
+                    document.getElementById('log-pass').value = '';
+                    document.getElementById('log-pass').focus();
+                    mostrarToast('👤 @' + nick + ' - Ingresa tu contraseña');
+                    
+                    document.querySelectorAll('.carousel-item').forEach(el => el.classList.remove('active'));
+                    this.classList.add('active');
+                };
+
+                container.appendChild(item);
+                carouselItems.push(item);
+            });
+
+            // Seleccionar el primero por defecto
+            if (carouselItems.length > 0) {
+                setTimeout(() => {
+                    const first = carouselItems[0];
+                    first.classList.add('active');
+                    document.getElementById('log-email').value = first.dataset.email;
+                }, 100);
+            }
+
+            // Si solo hay 1, centrarlo sin animación
+            if (totalItems === 1) {
+                const item = carouselItems[0];
+                item.style.transform = 'translateX(0px) translateZ(0px) scale(1)';
+                item.style.opacity = '1';
+                item.style.zIndex = '100';
+                return;
+            }
+
+            actualizarCarrusel();
+        }
+
+        function actualizarCarrusel() {
+            const container = document.getElementById('carousel3d');
+            if (!container) return;
+
+            const items = container.querySelectorAll('.carousel-item');
+            const count = items.length;
+            if (count <= 1) return;
+
+            const angleStep = 360 / count;
+            const radius = 200;
+
+            items.forEach((item, index) => {
+                const angle = (index * angleStep + currentAngle) * Math.PI / 180;
+                const x = radius * Math.sin(angle);
+                const z = radius * Math.cos(angle) - radius;
+
+                const normalizedZ = (z + radius) / (2 * radius);
+                const scale = 0.7 + (normalizedZ * 0.3);
+                const opacity = 0.4 + (normalizedZ * 0.6);
+
+                item.style.transform = `translateX(${x}px) translateZ(${z}px) scale(${scale})`;
+                item.style.opacity = opacity;
+                item.style.zIndex = Math.round(normalizedZ * 100);
+            });
+        }
+
+        function moverCarrusel(direction) {
+            if (isAnimating) return;
+            const count = carouselItems.length;
+            if (count <= 1) return;
+            
+            isAnimating = true;
+            currentAngle += direction * (360 / count);
+            actualizarCarrusel();
+
+            // Actualizar item activo
+            const items = document.querySelectorAll('.carousel-item');
+            let maxZ = -Infinity;
+            let activeIndex = 0;
+            items.forEach((item, index) => {
+                const transform = item.style.transform;
+                const match = transform.match(/translateZ\(([^)]+)\)/);
+                if (match) {
+                    const z = parseFloat(match[1]);
+                    if (z > maxZ) {
+                        maxZ = z;
+                        activeIndex = index;
+                    }
+                }
+            });
+
+            items.forEach(el => el.classList.remove('active'));
+            if (items[activeIndex]) {
+                items[activeIndex].classList.add('active');
+                const email = items[activeIndex].dataset.email;
+                if (email) {
+                    document.getElementById('log-email').value = email;
+                    document.getElementById('log-pass').value = '';
                 }
             }
+
+            setTimeout(() => {
+                isAnimating = false;
+            }, 400);
         }
-        
-        // ========== CUENTAS GUARDADAS ==========
+
+        // ========== SWIPE TÁCTIL PARA MÓVIL ==========
+        function setupSwipe() {
+            const container = document.getElementById('carousel3d');
+            if (!container) return;
+
+            container.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            container.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                const diff = touchStartX - touchEndX;
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0) {
+                        moverCarrusel(1);
+                    } else {
+                        moverCarrusel(-1);
+                    }
+                }
+            }, { passive: true });
+        }
+
+        // ========== FUNCIONES DE CUENTAS ==========
         function cargarCuentasGuardadas() {
-            const guardadas = localStorage.getItem('shatt_cuentas');
-            if (guardadas) {
-                cuentasGuardadas = JSON.parse(guardadas);
-            } else {
-                cuentasGuardadas = [];
-            }
-            renderCuentasGuardadas();
+            cuentasGuardadas = JSON.parse(localStorage.getItem('shatt_cuentas') || '[]');
+            cargarCarrusel();
+            setTimeout(setupSwipe, 300);
         }
-        
+
         function guardarCuentas() {
             localStorage.setItem('shatt_cuentas', JSON.stringify(cuentasGuardadas));
-            renderCuentasGuardadas();
+            cargarCarrusel();
+            setTimeout(setupSwipe, 300);
         }
-        
+
         function agregarCuentaGuardada(userId, email, nick, avatar) {
             cuentasGuardadas = cuentasGuardadas.filter(c => c.userId !== userId);
-            cuentasGuardadas.unshift({
-                userId: userId,
-                email: email,
-                nick: nick,
-                avatar: avatar || ''
-            });
+            cuentasGuardadas.unshift({ userId, email, nick, avatar: avatar || '' });
             if (cuentasGuardadas.length > 5) cuentasGuardadas = cuentasGuardadas.slice(0, 5);
             guardarCuentas();
         }
-        
-        function eliminarCuentaGuardada(userId, event) {
-            event.stopPropagation();
-            cuentasGuardadas = cuentasGuardadas.filter(c => c.userId !== userId);
-            guardarCuentas();
-        }
-        
-        function renderCuentasGuardadas() {
-            const container = document.getElementById('accountsGrid');
-            const savedContainer = document.getElementById('savedAccountsContainer');
-            if (!container) return;
-            if (cuentasGuardadas.length === 0) {
-                if (savedContainer) savedContainer.style.display = 'none';
-                return;
-            }
-            if (savedContainer) savedContainer.style.display = 'block';
-            
-            let html = '';
-            for (const cuenta of cuentasGuardadas) {
-                const cuentaJson = JSON.stringify(cuenta).replace(/"/g, '&quot;');
-                let avatarHtml = '';
-                if (cuenta.avatar && cuenta.avatar !== '' && cuenta.avatar !== '👤') {
-                    avatarHtml = `<img src="${cuenta.avatar}" class="account-avatar" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(cuenta.nick)}&background=3b5998&color=fff&size=50'">`;
-                } else {
-                    avatarHtml = `<div class="account-avatar" style="display:flex; align-items:center; justify-content:center; background:#eee; font-size:24px;">👤</div>`;
-                }
-                html += `
-                    <div class="account-card" onclick='mostrarModalPassword(${cuentaJson})'>
-                        <div class="remove-account" onclick="eliminarCuentaGuardada('${cuenta.userId}', event)">✕</div>
-                        ${avatarHtml}
-                        <div class="account-nick">@${escapeHtml(cuenta.nick)}</div>
-                        <div class="account-email">${escapeHtml(cuenta.email)}</div>
-                    </div>
-                `;
-            }
-            html += `
-                <div class="add-account-btn" onclick="mostrarLoginForm()">
-                    <span>➕</span>
-                    <span>Agregar cuenta</span>
-                </div>
-            `;
-            container.innerHTML = html;
-        }
-        
+
+        // ========== MOSTRAR MODAL CONTRASEÑA ==========
         function mostrarModalPassword(cuenta) {
-            const existing = document.querySelector('.password-modal');
-            if (existing) existing.remove();
-            
-            const modal = document.createElement('div');
-            modal.className = 'password-modal';
-            modal.innerHTML = `
+            const ex = document.querySelector('.password-modal');
+            if (ex) ex.remove();
+            const m = document.createElement('div');
+            m.className = 'password-modal';
+            m.innerHTML = `
                 <div class="password-modal-content">
                     <h3>🔐 Ingresa tu contraseña</h3>
-                    <p style="margin-bottom:16px; color:#666;">@${escapeHtml(cuenta.nick)}</p>
+                    <div class="sub">@${escapeHtml(cuenta.nick)}</div>
                     <input type="password" id="modal-password" placeholder="Contraseña" autocomplete="off">
-                    <div>
-                        <button class="cancel" onclick="this.closest('.password-modal').remove()">Cancelar</button>
-                        <button id="confirm-login">Entrar</button>
+                    <div class="error-msg" id="modal-error"></div>
+                    <div class="btn-group">
+                        <button class="btn-cancel" onclick="this.closest('.password-modal').remove()">Cancelar</button>
+                        <button class="btn-confirm" id="confirm-login">Entrar</button>
                     </div>
                 </div>
             `;
-            document.body.appendChild(modal);
-            
-            const input = modal.querySelector('#modal-password');
-            input.focus();
-            
-            modal.querySelector('#confirm-login').onclick = async () => {
-                const pass = input.value;
+            document.body.appendChild(m);
+            const inp = m.querySelector('#modal-password');
+            inp.focus();
+
+            m.querySelector('#confirm-login').onclick = async () => {
+                const pass = inp.value;
                 if (!pass) {
-                    alert("Ingresa tu contraseña");
+                    m.querySelector('#modal-error').textContent = 'Ingresa tu contraseña';
+                    m.querySelector('#modal-error').style.display = 'block';
                     return;
                 }
                 try {
                     await pb.collection('usuarios').authWithPassword(cuenta.email, pass);
                     const user = pb.authStore.model;
-                    
                     if (user.bloqueado === true) {
                         pb.authStore.clear();
                         localStorage.removeItem('pocketbase_auth');
-                        alert("🚫 Tu cuenta ha sido bloqueada.");
-                        modal.remove();
+                        mostrarToast('🚫 Tu cuenta ha sido bloqueada', true);
+                        m.remove();
                         return;
                     }
-                    
-                    let avatarUrl = '';
-                    if (user.pfp) avatarUrl = pb.files.getUrl(user, user.pfp);
-                    
+                    let av = '';
+                    if (user.pfp) av = pb.files.getUrl(user, user.pfp);
                     let cuentas = JSON.parse(localStorage.getItem('shatt_cuentas') || '[]');
                     cuentas = cuentas.filter(c => c.userId !== user.id);
-                    cuentas.unshift({
-                        userId: user.id,
-                        email: user.email,
-                        nick: user.nick || user.email.split('@')[0],
-                        avatar: avatarUrl
-                    });
+                    cuentas.unshift({ userId: user.id, email: user.email, nick: user.nick || user.email.split('@')[0], avatar: av });
                     if (cuentas.length > 5) cuentas = cuentas.slice(0, 5);
                     localStorage.setItem('shatt_cuentas', JSON.stringify(cuentas));
-                    localStorage.setItem('pocketbase_auth', JSON.stringify({
-                        token: pb.authStore.token,
-                        model: pb.authStore.model
-                    }));
+                    localStorage.setItem('pocketbase_auth', JSON.stringify({ token: pb.authStore.token, model: pb.authStore.model }));
                     window.location.href = "inicio.html";
                 } catch (error) {
-                    alert("❌ Contraseña incorrecta");
-                    input.value = '';
-                    input.focus();
+                    m.querySelector('#modal-error').textContent = '❌ Contraseña incorrecta';
+                    m.querySelector('#modal-error').style.display = 'block';
+                    inp.value = '';
+                    inp.focus();
                 }
             };
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') modal.querySelector('#confirm-login').click();
-            });
+            inp.addEventListener('keypress', (e) => { if (e.key === 'Enter') m.querySelector('#confirm-login').click(); });
         }
-        
+
+        // ========== MOSTRAR LOGIN ==========
         function mostrarLoginForm() {
             document.getElementById('login-form').style.display = 'block';
             document.getElementById('register-form').style.display = 'none';
             document.getElementById('log-email').value = '';
             document.getElementById('log-pass').value = '';
         }
-        
-        // ========== FUNCIONES DE MODALES ==========
-        
-        function mostrarTerminos() {
-            document.getElementById('declaracionModal').classList.remove('show');
-            setTimeout(() => {
-                document.getElementById('termsModal').classList.add('show');
-            }, 100);
+
+        // ========== TÉRMINOS Y PRIVACIDAD ==========
+        function mostrarTerminosCompletos() {
+            document.getElementById('termsModalCompleto').classList.add('show');
         }
-        
-        function mostrarPrivacidad() {
-            document.getElementById('declaracionModal').classList.remove('show');
-            setTimeout(() => {
-                document.getElementById('termsModal').classList.add('show');
-            }, 100);
+
+        function cerrarTerminosCompletos() {
+            document.getElementById('termsModalCompleto').classList.remove('show');
         }
-        
-        function cerrarTerminos() {
-            document.getElementById('termsModal').classList.remove('show');
-            setTimeout(() => {
-                document.getElementById('declaracionModal').classList.add('show');
-            }, 100);
+
+        function mostrarPrivacidadCompleta() {
+            document.getElementById('privacidadModalCompleto').classList.add('show');
         }
-        
-        function cerrarDeclaracion() {
-            document.getElementById('declaracionModal').classList.remove('show');
-            datosFormulario = {};
+
+        function cerrarPrivacidadCompleta() {
+            document.getElementById('privacidadModalCompleto').classList.remove('show');
         }
-        
-        // ========== REGISTRO CON TÉRMINOS ==========
+
         function mostrarModalTerminosRegistro() {
             const email = document.getElementById('reg-email').value;
             const pass = document.getElementById('reg-pass').value;
             const dia = document.getElementById('reg-dia').value;
             const mes = document.getElementById('reg-mes').value;
             const ano = document.getElementById('reg-ano').value;
-            
-            if (!email || !pass) {
-                alert("❌ Completa tu correo y contraseña");
-                return;
-            }
-            if (pass.length < 6) {
-                alert("❌ La contraseña debe tener al menos 6 caracteres");
-                return;
-            }
-            if (!dia || !mes || !ano) {
-                alert("❌ Completa tu fecha de nacimiento");
-                return;
-            }
-            
-            const fechaNac = new Date(ano, mes - 1, dia);
+            const termsChecked = document.getElementById('regTermsCheckbox').checked;
+
+            if (!email || !pass) { mostrarToast('❌ Completa tu correo y contraseña', true); return; }
+            if (pass.length < 6) { mostrarToast('❌ Mínimo 6 caracteres', true); return; }
+            if (!dia || !mes || !ano) { mostrarToast('❌ Completa tu fecha', true); return; }
+            if (!termsChecked) { mostrarToast('❌ Debes aceptar los Términos y Política de Privacidad', true); return; }
+
+            const fn = new Date(ano, mes - 1, dia);
             const hoy = new Date();
-            let edad = hoy.getFullYear() - fechaNac.getFullYear();
-            const mesDiff = hoy.getMonth() - fechaNac.getMonth();
-            if (mesDiff < 0 || (mesDiff === 0 && hoy.getDate() < fechaNac.getDate())) edad--;
-            
-            if (edad < 18) {
-                alert("❌ Debes tener al menos 18 años para usar Shatts");
-                return;
-            }
-            
+            let edad = hoy.getFullYear() - fn.getFullYear();
+            if (hoy.getMonth() < fn.getMonth() || (hoy.getMonth() === fn.getMonth() && hoy.getDate() < fn.getDate())) edad--;
+            if (edad < 18) { mostrarToast('❌ Debes tener 18 años', true); return; }
+
             datosFormulario = {
-                email: email,
-                pass: pass,
+                email, pass,
                 nick: document.getElementById('reg-nick').value,
                 pais: document.getElementById('reg-pais').value,
                 sexo: document.getElementById('reg-sexo').value,
                 bio: document.getElementById('reg-bio').value,
-                about: document.getElementById('reg-about').value,
                 fechaNacimiento: `${ano}-${mes}-${dia}`,
-                edad: edad
+                edad
             };
-            
-            const check = document.getElementById('acceptTermsCheckbox');
-            if (check) check.checked = false;
-            const confirmBtn = document.getElementById('confirmarRegistroBtn');
-            if (confirmBtn) confirmBtn.disabled = true;
-            
-            document.getElementById('declaracionModal').classList.add('show');
-            check.onchange = function() { confirmBtn.disabled = !this.checked; };
+
+            // Crear cuenta directamente
+            confirmarRegistro();
         }
-        
-        // ========== CONFIRMAR REGISTRO CORREGIDO (CON MENSAJES MEJORADOS) ==========
+
         async function confirmarRegistro() {
-            const check = document.getElementById('acceptTermsCheckbox');
-            if (!check.checked) {
-                alert("❌ Debes aceptar los Términos y Condiciones");
-                return;
-            }
-            
-            const confirmBtn = document.getElementById('confirmarRegistroBtn');
-            const originalText = confirmBtn.innerText;
-            confirmBtn.innerHTML = '<span class="loading-spinner"></span> CREANDO CUENTA...';
-            confirmBtn.disabled = true;
-            
+            const btn = document.getElementById('registerSubmitBtn');
+            const orig = btn.innerText;
+            btn.innerHTML = '<span class="loading-spinner"></span> CREANDO...';
+            btn.disabled = true;
+
             try {
-                const finalNick = datosFormulario.nick.trim() || datosFormulario.email.split('@')[0];
-                
-                const userData = {
+                const nick = datosFormulario.nick.trim() || datosFormulario.email.split('@')[0];
+                await pb.collection('usuarios').create({
                     email: datosFormulario.email,
                     password: datosFormulario.pass,
                     passwordConfirm: datosFormulario.pass,
-                    nick: finalNick,
+                    nick: nick,
                     bio: datosFormulario.bio || "Sin bio aún",
-                    about: datosFormulario.about || "Hola! Estoy en Shatt",
+                    about: "Hola! Estoy en Shatt",
                     intGen: "-",
                     intMus: "-",
                     pais: datosFormulario.pais || "",
                     sexo: datosFormulario.sexo || "",
                     fuma: "No",
                     toma: "A veces"
-                };
-                
-                await pb.collection('usuarios').create(userData);
+                });
                 await pb.collection('usuarios').authWithPassword(datosFormulario.email, datosFormulario.pass);
-                
                 const user = pb.authStore.model;
-                let avatarUrl = '';
-                if (user.pfp) avatarUrl = pb.files.getUrl(user, user.pfp);
-                agregarCuentaGuardada(user.id, user.email, user.nick || user.email.split('@')[0], avatarUrl);
-                
-                localStorage.setItem('pocketbase_auth', JSON.stringify({
-                    token: pb.authStore.token,
-                    model: pb.authStore.model
-                }));
-                
-                alert("🎉 ¡Bienvenido a Shatt! Tu cuenta ha sido creada.");
-                cerrarDeclaracion();
-                window.location.href = "inicio.html";
-                
-            } catch (error) {
-                console.error("Error en registro:", error);
-                
-                let mensaje = "❌ Error al crear la cuenta: ";
-                
-                // ✅ MENSAJES MEJORADOS PARA EL USUARIO
-                if (error.message) {
-                    const msg = error.message.toLowerCase();
-                    
-                    if (msg.includes("unique") || msg.includes("duplicate")) {
-                        if (msg.includes("email")) {
-                            mensaje = "❌ Este correo electrónico ya está registrado. ¿Quieres iniciar sesión?";
-                        } else if (msg.includes("nick") || msg.includes("username")) {
-                            mensaje = "❌ El nombre de usuario ya está en uso. Prueba con otro.";
-                        } else {
-                            mensaje = "❌ El correo o nombre de usuario ya está registrado. Intenta iniciar sesión.";
-                        }
-                    } else if (msg.includes("invalid") && msg.includes("email")) {
-                        mensaje = "❌ El correo electrónico no es válido. Revisa el formato.";
-                    } else if (msg.includes("password")) {
-                        mensaje = "❌ La contraseña debe tener al menos 6 caracteres.";
-                    } else if (msg.includes("nick") || msg.includes("username")) {
-                        mensaje = "❌ El nombre de usuario solo puede contener letras, números y guiones.";
-                    } else {
-                        mensaje += error.message;
-                    }
-                } else {
-                    mensaje += "Error desconocido. Intenta de nuevo.";
-                }
-                
-                alert(mensaje);
-                confirmBtn.innerHTML = originalText;
-                confirmBtn.disabled = false;
-            }
-        }
-        
-        async function entrar() {
-            const email = document.getElementById('log-email').value;
-            const pass = document.getElementById('log-pass').value;
-            
-            if (!email || !pass) {
-                alert("❌ Completa todos los campos");
-                return;
-            }
-            
-            const btn = document.querySelector('#login-form .btn-access');
-            const originalText = btn.innerText;
-            btn.innerHTML = '<span class="loading-spinner"></span> INGRESANDO...';
-            btn.disabled = true;
-            
-            try {
-                await pb.collection('usuarios').authWithPassword(email, pass);
-                const user = pb.authStore.model;
-                
-                if (user.bloqueado === true) {
-                    pb.authStore.clear();
-                    localStorage.removeItem('pocketbase_auth');
-                    alert("🚫 Tu cuenta ha sido bloqueada por el administrador. No puedes acceder a SHATTS.");
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                    return;
-                }
-                
-                let avatarUrl = '';
-                if (user.pfp) avatarUrl = pb.files.getUrl(user, user.pfp);
-                agregarCuentaGuardada(user.id, user.email, user.nick || user.email.split('@')[0], avatarUrl);
-                localStorage.setItem('pocketbase_auth', JSON.stringify({
-                    token: pb.authStore.token,
-                    model: pb.authStore.model
-                }));
+                let av = '';
+                if (user.pfp) av = pb.files.getUrl(user, user.pfp);
+                agregarCuentaGuardada(user.id, user.email, user.nick || user.email.split('@')[0], av);
+                localStorage.setItem('pocketbase_auth', JSON.stringify({ token: pb.authStore.token, model: pb.authStore.model }));
+                mostrarToast('🎉 ¡Bienvenido a Shatt!');
                 window.location.href = "inicio.html";
             } catch (error) {
-                alert("❌ Email o contraseña incorrectos");
-                btn.innerHTML = originalText;
+                let msg = "❌ Error al crear la cuenta";
+                if (error.message && error.message.toLowerCase().includes("unique")) msg = "❌ Ese correo o usuario ya existe";
+                mostrarToast(msg, true);
+                btn.innerHTML = orig;
                 btn.disabled = false;
             }
         }
-        
+
+        // ========== LOGIN PRINCIPAL ==========
+        async function entrar() {
+            const email = document.getElementById('log-email').value.trim();
+            const pass = document.getElementById('log-pass').value;
+            if (!email || !pass) { mostrarToast('❌ Completa todos los campos', true); return; }
+
+            const btn = document.querySelector('#login-form .btn-primary');
+            const orig = btn.innerText;
+            btn.innerHTML = '<span class="loading-spinner"></span> INGRESANDO...';
+            btn.disabled = true;
+
+            try {
+                let foundEmail = email;
+
+                if (email.startsWith('@')) {
+                    const nick = email.substring(1);
+                    const users = await pb.collection('usuarios').getFullList({
+                        $autoCancel: false,
+                        filter: `nick = "${nick}"`
+                    });
+                    if (users.length > 0) {
+                        foundEmail = users[0].email;
+                    } else {
+                        mostrarToast('❌ Usuario no encontrado', true);
+                        btn.innerHTML = orig;
+                        btn.disabled = false;
+                        return;
+                    }
+                }
+
+                await pb.collection('usuarios').authWithPassword(foundEmail, pass);
+                const loggedUser = pb.authStore.model;
+
+                if (loggedUser.bloqueado === true) {
+                    pb.authStore.clear();
+                    localStorage.removeItem('pocketbase_auth');
+                    mostrarToast('🚫 Cuenta bloqueada', true);
+                    btn.innerHTML = orig;
+                    btn.disabled = false;
+                    return;
+                }
+
+                let av = '';
+                if (loggedUser.pfp) av = pb.files.getUrl(loggedUser, loggedUser.pfp);
+                agregarCuentaGuardada(loggedUser.id, loggedUser.email, loggedUser.nick || loggedUser.email.split('@')[0], av);
+                localStorage.setItem('pocketbase_auth', JSON.stringify({ token: pb.authStore.token, model: pb.authStore.model }));
+                window.location.href = "inicio.html";
+
+            } catch (error) {
+                mostrarToast('❌ Email o contraseña incorrectos', true);
+                btn.innerHTML = orig;
+                btn.disabled = false;
+                document.getElementById('log-pass').value = '';
+                document.getElementById('log-pass').focus();
+            }
+        }
+
+        // ========== TOGGLE MODO ==========
         function toggleMode() {
-            const login = document.getElementById('login-form');
-            const register = document.getElementById('register-form');
-            const isRegisterVisible = register.style.display !== 'none';
-            
-            login.style.display = isRegisterVisible ? 'block' : 'none';
-            register.style.display = isRegisterVisible ? 'none' : 'block';
-            
-            if (!isRegisterVisible) {
-                setTimeout(() => {
-                    const extra = document.getElementById('extra-fields');
-                    if (extra) extra.style.display = 'block';
-                }, 100);
-            } else {
-                const extra = document.getElementById('extra-fields');
-                if (extra) extra.style.display = 'none';
+            const lf = document.getElementById('login-form'), rf = document.getElementById('register-form');
+            const isReg = rf.style.display !== 'none';
+            lf.style.display = isReg ? 'block' : 'none';
+            rf.style.display = isReg ? 'none' : 'block';
+            if (!isReg) setTimeout(() => { const ex = document.getElementById('extra-fields'); if (ex) ex.style.display = 'block'; }, 100);
+            else {
+                document.getElementById('extra-fields').style.display = 'none';
                 document.getElementById('reg-email').value = '';
                 document.getElementById('reg-pass').value = '';
                 document.getElementById('reg-nick').value = '';
@@ -1111,86 +1400,71 @@
                 document.getElementById('reg-ano').value = '';
             }
         }
-        
-        function escapeHtml(text) {
-            if (!text) return '';
-            return text.replace(/[&<>]/g, function(m) {
-                return m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;';
-            });
-        }
-        
+
+        // ========== RECUPERAR CONTRASEÑA ==========
         async function recuperarPassword() {
             const email = prompt("📧 Ingresa tu correo electrónico:");
             if (!email) return;
-            
             try {
-                const todos = await pb.collection('usuarios').getFullList({
-                    $autoCancel: false
-                });
-                
-                const emailLimpio = email.toLowerCase().trim();
-                const usuario = todos.find(u => u.email && u.email.toLowerCase().trim() === emailLimpio);
-                
-                if (!usuario) {
-                    alert(`❌ El correo "${email}" no está registrado.\n\nSi crees que es un error, contacta al administrador.`);
-                    return;
-                }
-                
-                const token = Array.from(crypto.getRandomValues(new Uint8Array(32)))
-                    .map(b => b.toString(16).padStart(2, '0'))
-                    .join('');
-                
-                await pb.collection('usuarios').update(usuario.id, {
-                    resetToken: token,
+                const todos = await pb.collection('usuarios').getFullList({ $autoCancel: false });
+                const u = todos.find(x => x.email && x.email.toLowerCase().trim() === email.toLowerCase().trim());
+                if (!u) { mostrarToast('❌ Correo no registrado', true); return; }
+                const tok = Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b => b.toString(16).padStart(2, '0')).join('');
+                await pb.collection('usuarios').update(u.id, {
+                    resetToken: tok,
                     resetTokenExpires: new Date(Date.now() + 3600000).toISOString()
                 });
-                
-                const resetLink = `${window.location.origin}/restablecer.html?token=${token}&email=${encodeURIComponent(usuario.email)}`;
-                
-                if (confirm("🔗 ¿Quieres abrir el enlace de recuperación ahora?")) {
-                    window.open(resetLink, '_blank');
-                } else {
-                    alert(`🔗 Copia este enlace:\n\n${resetLink}\n\n(Expira en 1 hora)`);
-                }
-                
-            } catch(e) {
-                console.error("Error:", e);
-                alert("❌ Error al procesar la solicitud: " + e.message);
-            }
+                const link = `${window.location.origin}/restablecer.html?token=${tok}&email=${encodeURIComponent(u.email)}`;
+                if (confirm("🔗 ¿Abrir enlace?")) window.open(link, '_blank');
+                else mostrarToast('📋 Enlace copiado. Revisa tu portapapeles.');
+            } catch(e) { mostrarToast('❌ Error: ' + e.message, true); }
         }
-        
-        // ========== EVENTOS ==========
-        document.getElementById('reg-email')?.addEventListener('focus', () => {
-            const extra = document.getElementById('extra-fields');
-            if (extra) extra.style.display = 'block';
-        });
-        document.getElementById('reg-pass')?.addEventListener('focus', () => {
-            const extra = document.getElementById('extra-fields');
-            if (extra) extra.style.display = 'block';
-        });
-        document.getElementById('confirmarRegistroBtn')?.addEventListener('click', confirmarRegistro);
-        
+
+        // ========== ESCAPE HTML ==========
+        function escapeHtml(t) { if (!t) return ''; return t.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
+
         // ========== INICIALIZAR ==========
-        llenarSelectsFecha();
-        cargarCuentasGuardadas();
-        
-        // ✅ Actualizar estadísticas inmediatamente y cada 30 segundos
-        actualizarEstadisticas();
-        setInterval(actualizarEstadisticas, 30000);
-        
-        // Exponer funciones globales
+        document.getElementById('reg-email')?.addEventListener('focus', () => { const ex = document.getElementById('extra-fields'); if (ex) ex.style.display = 'block'; });
+        document.getElementById('reg-pass')?.addEventListener('focus', () => { const ex = document.getElementById('extra-fields'); if (ex) ex.style.display = 'block'; });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            llenarSelectsFecha();
+            cargarCuentasGuardadas();
+            actualizarEstadisticas();
+            setInterval(actualizarEstadisticas, 30000);
+            
+            setTimeout(() => {
+                const firstActive = document.querySelector('.carousel-item.active');
+                if (firstActive) {
+                    document.getElementById('log-email').value = firstActive.dataset.email;
+                }
+            }, 200);
+        });
+
+        // Al cambiar tamaño de ventana, actualizar visibilidad de flechas
+        window.addEventListener('resize', () => {
+            const prevBtn = document.getElementById('carouselPrev');
+            const nextBtn = document.getElementById('carouselNext');
+            if (window.innerWidth <= 768 || totalItems <= 1) {
+                prevBtn.classList.add('hidden');
+                nextBtn.classList.add('hidden');
+            } else {
+                prevBtn.classList.remove('hidden');
+                nextBtn.classList.remove('hidden');
+            }
+        });
+
+        // ========== EXPONER FUNCIONES GLOBALES ==========
         window.entrar = entrar;
         window.toggleMode = toggleMode;
-        window.eliminarCuentaGuardada = eliminarCuentaGuardada;
         window.mostrarModalPassword = mostrarModalPassword;
         window.mostrarLoginForm = mostrarLoginForm;
-        window.mostrarModalTerminosRegistro = mostrarModalTerminosRegistro;
-        window.mostrarTerminos = mostrarTerminos;
-        window.cerrarTerminos = cerrarTerminos;
-        window.mostrarPrivacidad = mostrarPrivacidad;
-        window.cerrarDeclaracion = cerrarDeclaracion;
-        window.confirmarRegistro = confirmarRegistro;
+        window.mostrarTerminosCompletos = mostrarTerminosCompletos;
+        window.cerrarTerminosCompletos = cerrarTerminosCompletos;
+        window.mostrarPrivacidadCompleta = mostrarPrivacidadCompleta;
+        window.cerrarPrivacidadCompleta = cerrarPrivacidadCompleta;
         window.recuperarPassword = recuperarPassword;
+        window.moverCarrusel = moverCarrusel;
     </script>
 </body>
 </html>
