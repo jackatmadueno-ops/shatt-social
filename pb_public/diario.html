@@ -828,6 +828,125 @@ body.theme-frutiger .star-rating .star.active {
     text-shadow: 0 0 10px rgba(45, 138, 78, 0.5) !important;
 }
 
+
+/* ========== BURBUJAS FRUTIGER AERO ========== */
+body.theme-frutiger {
+    position: relative;
+    overflow-x: hidden;
+}
+
+body.theme-frutiger .burbujas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+body.theme-frutiger .burbuja {
+    position: absolute;
+    bottom: -150px;
+    border-radius: 50%;
+    animation: subirBurbuja linear infinite;
+    background: radial-gradient(
+        circle at 30% 30%,
+        rgba(255, 255, 255, 0.8) 0%,
+        rgba(173, 216, 230, 0.3) 40%,
+        rgba(135, 206, 250, 0.1) 70%,
+        rgba(100, 200, 255, 0.05) 100%
+    );
+    box-shadow: 
+        inset -5px -5px 20px rgba(255, 255, 255, 0.5),
+        inset 5px 5px 20px rgba(135, 206, 235, 0.3),
+        0 0 30px rgba(135, 206, 235, 0.2),
+        0 0 60px rgba(173, 216, 230, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(2px);
+    transform-origin: center;
+}
+
+body.theme-frutiger .burbuja::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: 20%;
+    width: 30%;
+    height: 20%;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(255, 255, 255, 0.9) 0%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    border-radius: 50%;
+    transform: rotate(-30deg);
+}
+
+body.theme-frutiger .burbuja::after {
+    content: '';
+    position: absolute;
+    bottom: 15%;
+    right: 15%;
+    width: 15%;
+    height: 10%;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    border-radius: 50%;
+    transform: rotate(20deg);
+}
+
+/* Tamaños y velocidades */
+body.theme-frutiger .burbuja:nth-child(1) { width: 60px; height: 60px; left: 5%; animation-duration: 14s; animation-delay: 0s; }
+body.theme-frutiger .burbuja:nth-child(2) { width: 120px; height: 120px; left: 12%; animation-duration: 18s; animation-delay: 2s; }
+body.theme-frutiger .burbuja:nth-child(3) { width: 45px; height: 45px; left: 22%; animation-duration: 11s; animation-delay: 4s; }
+body.theme-frutiger .burbuja:nth-child(4) { width: 90px; height: 90px; left: 32%; animation-duration: 16s; animation-delay: 1s; }
+body.theme-frutiger .burbuja:nth-child(5) { width: 35px; height: 35px; left: 42%; animation-duration: 9s; animation-delay: 3s; }
+body.theme-frutiger .burbuja:nth-child(6) { width: 150px; height: 150px; left: 52%; animation-duration: 20s; animation-delay: 5s; }
+body.theme-frutiger .burbuja:nth-child(7) { width: 55px; height: 55px; left: 65%; animation-duration: 12s; animation-delay: 2.5s; }
+body.theme-frutiger .burbuja:nth-child(8) { width: 80px; height: 80px; left: 75%; animation-duration: 15s; animation-delay: 4.5s; }
+body.theme-frutiger .burbuja:nth-child(9) { width: 100px; height: 100px; left: 85%; animation-duration: 17s; animation-delay: 1.5s; }
+body.theme-frutiger .burbuja:nth-child(10) { width: 40px; height: 40px; left: 93%; animation-duration: 10s; animation-delay: 6s; }
+body.theme-frutiger .burbuja:nth-child(11) { width: 70px; height: 70px; left: 50%; animation-duration: 13s; animation-delay: 3.5s; }
+body.theme-frutiger .burbuja:nth-child(12) { width: 110px; height: 110px; left: 8%; animation-duration: 19s; animation-delay: 7s; }
+
+@keyframes subirBurbuja {
+    0% {
+        transform: translateY(0) translateX(0) scale(1) rotate(0deg);
+        opacity: 0.8;
+    }
+    25% {
+        transform: translateY(-30vh) translateX(20px) scale(1.05) rotate(90deg);
+        opacity: 0.9;
+    }
+    50% {
+        transform: translateY(-55vh) translateX(-15px) scale(1.1) rotate(180deg);
+        opacity: 1;
+    }
+    75% {
+        transform: translateY(-80vh) translateX(25px) scale(0.95) rotate(270deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(-110vh) translateX(-10px) scale(0.9) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+body.theme-frutiger .app-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+body.theme-frutiger .navbar-top {
+    position: relative;
+    z-index: 2;
+}
+
 /* 🏢 TEMA 3: DORFic */
 body.theme-dorf {
     --bg-main: #1a1a1a;
@@ -2047,6 +2166,99 @@ async function cargarDisenoGuardado() {
             clearTimeout(window.searchTimeout);
             window.searchTimeout = setTimeout(() => ejecutarBusquedaFullscreen(e.target.value), 200);
         });
+
+
+
+        // ============================================================
+// 🫧 SISTEMA GLOBAL DE BURBUJAS
+// ============================================================
+
+let burbujasActivas = false;
+
+function crearBurbujasGlobales() {
+    if (burbujasActivas) return;
+    
+    const burbujasExistentes = document.querySelector('.burbujas');
+    if (burbujasExistentes) burbujasExistentes.remove();
+    
+    if (!document.body.classList.contains('theme-frutiger')) return;
+    
+    const container = document.createElement('div');
+    container.className = 'burbujas';
+    container.id = 'burbujas-globales';
+    
+    for (let i = 0; i < 12; i++) {
+        const burbuja = document.createElement('div');
+        burbuja.className = 'burbuja';
+        container.appendChild(burbuja);
+    }
+    
+    document.body.prepend(container);
+    burbujasActivas = true;
+    
+    setTimeout(() => {
+        container.style.transition = 'opacity 1s ease';
+        container.style.opacity = '1';
+    }, 100);
+}
+
+function eliminarBurbujasGlobales() {
+    const burbujas = document.querySelector('.burbujas');
+    if (burbujas) {
+        burbujas.style.transition = 'opacity 0.5s ease';
+        burbujas.style.opacity = '0';
+        setTimeout(() => {
+            burbujas.remove();
+            burbujasActivas = false;
+        }, 500);
+    } else {
+        burbujasActivas = false;
+    }
+}
+
+function initBurbujasGlobales() {
+    const tema = localStorage.getItem('shatt_tema_global') || 'shatt';
+    
+    if (tema === 'frutiger' || document.body.classList.contains('theme-frutiger')) {
+        setTimeout(crearBurbujasGlobales, 500);
+    }
+}
+
+// Ejecutar al cargar
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(initBurbujasGlobales, 300);
+});
+
+// Observar cambios en el tema
+const observerBurbujas = new MutationObserver(() => {
+    if (document.body.classList.contains('theme-frutiger')) {
+        if (!burbujasActivas) {
+            setTimeout(crearBurbujasGlobales, 300);
+        }
+    } else {
+        if (burbujasActivas) {
+            eliminarBurbujasGlobales();
+        }
+    }
+});
+
+observerBurbujas.observe(document.body, {
+    attributes: true,
+    attributeFilter: ['class']
+});
+
+// Detectar cambios en localStorage
+window.addEventListener('storage', (e) => {
+    if (e.key === 'shatt_tema_global') {
+        setTimeout(() => {
+            if (e.newValue === 'frutiger') {
+                crearBurbujasGlobales();
+            } else {
+                eliminarBurbujasGlobales();
+            }
+        }, 300);
+    }
+});
 
         // Exponer funciones globales
         window.irAlPostit = irAlPostit;
