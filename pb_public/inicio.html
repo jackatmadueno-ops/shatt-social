@@ -2354,11 +2354,14 @@ body.theme-frutiger {
     --reaction-bg: rgba(45, 138, 78, 0.1);
     --font-main: 'Segoe UI', -apple-system, sans-serif;
     --glass: blur(20px) saturate(180%);
+    
 }
 body.theme-frutiger {
     background: var(--bg-main);
     background-attachment: fixed;
     font-family: var(--font-main);
+    position: relative;
+    overflow-x: hidden;
 }
 body.theme-frutiger::before {
     content: '';
@@ -2397,6 +2400,215 @@ body.theme-frutiger .btn-retro {
 body.theme-frutiger .star-rating .star.active {
     color: #2d8a4e !important;
     text-shadow: 0 0 10px rgba(45, 138, 78, 0.5) !important;
+}
+
+/* Contenedor de burbujas */
+body.theme-frutiger .burbujas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+/* Cada burbuja - VERSIÓN MEJORADA */
+body.theme-frutiger .burbuja {
+    position: absolute;
+    bottom: -150px;
+    border-radius: 50%;
+    animation: subirBurbuja linear infinite;
+    /* Efecto de burbuja real */
+    background: radial-gradient(
+        circle at 30% 30%,
+        rgba(255, 255, 255, 0.8) 0%,
+        rgba(173, 216, 230, 0.3) 40%,
+        rgba(135, 206, 250, 0.1) 70%,
+        rgba(100, 200, 255, 0.05) 100%
+    );
+    box-shadow: 
+        inset -5px -5px 20px rgba(255, 255, 255, 0.5),
+        inset 5px 5px 20px rgba(135, 206, 235, 0.3),
+        0 0 30px rgba(135, 206, 235, 0.2),
+        0 0 60px rgba(173, 216, 230, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(2px);
+    transform-origin: center;
+}
+
+/* Brillo extra - reflejo de la burbuja */
+body.theme-frutiger .burbuja::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: 20%;
+    width: 30%;
+    height: 20%;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(255, 255, 255, 0.9) 0%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    border-radius: 50%;
+    transform: rotate(-30deg);
+}
+
+/* Brillo secundario - reflejo inferior */
+body.theme-frutiger .burbuja::after {
+    content: '';
+    position: absolute;
+    bottom: 15%;
+    right: 15%;
+    width: 15%;
+    height: 10%;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    border-radius: 50%;
+    transform: rotate(20deg);
+}
+
+/* Tamaños y velocidades - más variados */
+body.theme-frutiger .burbuja:nth-child(1) { 
+    width: 60px; height: 60px; 
+    left: 5%; 
+    animation-duration: 14s; 
+    animation-delay: 0s; 
+}
+body.theme-frutiger .burbuja:nth-child(2) { 
+    width: 120px; height: 120px; 
+    left: 12%; 
+    animation-duration: 18s; 
+    animation-delay: 2s; 
+}
+body.theme-frutiger .burbuja:nth-child(3) { 
+    width: 45px; height: 45px; 
+    left: 22%; 
+    animation-duration: 11s; 
+    animation-delay: 4s; 
+}
+body.theme-frutiger .burbuja:nth-child(4) { 
+    width: 90px; height: 90px; 
+    left: 32%; 
+    animation-duration: 16s; 
+    animation-delay: 1s; 
+}
+body.theme-frutiger .burbuja:nth-child(5) { 
+    width: 35px; height: 35px; 
+    left: 42%; 
+    animation-duration: 9s; 
+    animation-delay: 3s; 
+}
+body.theme-frutiger .burbuja:nth-child(6) { 
+    width: 150px; height: 150px; 
+    left: 52%; 
+    animation-duration: 20s; 
+    animation-delay: 5s; 
+}
+body.theme-frutiger .burbuja:nth-child(7) { 
+    width: 55px; height: 55px; 
+    left: 65%; 
+    animation-duration: 12s; 
+    animation-delay: 2.5s; 
+}
+body.theme-frutiger .burbuja:nth-child(8) { 
+    width: 80px; height: 80px; 
+    left: 75%; 
+    animation-duration: 15s; 
+    animation-delay: 4.5s; 
+}
+body.theme-frutiger .burbuja:nth-child(9) { 
+    width: 100px; height: 100px; 
+    left: 85%; 
+    animation-duration: 17s; 
+    animation-delay: 1.5s; 
+}
+body.theme-frutiger .burbuja:nth-child(10) { 
+    width: 40px; height: 40px; 
+    left: 93%; 
+    animation-duration: 10s; 
+    animation-delay: 6s; 
+}
+body.theme-frutiger .burbuja:nth-child(11) { 
+    width: 70px; height: 70px; 
+    left: 50%; 
+    animation-duration: 13s; 
+    animation-delay: 3.5s; 
+}
+body.theme-frutiger .burbuja:nth-child(12) { 
+    width: 110px; height: 110px; 
+    left: 8%; 
+    animation-duration: 19s; 
+    animation-delay: 7s; 
+}
+
+/* Animación de subida con balanceo */
+@keyframes subirBurbuja {
+    0% {
+        transform: translateY(0) translateX(0) scale(1) rotate(0deg);
+        opacity: 0.8;
+    }
+    25% {
+        transform: translateY(-30vh) translateX(20px) scale(1.05) rotate(90deg);
+        opacity: 0.9;
+    }
+    50% {
+        transform: translateY(-55vh) translateX(-15px) scale(1.1) rotate(180deg);
+        opacity: 1;
+    }
+    75% {
+        transform: translateY(-80vh) translateX(25px) scale(0.95) rotate(270deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(-110vh) translateX(-10px) scale(0.9) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Partículas de luz alrededor de las burbujas (opcional) */
+body.theme-frutiger .burbuja .particula {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+    animation: destelloParticula 2s ease-in-out infinite;
+}
+
+@keyframes destelloParticula {
+    0%, 100% { opacity: 0; transform: scale(0); }
+    50% { opacity: 1; transform: scale(1.5); }
+}
+
+/* Asegurar que el contenido esté por encima de las burbujas */
+body.theme-frutiger .app-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+body.theme-frutiger .navbar-top {
+    position: relative;
+    z-index: 2;
+}
+
+body.theme-frutiger .post,
+body.theme-frutiger .panel-retro,
+body.theme-frutiger .publish-area {
+    position: relative;
+    z-index: 1;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+}
+
+/* Ajuste para el pull to refresh en frutiger */
+body.theme-frutiger #pull-indicator {
+    background: rgba(135, 206, 235, 0.9) !important;
+    backdrop-filter: blur(10px);
 }
 
 /* 🏢 TEMA 3: DORFic */
@@ -2688,6 +2900,279 @@ body.theme-y2k .star-rating .star.active { color: #ff2d95 !important; text-shado
     overflow: hidden;
 }
 
+
+
+/* ========== BOTÓN FLOTANTE + (MÓVIL) ========== */
+.publish-fab {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--shatt-blue, #3b82f6);
+    color: white;
+    border: none;
+    font-size: 32px;
+    font-weight: bold;
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+    cursor: pointer;
+    z-index: 150;
+    display: none; /* Solo visible en móvil */
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    touch-action: manipulation;
+    user-select: none;
+}
+
+.publish-fab:active {
+    transform: scale(0.85);
+}
+
+.publish-fab .fab-icon {
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+
+.publish-fab.active .fab-icon {
+    transform: rotate(45deg);
+}
+
+/* Overlay para el publish expandido */
+.publish-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(10px);
+    z-index: 160;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.publish-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+/* Panel de publicación expandido */
+.publish-expanded {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 24px 24px 0 0;
+    z-index: 170;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+    max-height: 92vh;
+    overflow-y: auto;
+    padding: 20px 20px 30px 20px;
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
+}
+
+.publish-expanded.active {
+    transform: translateY(0);
+}
+
+/* Handle (barra superior) */
+.publish-expanded .handle {
+    width: 40px;
+    height: 4px;
+    background: #ddd;
+    border-radius: 4px;
+    margin: 0 auto 20px auto;
+}
+
+.publish-expanded .publish-area {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.publish-expanded textarea {
+    font-size: 18px;
+    min-height: 120px;
+    background: #f5f7fa;
+    border-radius: 16px;
+    padding: 16px;
+    border: 1px solid #e8ecf0;
+}
+
+.publish-expanded .action-bar {
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.publish-expanded .action-bar .media-tools {
+    flex: 1;
+    justify-content: center;
+}
+
+.publish-expanded .action-bar .publish-premium {
+    flex: 1;
+    padding: 14px;
+    font-size: 16px;
+}
+
+/* Responsive: Solo mostrar en móvil */
+@media (max-width: 768px) {
+    .publish-fab {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .publish-expanded {
+        padding: 20px 16px 30px 16px;
+    }
+    
+    .publish-expanded textarea {
+        font-size: 16px;
+        min-height: 100px;
+    }
+}
+
+/* Modo oscuro */
+body.dark-mode .publish-expanded {
+    background: #1a1a2e;
+    color: white;
+}
+
+body.dark-mode .publish-expanded textarea {
+    background: #2a2a3a;
+    color: white;
+    border-color: #444;
+}
+
+body.dark-mode .publish-overlay {
+    background: rgba(0,0,0,0.8);
+}
+
+/* ========== CORRECCIÓN DE COLORES DE TEXTO ========== */
+
+/* Asegurar que los comentarios siempre sean legibles */
+.comment-item .comment-user {
+    color: var(--shatt-blue, #3b5998) !important;
+    font-weight: 600 !important;
+}
+
+.comment-item {
+    color: inherit !important;
+}
+
+.comment-item .comment-text {
+    color: inherit !important;
+}
+
+/* Nombres de usuario en posts */
+.post-user-name .post-user {
+    color: var(--shatt-blue, #1a1a2e) !important;
+    font-weight: 600 !important;
+}
+
+.post-user-name {
+    color: inherit !important;
+}
+
+.post-user-status {
+    color: #888 !important;
+}
+
+/* Modo oscuro - asegurar legibilidad */
+body.dark-mode .comment-item .comment-user {
+    color: #6a9bd5 !important;
+}
+
+body.dark-mode .post-user-name .post-user {
+    color: #6a9bd5 !important;
+}
+
+body.dark-mode .comment-item {
+    color: #ddd !important;
+}
+
+/* Tema Frutiger - colores específicos */
+body.theme-frutiger .comment-item .comment-user {
+    color: #1a6b3c !important;
+}
+
+body.theme-frutiger .post-user-name .post-user {
+    color: #1a6b3c !important;
+}
+
+body.theme-frutiger .comment-item {
+    color: #1a3c2a !important;
+}
+
+/* Tema DORF - colores específicos */
+body.theme-dorf .comment-item .comment-user {
+    color: #f4511e !important;
+}
+
+body.theme-dorf .post-user-name .post-user {
+    color: #f4511e !important;
+}
+
+body.theme-dorf .comment-item {
+    color: #e0e0e0 !important;
+}
+
+/* Tema Metro - colores específicos */
+body.theme-metro .comment-item .comment-user {
+    color: #ff8c00 !important;
+}
+
+body.theme-metro .post-user-name .post-user {
+    color: #ff8c00 !important;
+}
+
+body.theme-metro .comment-item {
+    color: #fff !important;
+}
+
+/* Tema Dark Aero - colores específicos */
+body.theme-darkaero .comment-item .comment-user {
+    color: #00e5ff !important;
+}
+
+body.theme-darkaero .post-user-name .post-user {
+    color: #00e5ff !important;
+}
+
+body.theme-darkaero .comment-item {
+    color: #d0e8ff !important;
+}
+
+/* Tema Y2K - colores específicos */
+body.theme-y2k .comment-item .comment-user {
+    color: #ff2d95 !important;
+}
+
+body.theme-y2k .post-user-name .post-user {
+    color: #ff2d95 !important;
+}
+
+body.theme-y2k .comment-item {
+    color: #fff !important;
+}
+
+/* Tema Shatt - colores específicos */
+body.theme-shatt .comment-item .comment-user {
+    color: #3b5998 !important;
+}
+
+body.theme-shatt .post-user-name .post-user {
+    color: #1a1a2e !important;
+}
+
+body.theme-shatt .comment-item {
+    color: #000 !important;
+}
 
     </style>
 </head>
@@ -3034,7 +3519,7 @@ body.theme-y2k .star-rating .star.active { color: #ff2d95 !important; text-shado
     <!-- Botones -->
     <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
         <button class="btn-retro" onclick="guardarDisenoGlobal()" style="flex: 2; background: #4CAF50; color: white;">💾 GUARDAR</button>
-        <button class="btn-retro" onclick="resetearDisenoNube()" style="flex: 1; background: #ff6b6b; color: white;">🔄</button>
+        <button class="btn-retro" onclick="resetearDisenoGlobal()" style="flex: 1; background: #ff6b6b; color: white;">🔄</button>
         <button class="btn-retro" onclick="cerrarModalesGlobal()" style="flex: 1;">❌</button>
     </div>
 </div>
@@ -3398,12 +3883,15 @@ function cargarTemaGuardado() {
 window.cambiarTema = cambiarTema;
 window.cargarTemaGuardado = cargarTemaGuardado;
 
+/// ========== GUARDAR DISEÑO EN LA CUENTA ==========
+
 async function guardarDisenoGlobal() {
-    if (!recuperarSesion()) {
-        mostrarToast("❌ Error: Inicia sesión primero");
+    if (!currentUser) {
+        mostrarToast("❌ Inicia sesión primero");
         return;
     }
     
+    // Recopilar datos actuales
     const diseno = {
         tema: document.body.classList.contains('dark-mode') ? 'dark' : 'light',
         color_fondo: document.body.style.background || '#3a6186',
@@ -3412,81 +3900,177 @@ async function guardarDisenoGlobal() {
         tamano_fuente: parseInt(getComputedStyle(document.documentElement).fontSize) || 16
     };
     
+    // ✅ DETECTAR EL TEMA ACTUAL (CORREGIDO)
+    const temaActual = document.body.classList.contains('theme-frutiger') ? 'frutiger' : 
+                      document.body.classList.contains('theme-dorf') ? 'dorf' :
+                      document.body.classList.contains('theme-metro') ? 'metro' :
+                      document.body.classList.contains('theme-darkaero') ? 'darkaero' :
+                      document.body.classList.contains('theme-y2k') ? 'y2k' : 'shatt';
+    
     const fileInput = document.getElementById('bg-image-nube');
     
     try {
+        // Si hay imagen, subir con FormData
         if (fileInput && fileInput.files && fileInput.files[0]) {
             const formData = new FormData();
             formData.append('imagen_fondo', fileInput.files[0]);
-            formData.append('diseno', JSON.stringify({...diseno, color_fondo: 'url_bg'}));
+            
+            // Agregar todos los datos al FormData
+            Object.keys(diseno).forEach(key => {
+                formData.append(key, diseno[key]);
+            });
+            
+            // ✅ Agregar tema_global al FormData
+            formData.append('tema_global', temaActual);
+            
             await pb.collection('usuarios').update(currentUser.id, formData);
             
-            
-            
-            const url = URL.createObjectURL(fileInput.files[0]);
-            // Liberar el blob después de usarlo
-            setTimeout(() => URL.revokeObjectURL(url), 2000);
-            //localStorage.setItem('shatt_bg_cache', `url(${url}) center/cover fixed`);
-            document.body.style.background = `url(${url}) center/cover fixed`;
+            // Limpiar el input después de guardar
+            fileInput.value = '';
         } else {
-            await pb.collection('usuarios').update(currentUser.id, { diseno: diseno });
-            document.body.style.background = diseno.color_fondo;
-            localStorage.setItem('shatt_bg_cache', diseno.color_fondo);
+            // ✅ Solo actualizar datos (sin imagen) incluyendo tema_global
+            await pb.collection('usuarios').update(currentUser.id, {
+                ...diseno,
+                tema_global: temaActual
+            });
         }
         
+        // ✅ Guardar en localStorage para referencia local
         localStorage.setItem('shatt_darkmode_cache', diseno.tema === 'dark' ? 'true' : 'false');
         localStorage.setItem('shatt_opacity_cache', diseno.opacidad);
         localStorage.setItem('shatt_accent_cache', diseno.accent_color);
         localStorage.setItem('shatt_fontsize_cache', diseno.tamano_fuente);
+        localStorage.setItem('shatt_tema_global', temaActual);
         
-        mostrarToast("💾 Diseño guardado ☁️");
+        // ✅ Actualizar burbujas según el tema
+        if (temaActual === 'frutiger') {
+            setTimeout(crearBurbujasGlobales, 300);
+        } else {
+            setTimeout(eliminarBurbujasGlobales, 300);
+        }
+        
+        mostrarToast("💾 Diseño guardado en tu cuenta ☁️");
         
         cerrarModalesGlobal();
-        // Refrescar automáticamente para limpiar blobs y cargar desde PocketBase
-            setTimeout(() => {
+        
+        // Recargar para limpiar blobs y aplicar correctamente
+        setTimeout(() => {
             location.reload();
         }, 800);
-
+        
     } catch(e) {
-        console.error("Error guardando:", e);
-        mostrarToast("❌ Error al guardar");
+        console.error("Error guardando diseño:", e);
+        mostrarToast("❌ Error al guardar: " + (e.message || ''));
     }
 }
 
+// ========== RESETEAR DISEÑO DE LA CUENTA ==========
+
 async function resetearDisenoGlobal() {
-    if (!confirm("¿Restaurar diseño por defecto?")) return;
-    
-    try {
-        await pb.collection('usuarios').update(currentUser.id, {
-            tema: 'light',
-            color_fondo: '#3a6186',
-            opacidad: 1,
-            accent_color: '#3b5998',
-            imagen_fondo: null,
-            tamano_fuente: 16
-        });
-        
-        document.body.style.background = '#3a6186';
-        document.body.style.backgroundImage = 'none';
-        document.body.classList.remove('dark-mode');
-        document.documentElement.style.setProperty('--panel-opacity', '1');
-        document.documentElement.style.setProperty('--shatt-blue', '#3b5998');
-        document.documentElement.style.fontSize = '16px';
-        
-        guardarCacheLocal({
-            tema: 'light',
-            color_fondo: '#3a6186',
-            opacidad: 1,
-            accent_color: '#3b5998',
-            tamano_fuente: 16,
-            imagen_fondo: null
-        });
-        
-        mostrarToast("🔄 Diseño restaurado");
-    } catch(e) {
-        console.error("Error restaurando diseño:", e);
-        mostrarToast("❌ Error al restaurar", true);
+    if (!currentUser) {
+        mostrarToast("❌ Inicia sesión primero");
+        return;
     }
+    
+    // Mostrar confirmación
+    const confirmModal = document.createElement('div');
+    confirmModal.style.cssText = `
+        position: fixed; inset: 0; background: rgba(0,0,0,0.7); 
+        backdrop-filter: blur(8px); z-index: 99999; 
+        display: flex; align-items: center; justify-content: center;
+        animation: fadeInOverlay 0.3s ease;
+    `;
+    confirmModal.innerHTML = `
+        <div style="background: white; border-radius: 24px; padding: 30px; 
+                    max-width: 380px; width: 90%; text-align: center;
+                    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                    animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
+            <div style="font-size: 48px; margin-bottom: 15px;">🔄</div>
+            <h3 style="margin-bottom: 10px; color: #333;">Restaurar diseño</h3>
+            <p style="color: #888; margin-bottom: 25px; font-size: 14px;">
+                Se eliminará tu imagen de fondo y se restaurarán los colores y temas por defecto.
+                <br><br>
+                <strong style="color: #3b82f6;">Solo afecta a tu cuenta actual.</strong>
+            </p>
+            <div style="display: flex; gap: 12px;">
+                <button id="cancelReset" style="flex:1; padding: 12px; border: 2px solid #ddd; 
+                        border-radius: 30px; background: #f5f5f5; cursor: pointer; font-weight: bold; color: #666;">
+                    Cancelar
+                </button>
+                <button id="confirmReset" style="flex:1; padding: 12px; border: none; 
+                        border-radius: 30px; background: #ff6b6b; cursor: pointer; font-weight: bold; color: white;">
+                    Restaurar
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(confirmModal);
+    
+    confirmModal.querySelector('#cancelReset').onclick = () => confirmModal.remove();
+    confirmModal.querySelector('#confirmReset').onclick = async () => {
+        confirmModal.remove();
+        
+        try {
+            // 1. Resetear en PocketBase
+            await pb.collection('usuarios').update(currentUser.id, {
+                tema: 'light',
+                color_fondo: '#3a6186',
+                opacidad: 1,
+                accent_color: '#3b5998',
+                imagen_fondo: null,
+                tamano_fuente: 16,
+                tema_global: 'shatt',
+                filtro_palabras: []
+            });
+            
+            // 2. Limpiar localStorage (solo para esta sesión)
+            localStorage.removeItem('shatt_bg_cache');
+            localStorage.removeItem('shatt_darkmode_cache');
+            localStorage.removeItem('shatt_opacity_cache');
+            localStorage.removeItem('shatt_accent_cache');
+            localStorage.removeItem('shatt_fontsize_cache');
+            localStorage.removeItem('shatt_tema_global');
+            
+            // 3. Resetear estilos en DOM
+            document.body.style.background = '#3a6186';
+            document.body.style.backgroundImage = 'none';
+            document.body.classList.remove('dark-mode');
+            document.body.className = 'theme-shatt';
+            
+            // 4. Resetear variables CSS
+            document.documentElement.style.setProperty('--panel-opacity', '1');
+            document.documentElement.style.setProperty('--shatt-blue', '#3b5998');
+            document.documentElement.style.fontSize = '16px';
+            
+            // 5. Limpiar campos del modal
+            const fileInput = document.getElementById('bg-image-nube');
+            if (fileInput) fileInput.value = '';
+            const previewContainer = document.getElementById('bg-preview-nube');
+            if (previewContainer) previewContainer.style.display = 'none';
+            
+            // 6. Limpiar palabras filtro
+            palabrasFiltro = [];
+            cargarPalabrasFiltro();
+            
+            // 7. Sincronizar toggles
+            const darkToggle = document.getElementById('dark-mode-toggle-modal');
+            if (darkToggle) darkToggle.checked = false;
+            
+            // 8. Resetear selector de temas
+            document.querySelectorAll('.theme-card').forEach(card => {
+                card.classList.toggle('active', card.dataset.theme === 'shatt');
+            });
+            
+            mostrarToast('✅ Diseño restaurado correctamente');
+            
+            // 9. Recargar para aplicar todos los cambios
+            setTimeout(() => location.reload(), 500);
+            
+        } catch(e) {
+            console.error("Error restaurando diseño:", e);
+            mostrarToast('❌ Error al restaurar');
+        }
+    };
 }
 
 window.addEventListener('storage', function(e) {
@@ -4067,14 +4651,24 @@ function actualizarEstrellasEnDOM(postId, newRating, ratingCount) {
     }
 }
 //FUNCION CARRUSELLLL NUEVOOOOOOOO
+//FUNCION CARRUSEL CORREGIDA
 function moverCarrusel(el, dir) {
     const container = el.closest('.post-carousel');
+    if (!container) return;
+    
     const data = JSON.parse(container.dataset.images);
+    if (!data || data.length === 0) return;
+    
     const img = container.querySelector('.carousel-main-img');
     const counter = container.querySelector('.carousel-counter');
     const dots = container.querySelectorAll('.carousel-dot');
     
+    // ✅ Verificar que exista el contador
+    if (!counter || !img) return;
+    
     let current = parseInt(counter.textContent.split('/')[0]) - 1;
+    if (isNaN(current)) current = 0;
+    
     current = (current + dir + data.length) % data.length;
     
     img.src = data[current];
@@ -4124,6 +4718,7 @@ if (post.imagen && imagenes.length === 0) {
     // Compatibilidad con posts viejos (1 sola imagen)
     imagenes.push(post.imagen);
 }
+// En crearPostElement, donde se crea el carrusel
 if (imagenes.length > 0) {
     imagenHtml = `
         <div class="post-carousel" data-images='${JSON.stringify(imagenes.map(img => pb.files.getUrl(post, img)))}'>
@@ -4131,7 +4726,7 @@ if (imagenes.length > 0) {
                 <img src="${pb.files.getUrl(post, imagenes[0])}" class="post-image carousel-main-img" loading="lazy">
             </div>
             ${imagenes.length > 1 ? `
-                <div class="carousel-counter">1/${imagenes.length}</div>
+                <div class="carousel-counter">1/${imagenes.length}</div>  <!-- ✅ Asegurar que exista -->
                 <button class="carousel-arrow prev" onclick="event.stopPropagation();moverCarrusel(this, -1)">‹</button>
                 <button class="carousel-arrow next" onclick="event.stopPropagation();moverCarrusel(this, 1)">›</button>
                 <div class="carousel-dots">
@@ -4801,12 +5396,36 @@ function calcularScore(post) {
 async function cargarPosts(pagina = 1, esCargaInicial = true) {
     const muro = document.getElementById('muro');
     
-    if (pagina === 1 && esCargaInicial) {
-        muro.innerHTML = `<div style="text-align:center; padding:60px 20px;">
-            <div style="font-size:40px; margin-bottom:15px;">🔄</div>
-            <div style="color:#888;">Cargando publicaciones...</div>
-        </div>`;
+    // Si es la primera carga, mostrar skeletons
+if (pagina === 1 && esCargaInicial) {
+    muro.innerHTML = '';
+    for (let i = 0; i < 3; i++) {
+        const skeleton = document.createElement('div');
+        skeleton.className = 'post skeleton';
+        skeleton.style.cssText = `
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            animation: pulseSkeleton 1.5s ease-in-out infinite;
+        `;
+        skeleton.innerHTML = `
+            <div style="display:flex; gap:12px; align-items:center; margin-bottom:15px;">
+                <div style="width:48px;height:48px;border-radius:50%;background:#e0e0e0;"></div>
+                <div>
+                    <div style="width:120px;height:16px;background:#e0e0e0;border-radius:4px;margin-bottom:6px;"></div>
+                    <div style="width:80px;height:12px;background:#e0e0e0;border-radius:4px;"></div>
+                </div>
+            </div>
+            <div style="width:100%;height:60px;background:#e0e0e0;border-radius:4px;margin-bottom:12px;"></div>
+            <div style="display:flex;gap:20px;">
+                <div style="width:80px;height:24px;background:#e0e0e0;border-radius:4px;"></div>
+                <div style="width:80px;height:24px;background:#e0e0e0;border-radius:4px;"></div>
+            </div>
+        `;
+        muro.appendChild(skeleton);
     }
+}
     
     if (pagina > 1) {
         const loader = document.createElement('div');
@@ -4933,7 +5552,248 @@ async function cargarPosts(pagina = 1, esCargaInicial = true) {
             </div>`;
         }
     }
+} 
+
+// Agregar estilos para skeleton
+const styleSkeleton = document.createElement('style');
+styleSkeleton.textContent = `
+    @keyframes pulseSkeleton {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+`;
+document.head.appendChild(styleSkeleton);
+
+// Guardar timestamp de última visita
+
+
+// =====================================================
+// 🔄 ACTUALIZACIÓN AL ENTRAR (ESTILO TIKTOK)
+// =====================================================
+
+async function verificarPostsNuevos() {
+    if (!currentUser) return false;
+    
+    try {
+        const ultimoPost = await pb.collection('posts').getList(1, 1, {
+            sort: '-created',
+            fields: 'created'
+        });
+        
+        if (ultimoPost.items.length === 0) return false;
+        
+        const fechaUltimoPost = new Date(ultimoPost.items[0].created);
+        const ultimaVisita = new Date(localStorage.getItem('shatt_ultima_visita') || Date.now());
+        
+        return fechaUltimoPost > ultimaVisita;
+    } catch(e) {
+        return false;
+    }
 }
+
+async function refrescarFeedTikTok() {
+    const muro = document.getElementById('muro');
+    
+    const refrescando = document.createElement('div');
+    refrescando.id = 'refreshing-indicator';
+    refrescando.style.cssText = `
+        text-align: center;
+        padding: 15px;
+        background: rgba(59, 130, 246, 0.1);
+        border-radius: 12px;
+        margin-bottom: 15px;
+        color: var(--shatt-blue, #3b82f6);
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    `;
+    refrescando.innerHTML = `
+        <span style="font-size: 20px;">🔄</span>
+        <span>Actualizando feed...</span>
+    `;
+    muro.prepend(refrescando);
+    
+    try {
+        paginaActual = 1;  // ✅ Resetea
+        noHayMasPosts = false;
+        todosLosPostsCargados = [];
+        
+        await cargarPosts(1, true);
+        localStorage.setItem('shatt_ultima_visita', new Date().toISOString());
+        mostrarToast('✅ Feed actualizado');
+    } catch(e) {
+        console.error("Error refrescando:", e);
+        mostrarToast('❌ Error al actualizar');
+    } finally {
+        const indicator = document.getElementById('refreshing-indicator');
+        if (indicator) indicator.remove();
+    }
+}
+
+function mostrarNotificacionNuevosPosts() {
+    const existente = document.getElementById('new-posts-notification');
+    if (existente) existente.remove();
+    
+    const notif = document.createElement('div');
+    notif.id = 'new-posts-notification';
+    notif.style.cssText = `
+        position: fixed;
+        top: 70px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--shatt-blue, #3b82f6);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 30px;
+        font-size: 14px;
+        font-weight: bold;
+        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+        z-index: 9999;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation: slideDownTikTok 0.4s ease;
+    `;
+    notif.innerHTML = `
+        <span>🔄</span>
+        <span>Nuevos posts disponibles</span>
+        <span style="font-size: 18px;">›</span>
+    `;
+    notif.onclick = async () => {
+        notif.remove();
+        await refrescarFeedTikTok();
+    };
+    
+    document.body.appendChild(notif);
+    
+    setTimeout(() => {
+        if (notif.parentNode) {
+            notif.style.animation = 'fadeOutTikTok 0.3s ease';
+            setTimeout(() => notif.remove(), 300);
+        }
+    }, 6000);
+}
+
+// Detectar cuando el usuario vuelve a la pestaña
+document.addEventListener('visibilitychange', async () => {
+    if (!document.hidden) {
+        const hayNuevos = await verificarPostsNuevos();
+        if (hayNuevos) {
+            mostrarNotificacionNuevosPosts();
+        }
+    }
+});
+
+// Agregar estilos
+const styleTikTok = document.createElement('style');
+styleTikTok.textContent = `
+    @keyframes slideDownTikTok {
+        from { opacity: 0; transform: translateX(-50%) translateY(-30px); }
+        to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    @keyframes fadeOutTikTok {
+        from { opacity: 1; }
+        to { opacity: 0; }
+    }
+`;
+document.head.appendChild(styleTikTok);
+
+
+// =====================================================
+// 📱 PULL TO REFRESH (ESTILO TIKTOK)
+// =====================================================
+
+let touchStartY = 0;
+let touchMoveY = 0;
+let isPulling = false;
+
+document.addEventListener('touchstart', (e) => {
+    if (window.pageYOffset === 0) {
+        touchStartY = e.touches[0].clientY;
+        isPulling = true;
+    }
+}, { passive: true });
+
+document.addEventListener('touchmove', (e) => {
+    if (!isPulling) return;
+    
+    touchMoveY = e.touches[0].clientY;
+    const pullDistance = touchMoveY - touchStartY;
+    
+    if (pullDistance > 30 && window.pageYOffset === 0) {
+        let indicator = document.getElementById('pull-indicator');
+        if (!indicator) {
+            const div = document.createElement('div');
+            div.id = 'pull-indicator';
+            div.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                text-align: center;
+                padding: 15px;
+                background: var(--shatt-blue, #3b82f6);
+                color: white;
+                z-index: 9999;
+                font-size: 14px;
+                font-weight: bold;
+                transform: translateY(-100%);
+                transition: transform 0.2s ease;
+            `;
+            div.textContent = '🔄 Suelta para actualizar';
+            document.body.appendChild(div);
+        }
+        
+        const indicatorEl = document.getElementById('pull-indicator');
+        if (indicatorEl) {
+            const progress = Math.min(pullDistance / 120, 1);
+            indicatorEl.style.transform = `translateY(${-100 + (progress * 100)}%)`;
+            indicatorEl.style.opacity = progress;
+            
+            // Cambiar texto cuando está listo
+            if (pullDistance > 100) {
+                indicatorEl.textContent = '🔄 ¡Suelta!';
+            } else {
+                indicatorEl.textContent = '🔄 Suelta para actualizar';
+            }
+        }
+    }
+}, { passive: true });
+
+document.addEventListener('touchend', async () => {
+    if (!isPulling) return;
+    isPulling = false;
+    
+    const indicator = document.getElementById('pull-indicator');
+    if (indicator) {
+        const pullDistance = touchMoveY - touchStartY;
+        if (pullDistance > 100 && window.pageYOffset === 0) {
+            indicator.textContent = '🔄 Actualizando...';
+            indicator.style.transform = 'translateY(0%)';
+            indicator.style.opacity = '1';
+            
+            await refrescarFeedTikTok();
+            
+            setTimeout(() => {
+                indicator.style.transform = 'translateY(-100%)';
+                setTimeout(() => indicator.remove(), 300);
+            }, 1000);
+        } else {
+            indicator.style.transform = 'translateY(-100%)';
+            setTimeout(() => indicator.remove(), 300);
+        }
+    }
+    
+    touchStartY = 0;
+    touchMoveY = 0;
+}, { passive: true });
+
+
+
+
 
 // 🆕 RESETEAR CACHÉ
 function resetearCacheYRecargar() {
@@ -4947,21 +5807,7 @@ function resetearCacheYRecargar() {
     cargarPosts(1, true);
 }
 
-// 🆕 SCROLL INFINITO
-let scrollTimeout;
-window.addEventListener('scroll', () => {
-    clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(() => {
-        if (cargandoMas || noHayMasPosts) return;
-        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-        if (scrollTop + clientHeight >= scrollHeight - 600) {
-            cargandoMas = true;
-            paginaActual++;
-            cargarPosts(paginaActual, false).then(() => { cargandoMas = false; }).catch(() => { cargandoMas = false;
-                paginaActual--; });
-        }
-    }, 200);
-});
+
 
 // ========== RATE ==========
 async function rate(postId, stars) {
@@ -5114,6 +5960,8 @@ function togglePrivateProfile() { const priv = document.getElementById('private-
 function toggleHideOnlineStatus() { const hide = document.getElementById('hide-online-status').checked; localStorage.setItem('shatt_hide_online', hide); mostrarToast(hide ? "👻 Estado oculto" : "🟢 Visible"); }
 
 function editarPerfilRapido() { window.location.href = "perfil.html"; }
+// ========== CERRAR SESIÓN MEJORADO ==========
+
 function cerrarSesion() {
     const modal = document.createElement('div');
     modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:99999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);';
@@ -5121,7 +5969,7 @@ function cerrarSesion() {
         <div style="background:white;border-radius:24px;padding:30px;text-align:center;max-width:360px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:popIn 0.3s ease;">
             <div style="font-size:50px;margin-bottom:15px;">👋</div>
             <h3 style="margin-bottom:10px;color:#333;">¿Cerrar sesión?</h3>
-            <p style="color:#888;margin-bottom:25px;font-size:14px;">Tu cuenta seguirá guardada para el próximo inicio.</p>
+            <p style="color:#888;margin-bottom:25px;font-size:14px;">Se eliminarán los datos de diseño de esta cuenta.</p>
             <div style="display:flex;gap:12px;">
                 <button id="cancelLogout" style="flex:1;padding:12px;border:2px solid #ddd;border-radius:30px;background:#f5f5f5;cursor:pointer;font-weight:bold;color:#666;">Cancelar</button>
                 <button id="confirmLogout" style="flex:1;padding:12px;border:none;border-radius:30px;background:#ff4444;cursor:pointer;font-weight:bold;color:white;">Salir</button>
@@ -5132,8 +5980,27 @@ function cerrarSesion() {
     
     modal.querySelector('#cancelLogout').onclick = () => modal.remove();
     modal.querySelector('#confirmLogout').onclick = () => {
+        // 1. Limpiar localStorage COMPLETAMENTE
+        localStorage.removeItem('shatt_bg_cache');
+        localStorage.removeItem('shatt_darkmode_cache');
+        localStorage.removeItem('shatt_opacity_cache');
+        localStorage.removeItem('shatt_accent_cache');
+        localStorage.removeItem('shatt_fontsize_cache');
+        localStorage.removeItem('shatt_tema_global');
+        localStorage.removeItem('shatt_private_profile');
+        localStorage.removeItem('shatt_mute');
+        localStorage.removeItem('shatt_hide_online');
+        localStorage.removeItem('shatt_busquedas');
+        
+        // 2. Limpiar PocketBase
         pb.authStore.clear();
         localStorage.removeItem('pocketbase_auth');
+        
+        // 3. Limpiar variables globales
+        currentUser = null;
+        configuracionGlobal = null;
+        
+        // 4. Redirigir
         window.location.href = "iniciarsesion.html";
     };
     modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
@@ -5149,10 +6016,98 @@ async function borrarTodosMisPosts() {
     }
 }
 
-async function cargarDisenoGuardado() {
+/*async function cargarDisenoGuardado() {
     if (localStorage.getItem('shatt_darkmode') === 'true') document.body.classList.add('dark-mode');
     const bg = localStorage.getItem('shatt_bg');
     if (bg) document.body.style.background = bg;
+}*/
+
+// ========== CARGAR DISEÑO DE LA CUENTA ==========
+
+async function cargarDisenoDeCuenta() {
+    if (!currentUser) {
+        // Si no hay usuario, usar valores por defecto
+        document.body.style.background = '#3a6186';
+        document.body.classList.remove('dark-mode');
+        document.documentElement.style.setProperty('--panel-opacity', '1');
+        document.documentElement.style.setProperty('--shatt-blue', '#3b5998');
+        document.documentElement.style.fontSize = '16px';
+        return;
+    }
+    
+    try {
+        // Obtener usuario con sus configuraciones
+        const user = await pb.collection('usuarios').getOne(currentUser.id);
+        
+        // === APLICAR TEMA GLOBAL ===
+        if (user.tema_global) {
+            document.body.classList.remove('theme-shatt', 'theme-frutiger', 'theme-dorf', 'theme-metro', 'theme-darkaero', 'theme-y2k');
+            document.body.classList.add('theme-' + user.tema_global);
+            // Marcar en el selector
+            document.querySelectorAll('.theme-card').forEach(card => {
+                card.classList.toggle('active', card.dataset.theme === user.tema_global);
+            });
+        }
+        
+        // === APLICAR MODO OSCURO ===
+        if (user.tema === 'dark') {
+            document.body.classList.add('dark-mode');
+            if (document.getElementById('dark-mode-toggle')) {
+                document.getElementById('dark-mode-toggle').checked = true;
+            }
+        } else {
+            document.body.classList.remove('dark-mode');
+            if (document.getElementById('dark-mode-toggle')) {
+                document.getElementById('dark-mode-toggle').checked = false;
+            }
+        }
+        
+        // === APLICAR FONDO ===
+        if (user.imagen_fondo) {
+            try {
+                const url = pb.files.getUrl(user, user.imagen_fondo);
+                document.body.style.background = `url(${url}) center/cover fixed`;
+                // Guardar en localStorage SOLO para esta sesión (opcional)
+                // Pero NO lo usaremos para cargar, solo para referencia rápida
+                localStorage.setItem('shatt_bg_cache_temp', `url(${url}) center/cover fixed`);
+            } catch(e) {
+                console.error("Error cargando imagen de fondo:", e);
+                document.body.style.background = user.color_fondo || '#3a6186';
+            }
+        } else if (user.color_fondo && user.color_fondo !== 'url_bg') {
+            document.body.style.background = user.color_fondo;
+        } else {
+            document.body.style.background = '#3a6186';
+        }
+        
+        // === APLICAR OPACIDAD ===
+        const opacidad = user.opacidad || user.diseno?.opacidad || 1;
+        document.documentElement.style.setProperty('--panel-opacity', opacidad);
+        
+        // === APLICAR COLOR DE ACENTO ===
+        const accent = user.accent_color || user.diseno?.accent_color || '#3b5998';
+        document.documentElement.style.setProperty('--shatt-blue', accent);
+        
+        // === APLICAR TAMAÑO DE FUENTE ===
+        const fontSize = user.tamano_fuente || user.diseno?.tamano_fuente || 16;
+        document.documentElement.style.fontSize = fontSize + 'px';
+        
+        // === CARGAR PALABRAS FILTRO ===
+        if (user.filtro_palabras) {
+            palabrasFiltro = user.filtro_palabras;
+        }
+        
+        console.log('✅ Diseño cargado desde la cuenta:', currentUser.nick || currentUser.email);
+        
+    } catch(e) {
+        console.error("Error cargando diseño de la cuenta:", e);
+        // Fallback a valores por defecto
+        document.body.style.background = '#3a6186';
+        document.body.classList.remove('dark-mode');
+        document.documentElement.style.setProperty('--panel-opacity', '1');
+        document.documentElement.style.setProperty('--shatt-blue', '#3b5998');
+        document.documentElement.style.fontSize = '16px';
+    }
 }
 
 function verPerfil(uid) { cerrarBuscadorFullscreen(); window.location.href = `perfil.html?uid=${uid}`; }
@@ -5571,29 +6526,280 @@ function typewriterCollapse(el, toHeight) {
     setTimeout(() => { el.style.opacity = '1'; }, 300);
 }
 
-// ========== INICIALIZACIÓN ==========
+// ========== INICIALIZACIÓN CORREGIDA ==========
 (async function() {
+    // 1. Verificar sesión
     const saved = localStorage.getItem('pocketbase_auth');
-    if (saved) { try { const { token, model } = JSON.parse(saved); pb.authStore.save(token, model); } catch(e) {} }
-    if (!pb.authStore.isValid) { window.location.href = "iniciarsesion.html"; return; }
+    if (saved) {
+        try {
+            const { token, model } = JSON.parse(saved);
+            pb.authStore.save(token, model);
+        } catch(e) {}
+    }
+    
+    if (!pb.authStore.isValid) {
+        window.location.href = "iniciarsesion.html";
+        return;
+    }
+    
     currentUser = pb.authStore.model;
-    if (currentUser && currentUser.bloqueado === true) { alert("🚫 Cuenta bloqueada."); pb.authStore.clear(); localStorage.removeItem('pocketbase_auth'); window.location.href = "iniciarsesion.html"; return; }
-
+    
+    if (currentUser && currentUser.bloqueado === true) {
+        alert("🚫 Cuenta bloqueada.");
+        pb.authStore.clear();
+        localStorage.removeItem('pocketbase_auth');
+        window.location.href = "iniciarsesion.html";
+        return;
+    }
+    
+    // 2. Cargar diseño DESDE LA CUENTA
+    await cargarDisenoDeCuenta();
+    
+    // 3. Cargar tema guardado
     cargarTemaGuardado();
-
-    /*await cargarConfiguracionGlobal();*/
+    
+    // 4. Inicializar menciones
     await inicializarMencionesGlobal();
-    await cargarDisenoGuardado();
+    
+    // 5. Actualizar última vez
     await actualizarUltimaVez();
     setInterval(actualizarUltimaVez, 30000);
-    await Promise.all([cargarPerfilUsuario(currentUser.id), cargarPosts(1, true), cargarGaleria(), cargarNotificaciones(), cargarUsuariosEnLinea()]);
+    
+    // 6. Cargar datos
+    await Promise.all([
+        cargarPerfilUsuario(currentUser.id),
+        cargarPosts(1, true),  // ✅ USA LA FUNCIÓN QUE YA EXISTE
+        cargarGaleria(),
+        cargarNotificaciones(),
+        cargarUsuariosEnLinea()
+    ]);
+    
+    // 7. Cargar configuraciones
     cargarHistorial();
     cargarConfiguraciones();
     cargarPalabrasFiltro();
     renderMoodSelectors();
+    
+    // 8. Intervalos
     setInterval(cargarUsuariosEnLinea, 60000);
     setInterval(cargarNotificaciones, 30000);
+    
 })();
+
+
+// ============================================================
+// 🎬 REINICIAR CUANDO SE PUBLICAN NUEVOS POSTS
+// ============================================================
+
+// Modificar la función publish para reiniciar el scroll TikTok
+const originalPublish = window.publish;
+if (originalPublish) {
+    window.publish = async function() {
+        await originalPublish.apply(this, arguments);
+
+    };
+}
+// ============================================================
+// 🫧 BURBUJAS FRUTIGER AERO (MEJORADAS)
+// ============================================================
+
+function crearBurbujas() {
+    // Eliminar burbujas existentes
+    const burbujasExistentes = document.querySelector('.burbujas');
+    if (burbujasExistentes) burbujasExistentes.remove();
+    
+    // Solo crear si el tema es frutiger
+    if (!document.body.classList.contains('theme-frutiger')) return;
+    
+    const container = document.createElement('div');
+    container.className = 'burbujas';
+    
+    // Crear 12 burbujas con diferentes tamaños
+    for (let i = 0; i < 12; i++) {
+        const burbuja = document.createElement('div');
+        burbuja.className = 'burbuja';
+        
+        // Agregar partículas de luz a algunas burbujas
+        if (i % 3 === 0) {
+            const particula = document.createElement('div');
+            particula.className = 'particula';
+            particula.style.cssText = `
+                top: ${20 + Math.random() * 60}%;
+                left: ${10 + Math.random() * 80}%;
+                animation-delay: ${Math.random() * 3}s;
+            `;
+            burbuja.appendChild(particula);
+        }
+        
+        container.appendChild(burbuja);
+    }
+    
+    document.body.prepend(container);
+    
+    // Animar opacidad de entrada
+    setTimeout(() => {
+        container.style.transition = 'opacity 1s ease';
+        container.style.opacity = '1';
+    }, 100);
+}
+
+// Crear burbujas al cambiar de t
+
+// Sobrescribir la función original
+// Crear burbujas al cargar la página si es frutiger
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        if (document.body.classList.contains('theme-frutiger')) {
+            crearBurbujas();
+        }
+    }, 500);
+});
+
+// También al cambiar de tema desde el selector
+document.querySelectorAll('.theme-card').forEach(card => {
+    card.addEventListener('click', function() {
+        const tema = this.dataset.theme;
+        setTimeout(() => {
+            if (tema === 'frutiger') {
+                crearBurbujas();
+            } else {
+                const burbujas = document.querySelector('.burbujas');
+                if (burbujas) {
+                    burbujas.style.transition = 'opacity 0.5s ease';
+                    burbujas.style.opacity = '0';
+                    setTimeout(() => burbujas.remove(), 500);
+                }
+            }
+        }, 400);
+    });
+});
+
+// ============================================================
+// 🫧 SISTEMA DE BURBUJAS FRUTIGER AERO (VERSIÓN LIMPIA)
+// ============================================================
+
+let burbujasActivas = false;
+
+function crearBurbujasGlobales() {
+    if (burbujasActivas) return;
+    
+    const burbujasExistentes = document.querySelector('.burbujas');
+    if (burbujasExistentes) burbujasExistentes.remove();
+    
+    if (!document.body.classList.contains('theme-frutiger')) return;
+    
+    const container = document.createElement('div');
+    container.className = 'burbujas';
+    container.id = 'burbujas-globales';
+    
+    for (let i = 0; i < 12; i++) {
+        const burbuja = document.createElement('div');
+        burbuja.className = 'burbuja';
+        container.appendChild(burbuja);
+    }
+    
+    document.body.prepend(container);
+    burbujasActivas = true;
+    
+    setTimeout(() => {
+        container.style.transition = 'opacity 1s ease';
+        container.style.opacity = '1';
+    }, 100);
+}
+
+function eliminarBurbujasGlobales() {
+    const burbujas = document.querySelector('.burbujas');
+    if (burbujas) {
+        burbujas.style.transition = 'opacity 0.5s ease';
+        burbujas.style.opacity = '0';
+        setTimeout(() => {
+            burbujas.remove();
+            burbujasActivas = false;
+        }, 500);
+    } else {
+        burbujasActivas = false;
+    }
+}
+
+function initBurbujasGlobales() {
+    const tema = localStorage.getItem('shatt_tema_global') || 'shatt';
+    if (tema === 'frutiger' || document.body.classList.contains('theme-frutiger')) {
+        setTimeout(crearBurbujasGlobales, 500);
+    }
+}
+
+// Inicializar al cargar
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(initBurbujasGlobales, 300);
+    // Configurar listeners de temas
+    setTimeout(configurarListenersTemas, 400);
+});
+
+function configurarListenersTemas() {
+    document.querySelectorAll('.theme-card').forEach(card => {
+        card.removeEventListener('click', card._clickHandler);
+        card._clickHandler = function() {
+            const tema = this.dataset.theme;
+            if (tema && window.cambiarTema) {
+                window.cambiarTema(tema, this);
+            }
+        };
+        card.addEventListener('click', card._clickHandler);
+    });
+}
+
+// Observar cambios en el body (cuando se aplica un tema)
+const observerBurbujas = new MutationObserver(() => {
+    if (document.body.classList.contains('theme-frutiger')) {
+        if (!burbujasActivas) {
+            setTimeout(crearBurbujasGlobales, 300);
+        }
+    } else {
+        if (burbujasActivas) {
+            eliminarBurbujasGlobales();
+        }
+    }
+});
+
+observerBurbujas.observe(document.body, {
+    attributes: true,
+    attributeFilter: ['class']
+});
+
+// Detectar cambios en localStorage (cuando otra pestaña cambia el tema)
+window.addEventListener('storage', (e) => {
+    if (e.key === 'shatt_tema_global') {
+        setTimeout(() => {
+            if (e.newValue === 'frutiger') {
+                crearBurbujasGlobales();
+            } else {
+                eliminarBurbujasGlobales();
+            }
+        }, 300);
+    }
+});
+
+// ✅ Función para gestionar burbujas al cambiar tema (sin bucle)
+function gestionarBurbujasPorTema(tema) {
+    setTimeout(() => {
+        if (tema === 'frutiger') {
+            crearBurbujasGlobales();
+        } else {
+            eliminarBurbujasGlobales();
+        }
+    }, 400);
+}
+
+// ✅ Extender la función cambiarTema original SIN crear bucle
+if (typeof window.cambiarTema === 'function') {
+    const cambiarTemaOriginal = window.cambiarTema;
+    window.cambiarTema = function(tema, el) {
+        // Llamar a la función original
+        cambiarTemaOriginal(tema, el);
+        // Gestionar burbujas
+        gestionarBurbujasPorTema(tema);
+    };
+}
 
 // ========== EXPOSICIÓN GLOBAL ==========
 window.abrirPanelConfiguracion = abrirPanelConfiguracion;
