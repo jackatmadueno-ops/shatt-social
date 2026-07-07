@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/plugin/relativeTime.js"></script>
     <script>dayjs.extend(window.dayjs_plugin_relativeTime);</script>
     
+    
     <!-- 🆕 ESTE SCRIPT DEBE IR AQUÍ, ANTES DE TODO -->
     <script>
         // Aplicar fondo INSTANTÁNEAMENTE antes de que se renderice la página
@@ -3172,6 +3173,19 @@ body.theme-shatt .post-user-name .post-user {
 
 body.theme-shatt .comment-item {
     color: #000 !important;
+}
+/* Badge de mensajes no leídos */
+.menu-badge {
+    animation: pulseBadge 1.5s infinite;
+}
+
+@keyframes pulseBadge {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+
+.nav-links a, .bottom-nav-item {
+    position: relative;
 }
 
     </style>
@@ -7078,5 +7092,87 @@ window.guardarTodoNube = guardarTodoNube;
     }
 })();
 </script>
+<script src="https://unpkg.com/pocketbase@0.21.5/dist/pocketbase.umd.js"></script>
+<script>
+// 📢 Notificaciones con foto de perfil y redirección al chat
+const pb2 = new PocketBase('https://shatt-social-production.up.railway.app');
+const saved2 = localStorage.getItem('pocketbase_auth');
+let user2 = null;
+
+if (saved2) {
+    try {
+        const { token, model } = JSON.parse(saved2);
+        pb2.authStore.save(token, model);
+        if (pb2.authStore.isValid) user2 = pb2.authStore.model;
+    } catch(e) {}
+}
+
+if (user2 && Notification.permission !== 'denied') {
+    Notification.requestPermission();
+    pb2.collection('mensajes').subscribe('*', (e) => {
+        if (e.action !== 'create' || e.record.remitenteId === user2.id) return;
+        
+        const chatId = e.record.chatId;
+        const remitenteId = e.record.remitenteId;
+        
+        pb2.collection('chats').getOne(chatId).then(chat => {
+            if (!chat || !chat.participantes || !chat.participantes.includes(user2.id)) return;
+            if (Notification.permission !== 'granted') return;
+            
+            const remitente = e.record.remitenteNick || 'Usuario';
+            const texto = (e.record.texto || '📎 Archivo').substring(0, 60);
+            const esZumbido = e.record.tipo === 'zumbido';
+            
+            pb2.collection('usuarios').getOne(remitenteId).then(user => {
+                let iconUrl = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">👤</text></svg>';
+                if (user && user.pfp) {
+                    try {
+                        iconUrl = pb2.files.getUrl(user, user.pfp, { thumb: '100x100' });
+                    } catch(e) {}
+                }
+                
+                const notif = new Notification(
+                    esZumbido ? '📳 Zumbido' : `📩 ${remitente}`,
+                    {
+                        body: esZumbido ? `${remitente} te envió un zumbido` : texto,
+                        icon: iconUrl,
+                        vibrate: [200, 100, 200]
+                    }
+                );
+                
+                // 🔴 AL HACER CLIC: Abrir shatts.html con el chat específico
+                notif.onclick = () => {
+                    window.focus();
+                    // Guardar el chatId para que shatts.html lo abra automáticamente
+                    localStorage.setItem('chatAbrir', chatId);
+                    localStorage.setItem('chatAbrirContacto', remitenteId);
+                    window.location.href = '/shatts.html';
+                    notif.close();
+                };
+                
+                setTimeout(() => notif.close(), 5000);
+            }).catch(() => {
+                const notif = new Notification(
+                    esZumbido ? '📳 Zumbido' : `📩 ${remitente}`,
+                    {
+                        body: esZumbido ? `${remitente} te envió un zumbido` : texto,
+                        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">👤</text></svg>',
+                        vibrate: [200, 100, 200]
+                    }
+                );
+                notif.onclick = () => {
+                    window.focus();
+                    localStorage.setItem('chatAbrir', chatId);
+                    localStorage.setItem('chatAbrirContacto', remitenteId);
+                    window.location.href = '/shatts.html';
+                    notif.close();
+                };
+                setTimeout(() => notif.close(), 5000);
+            });
+        }).catch(() => {});
+    });
+}
+</script>
+
 </body>
 </html>
