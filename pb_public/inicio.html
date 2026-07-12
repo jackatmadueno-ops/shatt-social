@@ -3188,6 +3188,186 @@ body.theme-shatt .comment-item {
     position: relative;
 }
 
+/* =============================================
+   💬 COMENTARIOS ESTILO POST.HTML EN INICIO
+   ============================================= */
+
+/* Comentario item */
+.comment-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.comment-item:last-child {
+    border-bottom: none;
+}
+
+/* Avatar en comentarios */
+.comment-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: #e8ecf0;
+}
+
+/* Usuario del comentario */
+.comment-user {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--shatt-blue);
+    cursor: pointer;
+}
+
+.comment-user:hover {
+    text-decoration: underline;
+}
+
+/* Badge de autor (⚡) */
+.comment-badge-autor {
+    display: inline-block;
+    background: linear-gradient(135deg, #f5a623, #f7c948);
+    color: white;
+    font-size: 8px;
+    font-weight: 700;
+    padding: 1px 8px;
+    border-radius: 30px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-left: 6px;
+}
+
+/* Estrella like en comentarios */
+.comment-star-btn {
+    background: none;
+    border: none;
+    font-size: 12px;
+    color: #bbb;
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 12px;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.comment-star-btn:hover {
+    color: #ffc107;
+    transform: scale(1.1);
+}
+
+.comment-star-btn.liked {
+    color: #ffc107;
+}
+
+.comment-star-btn .star-count {
+    font-size: 11px;
+    font-weight: 600;
+    color: #888;
+}
+
+/* Respuestas */
+.comment-replies {
+    margin-left: 36px;
+    padding-left: 12px;
+    border-left: 2px solid #e8ecf0;
+    margin-top: 6px;
+}
+
+.comment-reply-item {
+    padding: 6px 0;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.comment-reply-item:last-child {
+    border-bottom: none;
+}
+
+.comment-reply-item .comment-avatar {
+    width: 24px;
+    height: 24px;
+}
+
+.comment-reply-item .comment-user {
+    font-size: 12px;
+}
+
+.comment-reply-item .comment-text {
+    font-size: 13px;
+}
+
+/* Área de respuesta */
+.reply-area-inline {
+    display: none;
+    margin-top: 6px;
+    padding: 8px;
+    background: #f5f5f5;
+    border-radius: 12px;
+}
+
+.reply-area-inline .reply-input {
+    flex: 1;
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    font-size: 13px;
+    outline: none;
+    min-width: 100px;
+}
+
+.reply-area-inline .reply-input:focus {
+    border-color: var(--shatt-blue);
+}
+
+.reply-send-btn {
+    background: var(--shatt-blue);
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.reply-send-btn:hover {
+    background: #2d4a7a;
+}
+
+.reply-close-btn {
+    background: #ccc;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+/* Dark mode */
+body.dark-mode .comment-item {
+    border-color: #333;
+}
+
+body.dark-mode .reply-area-inline {
+    background: #2a2a3a;
+}
+
+body.dark-mode .reply-area-inline .reply-input {
+    background: #3a3a4a;
+    color: white;
+    border-color: #555;
+}
+
+body.dark-mode .comment-replies {
+    border-color: #333;
+}
+
+body.dark-mode .comment-reply-item {
+    border-color: #2a2a3a;
+}
+
     </style>
 </head>
 <body>
@@ -4572,12 +4752,12 @@ async function addComm(postId) {
             parentId: null,
             replies: [],
             mentions: mentionIds,
-            type: 'comment'
+            likes: 0,
+            likedBy: []
         };
         comments.push(newComment);
         await pb.collection('posts').update(postId, { comments: comments });
 
-        // 🆕 CORREGIDO: Usar TIPOS_NOTIFICACION
         if (post.usuario !== currentUser.id) {
             await crearNotificacion(post.usuario, TIPOS_NOTIFICACION.COMENTARIO, postId, text);
         }
@@ -4587,7 +4767,16 @@ async function addComm(postId) {
             }
         }
         input.value = '';
-        await actualizarPostEnDOM(postId);
+        
+        // Recargar el post
+        const postActualizado = await pb.collection('posts').getOne(postId, { expand: 'usuario' });
+        const postElement = document.querySelector(`.post[data-post-id="${postId}"]`);
+        if (postElement) {
+            const nuevoElemento = crearPostElement(postActualizado);
+            postElement.parentNode.replaceChild(nuevoElemento, postElement);
+            setTimeout(() => inicializarMencionesComentario(postId), 100);
+        }
+        
         mostrarToast("💬 Comentario enviado");
     } catch(e) {
         console.error("Error al comentar:", e);
@@ -4702,6 +4891,158 @@ function irACarrusel(el, index) {
     dots.forEach((d, i) => d.classList.toggle('active', i === index));
 }
 
+// ========== COMENTARIOS MEJORADOS EN POSTS (INICIO) ==========
+
+async function getAvatarUrlForComment(userId) {
+    if (!userId) return null;
+    try {
+        const user = await getUserCached(userId);
+        if (user && user.pfp) {
+            return pb.files.getUrl(user, user.pfp);
+        }
+        return null;
+    } catch(e) {
+        return null;
+    }
+}
+
+function renderCommentText(text) {
+    if (!text) return '';
+    // Resaltar menciones
+    return text.replace(/@(\w+)/g, (match, nick) => {
+        return `<span class="mention-highlight" style="color:var(--shatt-blue);font-weight:600;cursor:pointer;" onclick="verPerfilPorNick('${nick}')">@${nick}</span>`;
+    });
+}
+
+async function verPerfilPorNick(nick) {
+    try {
+        const users = await pb.collection('usuarios').getList(1, 1, {
+            filter: `nick = "${nick}"`
+        });
+        if (users.items.length > 0) {
+            verPerfil(users.items[0].id);
+        }
+    } catch(e) {}
+}
+
+function formatCommentDate(fecha) {
+    if (!fecha) return '';
+    const now = dayjs();
+    const date = dayjs(fecha);
+    const diffMinutes = now.diff(date, 'minute');
+    
+    if (diffMinutes < 1) return 'Ahora';
+    if (diffMinutes < 60) return `Hace ${diffMinutes}m`;
+    if (diffMinutes < 1440) {
+        const hours = Math.floor(diffMinutes / 60);
+        return `Hace ${hours}h`;
+    }
+    if (diffMinutes < 4320) {
+        const days = Math.floor(diffMinutes / 1440);
+        return days === 1 ? 'Ayer' : `Hace ${days}d`;
+    }
+    return date.format('DD/MM/YYYY');
+}
+
+function generarComentariosHTML(comments, postId, autorPostId) {
+    if (!comments || comments.length === 0) {
+        return '<div style="padding:10px; text-align:center; color:#888; font-size:13px;">💬 Sin comentarios. ¡Sé el primero!</div>';
+    }
+    
+    // Separar principales y respuestas
+    const principales = comments.filter(c => !c.parentId);
+    const respuestasMap = {};
+    comments.forEach(c => {
+        if (c.parentId) {
+            if (!respuestasMap[c.parentId]) respuestasMap[c.parentId] = [];
+            respuestasMap[c.parentId].push(c);
+        }
+    });
+    
+    let html = '';
+    
+    for (const c of principales) {
+        const respuestas = respuestasMap[c.id] || [];
+        const esAutor = c.userId === autorPostId;
+        const userLiked = c.likedBy && c.likedBy.includes(currentUser?.id);
+        const avatar = c.userAvatar || '👤';
+        const fecha = formatCommentDate(c.createdAt);
+        
+        html += `
+            <div class="comment-item" id="comment-${c.id}">
+                <div style="display:flex; gap:10px; align-items:flex-start;">
+                    <div style="width:32px; height:32px; border-radius:50%; overflow:hidden; flex-shrink:0; background:#e8ecf0; display:flex; align-items:center; justify-content:center; font-size:16px;">
+                        ${avatar}
+                    </div>
+                    <div style="flex:1; min-width:0;">
+                        <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                            <span class="comment-user" onclick="verPerfil('${c.userId}')">@${escapeHtml(c.userNick)}</span>
+                            <span style="font-size:10px; color:#999;">${fecha}</span>
+                            ${esAutor ? `<span class="comment-badge-autor">⚡ Autor</span>` : ''}
+                        </div>
+                        <div style="margin-top:2px; font-size:14px; word-wrap:break-word; color:inherit;">
+                            ${renderCommentText(c.text)}
+                        </div>
+                        <div style="display:flex; align-items:center; gap:12px; margin-top:4px; flex-wrap:wrap;">
+                            <button class="comment-star-btn ${userLiked ? 'liked' : ''}" onclick="likeComment('${postId}', '${c.id}')">
+                                ⭐ <span class="star-count" id="likes-${c.id}">${c.likes || 0}</span>
+                            </button>
+                            <button class="reply-btn" onclick="abrirRespuestaInicio('${postId}', '${c.id}')" style="background:none; border:none; color:var(--shatt-blue); cursor:pointer; font-size:11px; padding:4px 8px; border-radius:12px; transition:all 0.2s;">↩️ Responder</button>
+                            ${c.userId === currentUser?.id ? `
+                                <button onclick="eliminarComentarioInicio('${postId}', '${c.id}')" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size:12px; padding:2px 6px;">🗑️</button>
+                            ` : ''}
+                        </div>
+                        
+                        <!-- Área de respuesta -->
+                        <div class="reply-area-inline" id="reply-area-${c.id}">
+                            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                                <input type="text" id="reply-input-${c.id}" class="reply-input" placeholder="Escribe una respuesta..." style="flex:1; padding:6px 12px; border:1px solid #ddd; border-radius:20px; font-size:13px; outline:none; min-width:100px;">
+                                <button class="reply-send-btn" onclick="enviarRespuestaInicio('${postId}', '${c.id}')">Responder</button>
+                                <button class="reply-close-btn" onclick="cerrarRespuestaInicio('${c.id}')">✕</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Respuestas anidadas -->
+                        ${respuestas.length > 0 ? `
+                            <div class="comment-replies">
+                                ${respuestas.map(r => `
+                                    <div class="comment-reply-item">
+                                        <div style="display:flex; gap:8px; align-items:flex-start;">
+                                            <div style="width:24px; height:24px; border-radius:50%; overflow:hidden; flex-shrink:0; background:#e8ecf0; display:flex; align-items:center; justify-content:center; font-size:12px;">
+                                                ${r.userAvatar || '👤'}
+                                            </div>
+                                            <div style="flex:1; min-width:0;">
+                                                <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                                                    <span class="comment-user" onclick="verPerfil('${r.userId}')" style="font-size:12px;">@${escapeHtml(r.userNick)}</span>
+                                                    <span style="font-size:9px; color:#999;">${formatCommentDate(r.createdAt)}</span>
+                                                    ${r.userId === autorPostId ? `<span class="comment-badge-autor" style="font-size:7px; padding:0 6px;">⚡</span>` : ''}
+                                                </div>
+                                                <div style="font-size:13px; word-wrap:break-word; color:inherit; margin-top:1px;">
+                                                    ${renderCommentText(r.text)}
+                                                </div>
+                                                <div style="display:flex; align-items:center; gap:10px; margin-top:2px;">
+                                                    <button class="comment-star-btn ${r.likedBy && r.likedBy.includes(currentUser?.id) ? 'liked' : ''}" onclick="likeComment('${postId}', '${r.id}')" style="font-size:11px;">
+                                                        ⭐ <span class="star-count" id="likes-${r.id}">${r.likes || 0}</span>
+                                                    </button>
+                                                    ${r.userId === currentUser?.id ? `
+                                                        <button onclick="eliminarComentarioInicio('${postId}', '${r.id}')" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size:11px;">🗑️</button>
+                                                    ` : ''}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    return html;
+}
+
 // ========== CREAR POST ELEMENT ==========
 function crearPostElement(post) {
     const autor = post.expand.usuario;
@@ -4716,110 +5057,65 @@ function crearPostElement(post) {
     const estaOnline = autor.ultimaVez && new Date(autor.ultimaVez).getTime() > hace5Min;
 
     let estrellas = '';
-for (let i = 1; i <= 5; i++) {
-    estrellas += `<span class="star ${i <= Math.round(rating) ? 'active' : ''}" 
-        data-post-id="${post.id}" 
-        data-stars="${i}"
-        onmouseenter="highlightStars(this, ${i})"
-        onmouseleave="resetStars(this)"
-        ontouchstart="event.preventDefault(); handleStarTouch(this, ${i})"
-    >★</span>`;
+    for (let i = 1; i <= 5; i++) {
+        estrellas += `<span class="star ${i <= Math.round(rating) ? 'active' : ''}" 
+            data-post-id="${post.id}" 
+            data-stars="${i}"
+            onmouseenter="highlightStars(this, ${i})"
+            onmouseleave="resetStars(this)"
+            ontouchstart="event.preventDefault(); handleStarTouch(this, ${i})"
+        >★</span>`;
+    }
+
+    // 🔴 IMAGENES - AHORA CON let
+    // 🔴 SOPORTE PARA IMÁGENES ANTIGUAS Y NUEVAS
+let imagenes = [];
+
+// Si hay imágenes en el array 'imagenes' (nuevo formato - múltiples imágenes)
+if (post.imagenes && Array.isArray(post.imagenes) && post.imagenes.length > 0) {
+    imagenes = post.imagenes;
+} 
+// Si hay una imagen en el campo 'imagen' (formato antiguo - una sola imagen)
+else if (post.imagen && typeof post.imagen === 'string' && post.imagen !== '') {
+    imagenes = [post.imagen];
 }
 
     let imagenHtml = '';
-const imagenes = post.imagenes || [];
-if (post.imagen && imagenes.length === 0) {
-    // Compatibilidad con posts viejos (1 sola imagen)
-    imagenes.push(post.imagen);
-}
-// En crearPostElement, donde se crea el carrusel
-if (imagenes.length > 0) {
-    imagenHtml = `
-        <div class="post-carousel" data-images='${JSON.stringify(imagenes.map(img => pb.files.getUrl(post, img)))}'>
-            <div class="carousel-image-wrapper">
-                <img src="${pb.files.getUrl(post, imagenes[0])}" class="post-image carousel-main-img" loading="lazy">
-            </div>
-            ${imagenes.length > 1 ? `
-                <div class="carousel-counter">1/${imagenes.length}</div>  <!-- ✅ Asegurar que exista -->
-                <button class="carousel-arrow prev" onclick="event.stopPropagation();moverCarrusel(this, -1)">‹</button>
-                <button class="carousel-arrow next" onclick="event.stopPropagation();moverCarrusel(this, 1)">›</button>
-                <div class="carousel-dots">
-                    ${imagenes.map((_, i) => `<span class="carousel-dot ${i === 0 ? 'active' : ''}" onclick="event.stopPropagation();irACarrusel(this, ${i})"></span>`).join('')}
-                </div>
-            ` : ''}
-        </div>
-    `;
-}
+    if (imagenes.length > 0) {
+        try {
+            const imagenesUrls = imagenes.map(img => pb.files.getUrl(post, img));
+            if (imagenesUrls.length === 1) {
+                imagenHtml = `
+                    <div class="post-image-container" onclick="abrirImageViewer('${imagenesUrls[0]}')">
+                        <img src="${imagenesUrls[0]}" class="post-image" loading="lazy">
+                    </div>
+                `;
+            } else {
+                imagenHtml = `
+                    <div class="post-carousel" data-images='${JSON.stringify(imagenesUrls)}'>
+                        <div class="carousel-image-wrapper">
+                            <img src="${imagenesUrls[0]}" class="post-image carousel-main-img" loading="lazy">
+                        </div>
+                        <div class="carousel-counter">1/${imagenesUrls.length}</div>
+                        <button class="carousel-arrow prev" onclick="event.stopPropagation();moverCarrusel(this, -1)">‹</button>
+                        <button class="carousel-arrow next" onclick="event.stopPropagation();moverCarrusel(this, 1)">›</button>
+                        <div class="carousel-dots">
+                            ${imagenesUrls.map((_, i) => `<span class="carousel-dot ${i === 0 ? 'active' : ''}" onclick="event.stopPropagation();irACarrusel(this, ${i})"></span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+        } catch(e) {
+            console.error('Error al generar imagen:', e);
+        }
+    }
 
     const audioHtml = post.audio ? `<audio controls src="${pb.files.getUrl(post, post.audio)}"></audio>` : '';
 
-    let commentsHtml = '';
+    // COMENTARIOS MEJORADOS
+    const autorPostId = post.usuario;
     const comments = post.comments || [];
-    const mainComments = [];
-    const repliesMap = {};
-    
-    comments.forEach(c => {
-        if (c.parentId) {
-            if (!repliesMap[c.parentId]) repliesMap[c.parentId] = [];
-            repliesMap[c.parentId].push(c);
-        }
-    });
-    comments.forEach(c => { if (!c.parentId) mainComments.push(c); });
-    
-    if (mainComments.length === 0 && Object.keys(repliesMap).length > 0) {
-        Object.keys(repliesMap).forEach(id => {
-            const parent = comments.find(c => c.id === id);
-            if (parent && !parent.parentId) mainComments.push(parent);
-        });
-    }
-
-    if (mainComments.length > 0) {
-        commentsHtml = mainComments.map(c => {
-            const replies = repliesMap[c.id] || [];
-            const todasLasRespuestas = [...replies, ...(c.replies || [])];
-            const respuestasUnicas = [];
-            const idsVistos = new Set();
-            todasLasRespuestas.forEach(r => { if (!idsVistos.has(r.id)) { idsVistos.add(r.id);
-                    respuestasUnicas.push(r); } });
-
-            return `
-                <div class="comment-item" id="comment-${c.id}" style="border-bottom:1px solid #f0f0f0; padding-bottom:12px; margin-bottom:12px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
-                        <span>
-                            <span class="comment-user" data-user-id="${c.userId}" style="font-weight:600; cursor:pointer;">@${escapeHtml(c.userNick)}</span>
-                            <span style="font-size:10px; color:#888; margin-left:8px;">${dayjs(c.createdAt).fromNow()}</span>
-                            ${c.mentions?.length ? `<span style="font-size:10px; color:#888; margin-left:8px;">📢 ${c.mentions.length}</span>` : ''}
-                            ${respuestasUnicas.length > 0 ? `<span style="font-size:10px; color:#888; margin-left:8px;">💬 ${respuestasUnicas.length}</span>` : ''}
-                        </span>
-                        <button class="reply-btn" data-comment-id="${c.id}" style="background:none; border:none; color:var(--shatt-blue); cursor:pointer; font-size:11px; padding:4px 8px; border-radius:12px; transition:all 0.2s;">↩️ Responder</button>
-                    </div>
-                    <div style="margin-top:4px; font-size:14px; word-wrap:break-word;">${escapeHtml(c.text)}</div>
-                    ${respuestasUnicas.length > 0 ? `
-                        <div style="margin-left:20px; border-left:3px solid var(--shatt-blue); padding-left:12px; margin-top:8px;">
-                            ${respuestasUnicas.map(r => `
-                                <div style="padding:6px 0; border-bottom:1px solid #f5f5f5;">
-                                    <span>
-                                        <span class="comment-user" data-user-id="${r.userId}" style="font-weight:500; font-size:12px; color:var(--shatt-blue); cursor:pointer;">@${escapeHtml(r.userNick)}</span>
-                                        <span style="font-size:10px; color:#888; margin-left:6px;">${dayjs(r.createdAt).fromNow()}</span>
-                                    </span>
-                                    <div style="margin-top:2px; font-size:13px; word-wrap:break-word;">${escapeHtml(r.text)}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    ` : `<div style="margin-left:20px; padding:4px 0; font-size:11px; color:#bbb;">Sin respuestas aún</div>`}
-                    <div id="reply-area-${c.id}" style="display:none; margin-top:8px; padding:8px; background:#f5f5f5; border-radius:8px; position:relative;">
-                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                            <input type="text" id="reply-input-${c.id}" placeholder="Escribe una respuesta... (usa @ para mencionar)" style="flex:1; padding:8px 12px; border:1px solid #ccc; border-radius:20px; font-size:13px; outline:none; min-width:120px;">
-                            <button class="btn-enviar-respuesta" data-post-id="${post.id}" data-comment-id="${c.id}" style="background:var(--shatt-blue); color:white; border:none; padding:8px 16px; border-radius:20px; cursor:pointer;">Responder</button>
-                            <button class="btn-cerrar-respuesta" data-comment-id="${c.id}" style="background:#ccc; border:none; padding:8px 16px; border-radius:20px; cursor:pointer;">✕</button>
-                        </div>
-                        <div style="font-size:10px; color:#888; margin-top:4px;">💡 Menciona a alguien con @nombre_usuario</div>
-                    </div>
-                </div>`;
-        }).join('');
-    } else {
-        commentsHtml = '<div style="padding:10px; text-align:center; color:#888;">💬 Sin comentarios. ¡Sé el primero!</div>';
-    }
+    const commentsHtml = generarComentariosHTML(comments, post.id, autorPostId);
 
     const avatarHtml = autorAvatar ?
         `<div style="position: relative; display: inline-block;">
@@ -4834,6 +5130,7 @@ if (imagenes.length > 0) {
     const div = document.createElement('div');
     div.className = 'post';
     div.setAttribute('data-post-id', post.id);
+    
     div.innerHTML = `
         <div class="post-header">
             <div class="post-user-info">
@@ -4851,14 +5148,14 @@ if (imagenes.length > 0) {
             </div>
         </div>
 
-
         <div class="post-text" id="text-${post.id}" style="max-height: ${(post.texto || '').length > 200 ? '198px' : 'none'}; overflow: hidden; transition: max-height 0.4s ease;">
-    ${escapeHtml(post.texto || '')}
-</div>
-${(post.texto || '').length > 200 ? `<button class="text-toggle-btn" onclick="toggleTexto('${post.id}')">Seguir leyendo... 📖</button>` : ''}
+            ${escapeHtml(post.texto || '')}
+        </div>
+        ${(post.texto || '').length > 200 ? `<button class="text-toggle-btn" onclick="toggleTexto('${post.id}')">Seguir leyendo... 📖</button>` : ''}
 
         ${imagenHtml}
         ${audioHtml}
+        
         <div class="interaction-bar">
             <div style="display:flex; gap:15px; align-items:center; flex-wrap:wrap;">
                 <div class="star-rating">${estrellas}</div>
@@ -4867,6 +5164,7 @@ ${(post.texto || '').length > 200 ? `<button class="text-toggle-btn" onclick="to
             <button class="comment-btn" data-post-id="${post.id}">💬 <span class="c-num">${comments.length}</span></button>
             ${!esPropio ? `<button class="share-btn" data-post-id="${post.id}">🔗 <span>Compartir</span></button>` : ''}
         </div>
+        
         <div class="comment-box" id="comment-box-${post.id}" style="display:none;">
             <div class="comm-list">${commentsHtml}</div>
             <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; position:relative;">
@@ -4876,46 +5174,38 @@ ${(post.texto || '').length > 200 ? `<button class="text-toggle-btn" onclick="to
         </div>
     `;
 
-    // Delegación de eventos
+    // Event listeners
     setTimeout(() => {
-        // Estrellas
         div.querySelectorAll('.star').forEach(star => {
             star.addEventListener('click', function() {
                 rate(this.dataset.postId, parseInt(this.dataset.stars));
             });
         });
-        // Avatar y nombre de usuario
+        
         div.querySelectorAll('[data-user-id]').forEach(el => {
             el.addEventListener('click', function(e) {
                 e.stopPropagation();
                 verPerfil(this.dataset.userId);
             });
         });
-        // Imagen
-        const imgContainer = div.querySelector('.post-image-container');
-        if (imgContainer) {
-            imgContainer.addEventListener('click', function() {
-                abrirImageViewer(this.dataset.imageUrl);
+
+        const menuBtn = div.querySelector('.post-menu-btn');
+        if (menuBtn) {
+            menuBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const postId = this.dataset.postId;
+                const authorId = this.dataset.authorId;
+                togglePostMenu(postId, authorId);
             });
         }
-        // Menú
-        const menuBtn = div.querySelector('.post-menu-btn');
-if (menuBtn) {
-    menuBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        const postId = this.dataset.postId;
-        const authorId = this.dataset.authorId;
-        togglePostMenu(postId, authorId);
-    });
-}
-        // Comentarios
+
         const commentBtn = div.querySelector('.comment-btn');
         if (commentBtn) {
             commentBtn.addEventListener('click', function() {
                 toggleCommentBox(this, this.dataset.postId);
             });
         }
-        // Enviar comentario
+
         const enviarBtn = div.querySelector('.btn-enviar-comentario');
         if (enviarBtn) {
             enviarBtn.addEventListener('click', function() {
@@ -4923,46 +5213,50 @@ if (menuBtn) {
             });
         }
 
-        // Soporte táctil en carrusel de posts
-const postCarousel = div.querySelector('.post-carousel');
-if (postCarousel) {
-    let startX = 0;
-    const wrapper = postCarousel.querySelector('.carousel-image-wrapper');
-    if (wrapper) {
-        wrapper.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
-        wrapper.addEventListener('touchend', (e) => {
-            const diff = startX - e.changedTouches[0].clientX;
-            if (Math.abs(diff) > 50) {
-                moverCarrusel(wrapper.closest('.post-carousel'), diff > 0 ? 1 : -1);
+        // Carrusel táctil
+        const postCarousel = div.querySelector('.post-carousel');
+        if (postCarousel) {
+            let startX = 0;
+            const wrapper = postCarousel.querySelector('.carousel-image-wrapper');
+            if (wrapper) {
+                wrapper.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
+                wrapper.addEventListener('touchend', (e) => {
+                    const diff = startX - e.changedTouches[0].clientX;
+                    if (Math.abs(diff) > 50) {
+                        moverCarrusel(wrapper.closest('.post-carousel'), diff > 0 ? 1 : -1);
+                    }
+                });
             }
-        });
-    }
-}
-        // Compartir
+        }
+
         const shareBtn = div.querySelector('.share-btn');
         if (shareBtn) {
             shareBtn.addEventListener('click', function() {
                 copiarEnlace(this.dataset.postId);
             });
         }
-        // Responder
+
+        // Reply buttons
         div.querySelectorAll('.reply-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                abrirRespuesta(this.dataset.commentId);
+                abrirRespuestaInicio(this.dataset.postId, this.dataset.commentId);
             });
         });
+
         // Enviar respuesta
-        div.querySelectorAll('.btn-enviar-respuesta').forEach(btn => {
+        div.querySelectorAll('.reply-send-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                enviarRespuesta(this.dataset.postId, this.dataset.commentId);
+                enviarRespuestaInicio(this.dataset.postId, this.dataset.commentId);
             });
         });
+
         // Cerrar respuesta
-        div.querySelectorAll('.btn-cerrar-respuesta').forEach(btn => {
+        div.querySelectorAll('.reply-close-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                cerrarRespuesta(this.dataset.commentId);
+                cerrarRespuestaInicio(this.dataset.commentId);
             });
         });
+
     }, 50);
 
     return div;
@@ -6814,6 +7108,154 @@ if (typeof window.cambiarTema === 'function') {
         gestionarBurbujasPorTema(tema);
     };
 }
+// ========== FUNCIONES PARA INICIO.HTML ==========
+
+// Like a comentario
+async function likeComment(postId, commentId) {
+    if (!currentUser) return mostrarToast('Inicia sesión');
+    
+    try {
+        const post = await pb.collection('posts').getOne(postId);
+        const comments = post.comments || [];
+        const comment = comments.find(c => c.id === commentId);
+        if (!comment) return;
+        
+        if (!comment.likes) comment.likes = 0;
+        if (!comment.likedBy) comment.likedBy = [];
+        
+        const userLiked = comment.likedBy.includes(currentUser.id);
+        if (userLiked) {
+            comment.likes--;
+            comment.likedBy = comment.likedBy.filter(id => id !== currentUser.id);
+        } else {
+            comment.likes++;
+            comment.likedBy.push(currentUser.id);
+        }
+        
+        await pb.collection('posts').update(postId, { comments: comments });
+        
+        // Actualizar UI
+        const likeSpan = document.getElementById(`likes-${commentId}`);
+        if (likeSpan) {
+            likeSpan.textContent = comment.likes;
+            const btn = likeSpan.closest('.comment-star-btn');
+            if (btn) btn.classList.toggle('liked', !userLiked);
+        }
+        
+    } catch(e) {
+        console.error('Error al dar like:', e);
+    }
+}
+
+// Abrir respuesta
+function abrirRespuestaInicio(postId, commentId) {
+    const area = document.getElementById(`reply-area-${commentId}`);
+    if (area) {
+        area.style.display = 'block';
+        const input = document.getElementById(`reply-input-${commentId}`);
+        if (input) {
+            input.focus();
+            setupMentionSystem(`reply-input-${commentId}`, `mention-suggestions-reply-${commentId}`);
+        }
+    }
+}
+
+// Cerrar respuesta
+function cerrarRespuestaInicio(commentId) {
+    const area = document.getElementById(`reply-area-${commentId}`);
+    if (area) area.style.display = 'none';
+}
+
+// Enviar respuesta
+async function enviarRespuestaInicio(postId, parentId) {
+    const input = document.getElementById(`reply-input-${parentId}`);
+    if (!input) return;
+    const texto = input.value.trim();
+    if (!texto) { mostrarToast('Escribe una respuesta'); return; }
+    
+    const nicksMencionados = detectarMenciones(texto);
+    const mentionIds = await obtenerIdsMencionados(nicksMencionados);
+    
+    try {
+        const post = await pb.collection('posts').getOne(postId);
+        let comments = post.comments || [];
+        const parentComment = comments.find(c => c.id === parentId);
+        if (!parentComment) { mostrarToast('Error'); return; }
+        
+        const reply = {
+            id: `reply_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+            userNick: currentUser.nick || currentUser.email.split('@')[0],
+            userId: currentUser.id,
+            text: texto,
+            createdAt: new Date().toISOString(),
+            parentId: parentId,
+            likes: 0,
+            likedBy: [],
+            mentions: mentionIds
+        };
+        
+        if (!parentComment.replies) parentComment.replies = [];
+        parentComment.replies.push(reply);
+        
+        await pb.collection('posts').update(postId, { comments: comments });
+        
+        input.value = '';
+        cerrarRespuestaInicio(parentId);
+        
+        // Recargar el post
+        const postActualizado = await pb.collection('posts').getOne(postId, { expand: 'usuario' });
+        const postElement = document.querySelector(`.post[data-post-id="${postId}"]`);
+        if (postElement) {
+            const nuevoElemento = crearPostElement(postActualizado);
+            postElement.parentNode.replaceChild(nuevoElemento, postElement);
+            setTimeout(() => inicializarMencionesComentario(postId), 100);
+        }
+        
+        mostrarToast('💬 Respuesta enviada');
+    } catch(e) {
+        console.error('Error:', e);
+        mostrarToast('Error al responder');
+    }
+}
+
+// Eliminar comentario
+async function eliminarComentarioInicio(postId, commentId) {
+    if (!confirm('¿Eliminar este comentario?')) return;
+    
+    try {
+        const post = await pb.collection('posts').getOne(postId);
+        let comments = post.comments || [];
+        comments = comments.filter(c => c.id !== commentId);
+        // También eliminar respuestas
+        comments = comments.filter(c => c.parentId !== commentId);
+        
+        await pb.collection('posts').update(postId, { comments: comments });
+        
+        // Recargar el post
+        const postActualizado = await pb.collection('posts').getOne(postId, { expand: 'usuario' });
+        const postElement = document.querySelector(`.post[data-post-id="${postId}"]`);
+        if (postElement) {
+            const nuevoElemento = crearPostElement(postActualizado);
+            postElement.parentNode.replaceChild(nuevoElemento, postElement);
+            setTimeout(() => inicializarMencionesComentario(postId), 100);
+        }
+        
+        mostrarToast('🗑️ Comentario eliminado');
+    } catch(e) {
+        console.error('Error:', e);
+        mostrarToast('Error al eliminar');
+    }
+}
+
+// Exponer funciones
+window.likeComment = likeComment;
+window.abrirRespuestaInicio = abrirRespuestaInicio;
+window.cerrarRespuestaInicio = cerrarRespuestaInicio;
+window.enviarRespuestaInicio = enviarRespuestaInicio;
+window.eliminarComentarioInicio = eliminarComentarioInicio;
+window.renderCommentText = renderCommentText;
+window.formatCommentDate = formatCommentDate;
+window.verPerfilPorNick = verPerfilPorNick;
 
 // ========== EXPOSICIÓN GLOBAL ==========
 window.abrirPanelConfiguracion = abrirPanelConfiguracion;
