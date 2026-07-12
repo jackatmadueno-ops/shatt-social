@@ -1014,6 +1014,584 @@ body.theme-y2k .star-rating .star.active { color: #ff2d95 !important; text-shado
     position: relative;
 }
 
+/* =============================================
+   🎠 CARRUSEL DE IMÁGENES
+   ============================================= */
+
+.post-carrusel {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    margin: var(--spacing-md) -20px;
+    background: #f0f2f5;
+}
+
+.post-carrusel-container {
+    display: flex;
+    transition: transform 0.4s ease;
+    touch-action: pan-y;
+}
+
+.post-carrusel-slide {
+    min-width: 100%;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.post-carrusel-slide img {
+    width: 100%;
+    max-height: 450px;
+    object-fit: contain;
+    background: #f0f2f5;
+    cursor: pointer;
+}
+
+.post-carrusel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+}
+
+.post-carrusel-btn:hover {
+    background: rgba(0,0,0,0.7);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.post-carrusel-btn.prev {
+    left: 10px;
+}
+
+.post-carrusel-btn.next {
+    right: 10px;
+}
+
+.post-carrusel-indicators {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 5;
+}
+
+.post-carrusel-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.post-carrusel-dot.active {
+    background: white;
+    box-shadow: 0 0 10px rgba(255,255,255,0.4);
+}
+
+.post-carrusel-counter {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    z-index: 5;
+    font-family: 'Courier New', monospace;
+}
+
+@media (max-width: 768px) {
+    .post-carrusel {
+        margin: var(--spacing-md) -16px;
+        border-radius: 12px;
+    }
+    .post-carrusel-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+    .post-carrusel-slide img {
+        max-height: 300px;
+    }
+}
+
+/* =============================================
+   💬 COMENTARIOS PROFESIONALES - VERSIÓN LIMPIA
+   ============================================= */
+
+.comentarios-section {
+    background: rgba(255, 255, 255, var(--panel-opacity));
+    border: 2px solid #000;
+    border-radius: var(--border-radius);
+    padding: var(--spacing-xl);
+}
+
+.comentarios-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 2px solid #eee;
+}
+
+.comentarios-header h3 {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.comentarios-count {
+    font-size: 12px;
+    color: #888;
+    background: rgba(0,0,0,0.05);
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+/* ===== COMENTARIO ITEM ===== */
+.comentario-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.comentario-item:last-child {
+    border-bottom: none;
+}
+
+/* Avatar */
+.comentario-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: #e8ecf0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.comentario-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Cuerpo */
+.comentario-body {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Header: nombre + fecha */
+.comentario-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 2px;
+}
+
+.comentario-user {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--shatt-blue);
+    cursor: pointer;
+}
+
+.comentario-user:hover {
+    text-decoration: underline;
+}
+
+.comentario-fecha {
+    font-size: 11px;
+    color: #999;
+}
+
+/* Badge Autor */
+.autor-badge {
+    background: linear-gradient(135deg, #f5a623, #f7c948);
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 30px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    display: inline-block;
+}
+
+/* Texto */
+.comentario-texto {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #1a1a2e;
+    word-wrap: break-word;
+    margin: 2px 0 4px 0;
+}
+
+.comentario-texto .mention {
+    color: var(--shatt-blue);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Acciones */
+.comentario-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.comentario-actions button {
+    background: none;
+    border: none;
+    font-size: 12px;
+    color: #888;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 12px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.comentario-actions button:hover {
+    background: rgba(0,0,0,0.05);
+}
+
+.star-btn {
+    color: #bbb;
+    transition: all 0.3s;
+}
+
+.star-btn:hover {
+    color: #ffc107;
+    transform: scale(1.1);
+}
+
+.star-btn.liked {
+    color: #ffc107;
+}
+
+.reply-btn {
+    color: var(--shatt-blue);
+}
+
+.edit-btn {
+    color: #f5a623;
+    opacity: 0;
+    transition: all 0.3s;
+}
+
+.delete-btn {
+    color: #e74c3c;
+    opacity: 0;
+    transition: all 0.3s;
+}
+
+.comentario-item:hover .edit-btn,
+.comentario-item:hover .delete-btn {
+    opacity: 1;
+}
+
+/* Editar */
+.comentario-edit-area {
+    display: none;
+    margin-top: 6px;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.comentario-edit-area.show {
+    display: flex;
+}
+
+.comentario-edit-area input {
+    flex: 1;
+    padding: 6px 12px;
+    border: 2px solid var(--shatt-blue);
+    border-radius: 20px;
+    font-size: 13px;
+    outline: none;
+    min-width: 120px;
+}
+
+.comentario-edit-area button {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.save-edit {
+    background: var(--shatt-blue);
+    color: white;
+}
+
+.save-edit:hover {
+    background: #2d4a7a;
+}
+
+.cancel-edit {
+    background: #eee;
+    color: #666;
+}
+
+.cancel-edit:hover {
+    background: #ddd;
+}
+
+/* Responder */
+.reply-area {
+    display: none;
+    margin-top: 6px;
+    padding: 8px;
+    background: #f5f5f5;
+    border-radius: 12px;
+}
+
+.reply-area .reply-input {
+    flex: 1;
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    font-size: 13px;
+    outline: none;
+    min-width: 100px;
+}
+
+.reply-area .reply-input:focus {
+    border-color: var(--shatt-blue);
+}
+
+.reply-send-btn {
+    background: var(--shatt-blue);
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.reply-send-btn:hover {
+    background: #2d4a7a;
+}
+
+.reply-close-btn {
+    background: #ccc;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.reply-close-btn:hover {
+    background: #bbb;
+}
+
+/* Respuestas anidadas */
+.respuestas-container {
+    margin-left: 44px;
+    padding-left: 16px;
+    border-left: 2px solid #e8ecf0;
+    margin-top: 6px;
+}
+
+.respuesta-item {
+    display: flex;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.respuesta-item:last-child {
+    border-bottom: none;
+}
+
+/* Empty state */
+.comentarios-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #888;
+}
+
+.comentarios-empty .empty-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+
+.comentarios-empty .empty-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #555;
+}
+
+.comentarios-empty .empty-sub {
+    font-size: 13px;
+    color: #999;
+}
+
+/* Input de comentario */
+.comentario-input-area {
+    display: flex;
+    gap: 10px;
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 2px solid #eee;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.comentario-input-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #e8ecf0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.comentario-input-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.comentario-input-wrapper {
+    flex: 1;
+    min-width: 120px;
+}
+
+.comentario-input {
+    width: 100%;
+    padding: 10px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 30px;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.comentario-input:focus {
+    border-color: var(--shatt-blue);
+}
+
+.comentario-submit-btn {
+    background: var(--shatt-blue);
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 13px;
+}
+
+.comentario-submit-btn:hover {
+    background: #2d4a7a;
+    transform: scale(1.02);
+}
+
+/* Dark mode */
+body.dark-mode .comentario-item {
+    border-color: #333;
+}
+
+body.dark-mode .comentario-texto {
+    color: #eee;
+}
+
+body.dark-mode .reply-area {
+    background: #2a2a3a;
+}
+
+body.dark-mode .reply-area .reply-input {
+    background: #3a3a4a;
+    color: white;
+    border-color: #555;
+}
+
+body.dark-mode .comentario-input {
+    background: #2a2a3a;
+    color: white;
+    border-color: #444;
+}
+
+body.dark-mode .comentario-input:focus {
+    border-color: var(--shatt-blue);
+}
+
+body.dark-mode .respuestas-container {
+    border-color: #333;
+}
+
+body.dark-mode .respuesta-item {
+    border-color: #2a2a3a;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .comentario-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+    .respuestas-container {
+        margin-left: 28px;
+        padding-left: 10px;
+    }
+    .comentario-input-avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+    }
+    .comentario-submit-btn {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+    .comentario-item:hover .edit-btn,
+    .comentario-item:hover .delete-btn {
+        opacity: 1;
+    }
+}
     </style>
 </head>
 <body>
@@ -1052,12 +1630,22 @@ body.theme-y2k .star-rating .star.active { color: #ff2d95 !important; text-shado
         </div>
 
         <div id="comentariosSection" class="comentarios-section" style="display: none;">
-            <div id="comentariosLista"></div>
-            <div class="comentario-input-area">
-                <input type="text" id="comentarioInput" class="comentario-input" placeholder="Escribe un comentario... (usa @ para mencionar)" onkeypress="if(event.key==='Enter') enviarComentario()">
-                <button class="btn-retro" onclick="enviarComentario()">Enviar</button>
-            </div>
-        </div>
+    <div class="comentarios-header">
+        <h3>💬 Comentarios</h3>
+        <span class="comentarios-count" id="comentariosCount">0</span>
+    </div>
+    <div id="comentariosLista"></div>
+    
+    <div class="comentario-input-area">
+    <div class="comentario-input-avatar" id="comentarioAvatar">
+        👤
+    </div>
+    <div class="comentario-input-wrapper">
+        <input type="text" id="comentarioInput" class="comentario-input" placeholder="Escribe un comentario... (usa @ para mencionar)" onkeypress="if(event.key==='Enter') enviarComentario()">
+    </div>
+    <button class="comentario-submit-btn" onclick="enviarComentario()">Enviar</button>
+</div>
+</div>
     </div>
 
     <!-- BARRA INFERIOR MÓVIL -->
@@ -1592,98 +2180,150 @@ body.theme-y2k .star-rating .star.active { color: #ff2d95 !important; text-shado
 
         // ========== CARGAR POST ==========
         async function cargarPost() {
-            const container = document.getElementById('postContent');
-            container.innerHTML = '<div class="empty-state">⏳ Cargando publicación...</div>';
-            
+    const container = document.getElementById('postContent');
+    container.innerHTML = '<div class="empty-state">⏳ Cargando publicación...</div>';
+    
+    try {
+        console.log("🔍 Buscando post con ID:", postId);
+        
+        const post = await pb.collection('posts').getOne(postId, {
+            expand: 'usuario'
+        });
+        
+        console.log("✅ Post encontrado:", post);
+        
+        // 🔴 VERIFICAR QUÉ CAMPOS DE IMAGEN TIENE
+        console.log("📸 Campo 'imagen':", post.imagen);
+        console.log("📸 Campo 'imagenes':", post.imagenes);
+        
+        currentPost = post;
+        renderizarPost(post);
+        
+        const comments = post.comments || [];
+        await cargarComentarios(comments);
+        document.getElementById('comentariosSection').style.display = 'block';
+        
+    } catch(e) {
+        console.error("❌ Error cargando post:", e);
+        container.innerHTML = `
+            <div class="empty-state">
+                ❌ Publicación no encontrada<br>
+                <small style="color:#888; font-size:12px;">ID: ${postId}</small>
+                <br><br>
+                <button onclick="window.location.href='inicio.html'" class="volver-btn" style="background:var(--shatt-blue); color:white; padding:10px 20px; border:none; border-radius:30px; cursor:pointer;">Ir al inicio</button>
+            </div>
+        `;
+    }
+}
+
+        function renderizarPost(post) {
+    const autor = post.expand?.usuario;
+    let autorNombre = 'Usuario';
+    let autorId = post.usuario || post.usuarioId || post.creadoPor || 'unknown';
+    let autorAvatar = '';
+    
+    if (autor) {
+        autorNombre = autor.nick || autor.email?.split('@')[0] || 'Usuario';
+        autorId = autor.id;
+        if (autor.pfp) {
             try {
-                console.log("🔍 Buscando post con ID:", postId);
-                
-                const post = await pb.collection('posts').getOne(postId, {
-                    expand: 'usuario'
-                });
-                
-                console.log("✅ Post encontrado:", post);
-                currentPost = post;
-                renderizarPost(post);
-                await cargarComentarios(post.comments || []);
-                document.getElementById('comentariosSection').style.display = 'block';
-                
+                autorAvatar = `<img src="${pb.files.getUrl(autor, autor.pfp)}">`;
             } catch(e) {
-                console.error("❌ Error cargando post:", e);
-                container.innerHTML = `
-                    <div class="empty-state">
-                        ❌ Publicación no encontrada<br>
-                        <small style="color:#888; font-size:12px;">ID: ${postId}</small>
-                        <br><br>
-                        <button onclick="window.location.href='inicio.html'" class="volver-btn" style="background:var(--shatt-blue); color:white; padding:10px 20px; border:none; border-radius:30px; cursor:pointer;">Ir al inicio</button>
+                autorAvatar = '';
+            }
+        }
+    }
+    
+    let fechaTexto = '';
+    if (post.created) {
+        try { fechaTexto = dayjs(new Date(post.created)).fromNow(); } catch(e) {}
+    }
+    
+    // 🔴 CARRUSEL - SOPORTA 'imagen' e 'imagenes'
+    let imagenHtml = '';
+    let imagenesArray = [];
+
+    // Verificar ambos formatos
+    if (post.imagenes && Array.isArray(post.imagenes) && post.imagenes.length > 0) {
+        imagenesArray = post.imagenes;
+    } else if (post.imagen && typeof post.imagen === 'string' && post.imagen !== '') {
+        imagenesArray = [post.imagen];
+    }
+
+    if (imagenesArray.length > 0) {
+        try {
+            const imagenesUrls = imagenesArray.map(img => pb.files.getUrl(post, img));
+            const totalImagenes = imagenesUrls.length;
+            
+            if (totalImagenes === 1) {
+                imagenHtml = `
+                    <div class="post-imagen" onclick="abrirImageViewer('${imagenesUrls[0]}')">
+                        <img src="${imagenesUrls[0]}" loading="lazy" alt="Imagen del post" style="width:100%; max-height:500px; object-fit:contain; background:#f0f2f5; border-radius:16px;">
+                    </div>
+                `;
+            } else {
+                const carruselId = `carrusel-${Date.now()}`;
+                imagenHtml = `
+                    <div class="post-carrusel" id="${carruselId}">
+                        <div class="post-carrusel-container" id="${carruselId}-container">
+                            ${imagenesUrls.map((url, idx) => `
+                                <div class="post-carrusel-slide">
+                                    <img src="${url}" loading="lazy" alt="Imagen ${idx + 1}" onclick="abrirImageViewer('${url}')">
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button class="post-carrusel-btn prev" onclick="carruselNavegar('${carruselId}', -1)">◀</button>
+                        <button class="post-carrusel-btn next" onclick="carruselNavegar('${carruselId}', 1)">▶</button>
+                        <div class="post-carrusel-counter" id="${carruselId}-counter">1 / ${totalImagenes}</div>
+                        <div class="post-carrusel-indicators" id="${carruselId}-indicators">
+                            ${imagenesUrls.map((_, idx) => `
+                                <div class="post-carrusel-dot ${idx === 0 ? 'active' : ''}" onclick="carruselIrA('${carruselId}', ${idx})"></div>
+                            `).join('')}
+                        </div>
                     </div>
                 `;
             }
+        } catch(e) {
+            console.error('Error al generar imagen:', e);
         }
-
-        function renderizarPost(post) {
-            const autor = post.expand?.usuario;
-            let autorNombre = 'Usuario';
-            let autorId = post.usuario;
-            let autorAvatar = '';
-            
-            if (autor) {
-                autorNombre = autor.nick || autor.email.split('@')[0];
-                autorId = autor.id;
-                if (autor.pfp) {
-                    autorAvatar = `<img src="${pb.files.getUrl(autor, autor.pfp)}">`;
-                }
-            }
-            
-            let fechaTexto = '';
-            if (post.created) {
-                try { fechaTexto = dayjs(new Date(post.created)).fromNow(); } catch(e) {}
-            }
-            
-            let imagenHtml = '';
-            if (post.imagen) {
-                try { 
-                    const imgUrl = pb.files.getUrl(post, post.imagen);
-                    imagenHtml = `<div class="post-imagen" onclick="abrirImageViewer('${imgUrl}')"><img src="${imgUrl}" loading="lazy"></div>`; 
-                } catch(e) {}
-            }
-            
-            let audioHtml = '';
-            if (post.audio) {
-                try { audioHtml = `<div class="post-audio"><audio controls src="${pb.files.getUrl(post, post.audio)}"></audio></div>`; } catch(e) {}
-            }
-            
-            const ratingValue = Number(post.rating) || 0;
-            const ratingCount = Number(post.ratingCount) || 0;
-            let estrellasHTML = '';
-            for (let i = 1; i <= 5; i++) {
-                estrellasHTML += `<span class="star ${i <= Math.round(ratingValue) ? 'active' : ''}" onclick="ratePost(${i})">★</span>`;
-            }
-            
-            const statusHtml = post.status ? `<span class="post-user-status">· ${escapeHtml(post.status)}</span>` : '';
-            
-            document.getElementById('postContent').innerHTML = `
-                <div class="post-header">
-                    <div class="post-user-info">
-                        <div class="post-avatar" onclick="verPerfil('${autorId}')">${autorAvatar || '👤'}</div>
-                        <div>
-                            <div class="post-user-name" onclick="verPerfil('${autorId}')">@${escapeHtml(autorNombre)} ${statusHtml}</div>
-                            <div class="post-date">${fechaTexto}</div>
-                        </div>
-                    </div>
+    }
+    
+    let audioHtml = '';
+    if (post.audio) {
+        try { audioHtml = `<div class="post-audio"><audio controls src="${pb.files.getUrl(post, post.audio)}"></audio></div>`; } catch(e) {}
+    }
+    
+    const ratingValue = Number(post.rating) || 0;
+    const ratingCount = Number(post.ratingCount) || 0;
+    let estrellasHTML = '';
+    for (let i = 1; i <= 5; i++) {
+        estrellasHTML += `<span class="star ${i <= Math.round(ratingValue) ? 'active' : ''}" onclick="ratePost(${i})">★</span>`;
+    }
+    
+    const statusHtml = post.status ? `<span class="post-user-status">· ${escapeHtml(post.status)}</span>` : '';
+    
+    // 🔴 USAR autorId CORRECTAMENTE
+    document.getElementById('postContent').innerHTML = `
+        <div class="post-header">
+            <div class="post-user-info">
+                <div class="post-avatar" onclick="verPerfil('${autorId}')">${autorAvatar || '👤'}</div>
+                <div>
+                    <div class="post-user-name" onclick="verPerfil('${autorId}')">@${escapeHtml(autorNombre)} ${statusHtml}</div>
+                    <div class="post-date">${fechaTexto}</div>
                 </div>
-                <div class="post-texto">${escapeHtml(post.texto || '')}</div>
-                ${imagenHtml}
-                ${audioHtml}
-                <div class="interaction-bar">
-                    <div style="display:flex; align-items:center; gap:15px; flex-wrap:wrap;">
-                        <div class="star-rating">${estrellasHTML}</div>
-                        <span class="rating-info">⭐ ${ratingValue.toFixed(1)} (${ratingCount} ${ratingCount === 1 ? 'voto' : 'votos'})</span>
-                    </div>
-                </div>
-            `;
-        }
-
+            </div>
+        </div>
+        <div class="post-texto">${escapeHtml(post.texto || '')}</div>
+        ${imagenHtml}
+        ${audioHtml}
+        <div class="interaction-bar">
+            <div style="display:flex; align-items:center; gap:15px; flex-wrap:wrap;">
+                <div class="star-rating">${estrellasHTML}</div>
+                <span class="rating-info">⭐ ${ratingValue.toFixed(1)} (${ratingCount} ${ratingCount === 1 ? 'voto' : 'votos'})</span>
+            </div>
+        </div>
+    `;
+}
         // ========== VOTAR (ESTRELLAS) ==========
         async function ratePost(stars) {
             if (!currentUser) return mostrarToast("Debes iniciar sesión");
@@ -1729,70 +2369,329 @@ body.theme-y2k .star-rating .star.active { color: #ff2d95 !important; text-shado
         }
 
         // ========== COMENTARIOS CON RESPUESTAS Y MENCIONES ==========
-        async function cargarComentarios(comments) {
-            const container = document.getElementById('comentariosLista');
-            
-            if (!comments || comments.length === 0) {
-                container.innerHTML = '<div class="empty-state">💬 No hay comentarios aún. ¡Sé el primero!</div>';
-                return;
-            }
-            
-            // Separar comentarios principales y respuestas
-            const comentariosPrincipales = comments.filter(c => !c.parentId);
-            const respuestasMap = {};
-            comments.forEach(c => {
-                if (c.parentId) {
-                    if (!respuestasMap[c.parentId]) respuestasMap[c.parentId] = [];
-                    respuestasMap[c.parentId].push(c);
-                }
-            });
-            
-            let html = '';
-            for (const c of comentariosPrincipales) {
-                const respuestas = respuestasMap[c.id] || [];
-                const tieneRespuestas = respuestas.length > 0;
+        // ========== COMENTARIOS PROFESIONALES ==========
+
+// ========== COMENTARIOS PROFESIONALES ==========
+
+// ========== COMENTARIOS PROFESIONALES ==========
+
+async function cargarComentarios(comments) {
+    const container = document.getElementById('comentariosLista');
+    
+    if (!comments || comments.length === 0) {
+        container.innerHTML = `
+            <div class="comentarios-empty">
+                <div class="empty-icon">💬</div>
+                <div class="empty-title">No hay comentarios aún</div>
+                <div class="empty-sub">Sé el primero en comentar</div>
+            </div>
+        `;
+        return;
+    }
+    
+    // Separar comentarios principales y respuestas
+    const comentariosPrincipales = comments.filter(c => !c.parentId);
+    const respuestasMap = {};
+    comments.forEach(c => {
+        if (c.parentId) {
+            if (!respuestasMap[c.parentId]) respuestasMap[c.parentId] = [];
+            respuestasMap[c.parentId].push(c);
+        }
+    });
+    
+    // Ordenar por fecha (más reciente primero)
+    comentariosPrincipales.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    
+    let html = '';
+    
+    for (const c of comentariosPrincipales) {
+        const respuestas = respuestasMap[c.id] || [];
+        const tieneRespuestas = respuestas.length > 0;
+        const userAvatar = await getAvatarUrl(c.userId);
+        
+        // 🔴 VERIFICACIÓN CORRECTA DEL AUTOR
+        const esAutor = currentPost && c.userId === currentPost.usuario;
+        
+        // 🔴 PARA DEPURAR - ver en consola
+        if (esAutor) {
+            console.log('⚡ Este comentario es del autor:', c.userNick);
+        }
+        
+        const userLiked = c.likedBy && c.likedBy.includes(currentUser?.id);
+        
+        html += `
+            <div class="comentario-item" id="comentario-${c.id}">
+                <!-- AVATAR -->
+                <div class="comentario-avatar" onclick="verPerfil('${c.userId}')">
+                    ${userAvatar ? `<img src="${userAvatar}">` : '👤'}
+                </div>
                 
-                html += `
-                    <div class="comentario-item" id="comentario-${c.id}">
-                        <div class="comentario-user" onclick="verPerfil('${c.userId}')">@${escapeHtml(c.userNick)}</div>
-                        <div class="comentario-texto">${escapeHtml(c.text)}</div>
-                        <div class="comentario-fecha">${c.createdAt ? dayjs(c.createdAt).fromNow() : ''}</div>
+                <!-- CONTENIDO -->
+                <div class="comentario-body">
+                    <!-- HEADER: Nombre + Fecha + BADGE AUTOR -->
+                    <div class="comentario-header">
+                        <span class="comentario-user" onclick="verPerfil('${c.userId}')">@${escapeHtml(c.userNick)}</span>
+                        <span class="comentario-fecha">${formatFecha(c.createdAt)}</span>
+                        ${esAutor ? `<span class="autor-badge">⚡ Autor</span>` : ''}
+                    </div>
+                    
+                    <!-- TEXTO -->
+                    <div class="comentario-texto">${renderTextoConMenciones(c.text)}</div>
+                    
+                    <!-- ACCIONES -->
+                    <div class="comentario-actions">
+                        <button class="star-btn ${userLiked ? 'liked' : ''}" onclick="likeComentario('${c.id}')">
+                            ⭐ <span id="likes-${c.id}">${c.likes || 0}</span>
+                        </button>
                         <button class="reply-btn" onclick="abrirRespuesta('${c.id}')">↩️ Responder</button>
-                        
-                        <div id="reply-area-${c.id}" class="reply-area">
-                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                                <input type="text" id="reply-input-${c.id}" class="reply-input" placeholder="Escribe una respuesta... (usa @ para mencionar)">
-                                <button class="reply-send-btn" onclick="enviarRespuesta('${c.id}')">Responder</button>
-                                <button class="reply-close-btn" onclick="cerrarRespuesta('${c.id}')">✕</button>
-                            </div>
-                            <div style="font-size:10px; color:#888; margin-top:4px;">💡 Menciona a alguien con @nombre_usuario</div>
-                        </div>
-                        
-                        ${tieneRespuestas ? `
-                            <div class="respuestas-container">
-                                ${respuestas.map(r => `
-                                    <div class="respuesta-item">
-                                        <span class="respuesta-user" onclick="verPerfil('${r.userId}')">@${escapeHtml(r.userNick)}</span>
-                                        <span class="respuesta-fecha">${r.createdAt ? dayjs(r.createdAt).fromNow() : ''}</span>
-                                        <div class="respuesta-texto">${escapeHtml(r.text)}</div>
-                                    </div>
-                                `).join('')}
-                            </div>
+                        ${c.userId === currentUser?.id ? `
+                            <button class="edit-btn" onclick="editarComentario('${c.id}')">✏️</button>
+                            <button class="delete-btn" onclick="eliminarComentario('${c.id}')">🗑️</button>
                         ` : ''}
                     </div>
-                `;
-            }
-            
-            container.innerHTML = html;
-            
-            // Inicializar menciones para respuestas
-            comentariosPrincipales.forEach(c => {
-                const input = document.getElementById(`reply-input-${c.id}`);
-                if (input) {
-                    setupMentionSystem(`reply-input-${c.id}`, `mention-suggestions-reply-${c.id}`);
-                }
-            });
+                    
+                    <!-- EDITAR -->
+                    <div class="comentario-edit-area" id="edit-area-${c.id}">
+                        <input type="text" id="edit-input-${c.id}" value="${escapeHtml(c.text)}">
+                        <button class="save-edit" onclick="guardarEdicion('${c.id}')">💾 Guardar</button>
+                        <button class="cancel-edit" onclick="cancelarEdicion('${c.id}')">✕</button>
+                    </div>
+                    
+                    <!-- RESPONDER -->
+                    <div id="reply-area-${c.id}" class="reply-area">
+                        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                            <div style="width:28px; height:28px; border-radius:50%; overflow:hidden; flex-shrink:0; background:#eee;">
+                                ${currentUser?.pfp ? `<img src="${pb.files.getUrl(currentUser, currentUser.pfp)}" style="width:100%;height:100%;object-fit:cover;">` : '👤'}
+                            </div>
+                            <input type="text" id="reply-input-${c.id}" class="reply-input" placeholder="Escribe una respuesta...">
+                            <button class="reply-send-btn" onclick="enviarRespuesta('${c.id}')">Responder</button>
+                            <button class="reply-close-btn" onclick="cerrarRespuesta('${c.id}')">✕</button>
+                        </div>
+                    </div>
+                    
+                    <!-- RESPUESTAS -->
+                    ${tieneRespuestas ? `
+                        <div class="respuestas-container">
+                            ${respuestas.map(r => {
+                                const rAvatar = r.userAvatar || '👤';
+                                const rEsAutor = currentPost && r.userId === currentPost.usuario;
+                                return `
+                                    <div class="respuesta-item">
+                                        <div style="width:28px; height:28px; border-radius:50%; overflow:hidden; flex-shrink:0; background:#eee; display:flex; align-items:center; justify-content:center;">
+                                            ${rAvatar}
+                                        </div>
+                                        <div style="flex:1; min-width:0;">
+                                            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                                                <span style="font-weight:600; font-size:12px; color:var(--shatt-blue); cursor:pointer;" onclick="verPerfil('${r.userId}')">@${escapeHtml(r.userNick)}</span>
+                                                <span style="font-size:10px; color:#999;">${formatFecha(r.createdAt)}</span>
+                                                ${rEsAutor ? `<span class="autor-badge" style="font-size:8px; padding:1px 8px;">⚡ Autor</span>` : ''}
+                                            </div>
+                                            <div style="font-size:13px; word-wrap:break-word;">${renderTextoConMenciones(r.text)}</div>
+                                            <div style="display:flex; gap:10px; margin-top:2px;">
+                                                <button class="star-btn ${r.likedBy && r.likedBy.includes(currentUser?.id) ? 'liked' : ''}" onclick="likeComentario('${r.id}')" style="background:none; border:none; font-size:12px; color:#888; cursor:pointer;">
+                                                    ⭐ <span id="likes-${r.id}">${r.likes || 0}</span>
+                                                </button>
+                                                ${r.userId === currentUser?.id ? `
+                                                    <button onclick="eliminarComentario('${r.id}')" style="background:none; border:none; font-size:12px; color:#e74c3c; cursor:pointer;">🗑️</button>
+                                                ` : ''}
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+    }
+    
+    container.innerHTML = html;
+    
+    // Inicializar menciones para respuestas
+    comentariosPrincipales.forEach(c => {
+        const input = document.getElementById(`reply-input-${c.id}`);
+        if (input) {
+            setupMentionSystem(`reply-input-${c.id}`, `mention-suggestions-reply-${c.id}`);
         }
+    });
+    
+    const countEl = document.getElementById('comentariosCount');
+    if (countEl) countEl.textContent = comments.length;
+}
+
+// ========== FUNCIONES DE APOYO ==========
+
+function actualizarAvatarComentario() {
+    const container = document.getElementById('comentarioAvatar');
+    if (!container) return;
+    
+    if (currentUser && currentUser.pfp) {
+        try {
+            const url = pb.files.getUrl(currentUser, currentUser.pfp);
+            container.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
+        } catch(e) {
+            container.innerHTML = '👤';
+        }
+    } else {
+        container.innerHTML = '👤';
+    }
+}
+
+function formatFecha(fecha) {
+    if (!fecha) return '';
+    const now = dayjs();
+    const date = dayjs(fecha);
+    const diffMinutes = now.diff(date, 'minute');
+    
+    if (diffMinutes < 1) return 'Ahora mismo';
+    if (diffMinutes < 60) return `Hace ${diffMinutes} minuto${diffMinutes > 1 ? 's' : ''}`;
+    if (diffMinutes < 1440) {
+        const hours = Math.floor(diffMinutes / 60);
+        return `Hace ${hours} hora${hours > 1 ? 's' : ''}`;
+    }
+    if (diffMinutes < 4320) {
+        const days = Math.floor(diffMinutes / 1440);
+        return days === 1 ? 'Ayer' : `Hace ${days} días`;
+    }
+    return date.format('DD/MM/YYYY');
+}
+
+async function getAvatarUrl(userId) {
+    try {
+        const user = await getUserCached(userId);
+        if (user && user.pfp) {
+            return pb.files.getUrl(user, user.pfp);
+        }
+        return null;
+    } catch(e) {
+        return null;
+    }
+}
+
+function renderTextoConMenciones(texto) {
+    if (!texto) return '';
+    // Reemplazar @menciones con spans especiales
+    return texto.replace(/@(\w+)/g, (match, nick) => {
+        return `<span class="mention" onclick="verPerfilPorNick('${nick}')">@${nick}</span>`;
+    });
+}
+
+async function verPerfilPorNick(nick) {
+    try {
+        const users = await pb.collection('usuarios').getList(1, 1, {
+            filter: `nick = "${nick}"`
+        });
+        if (users.items.length > 0) {
+            verPerfil(users.items[0].id);
+        }
+    } catch(e) {}
+}
+
+// ========== CRUD DE COMENTARIOS ==========
+
+async function likeComentario(commentId) {
+    if (!currentUser) return mostrarToast('Inicia sesión para dar like');
+    
+    try {
+        const comments = currentPost.comments || [];
+        const comment = comments.find(c => c.id === commentId);
+        if (!comment) return;
+        
+        // Inicializar likes
+        if (!comment.likes) comment.likes = 0;
+        if (!comment.likedBy) comment.likedBy = [];
+        
+        const userLiked = comment.likedBy.includes(currentUser.id);
+        
+        if (userLiked) {
+            comment.likes--;
+            comment.likedBy = comment.likedBy.filter(id => id !== currentUser.id);
+        } else {
+            comment.likes++;
+            comment.likedBy.push(currentUser.id);
+        }
+        
+        await pb.collection('posts').update(currentPost.id, { comments: comments });
+        currentPost.comments = comments;
+        
+        // Re-renderizar para actualizar
+        await cargarComentarios(comments);
+        
+    } catch(e) {
+        console.error('Error al dar like:', e);
+        mostrarToast('Error al dar like');
+    }
+}
+
+async function getAutorAvatar() {
+    if (!currentPost || !currentPost.usuario) return null;
+    try {
+        const user = await getUserCached(currentPost.usuario);
+        if (user && user.pfp) {
+            return pb.files.getUrl(user, user.pfp);
+        }
+        return null;
+    } catch(e) {
+        return null;
+    }
+}
+
+async function eliminarComentario(commentId) {
+    if (!confirm('¿Eliminar este comentario?')) return;
+    
+    try {
+        const comments = currentPost.comments || [];
+        const filtered = comments.filter(c => c.id !== commentId);
+        
+        // También eliminar respuestas
+        const finalComments = filtered.filter(c => c.parentId !== commentId);
+        
+        await pb.collection('posts').update(currentPost.id, { comments: finalComments });
+        currentPost.comments = finalComments;
+        
+        await cargarComentarios(finalComments);
+        mostrarToast('🗑️ Comentario eliminado');
+    } catch(e) {
+        console.error('Error al eliminar:', e);
+        mostrarToast('Error al eliminar');
+    }
+}
+
+function editarComentario(commentId) {
+    const area = document.getElementById(`edit-area-${commentId}`);
+    area.classList.toggle('show');
+    if (area.classList.contains('show')) {
+        const input = document.getElementById(`edit-input-${commentId}`);
+        input.focus();
+        input.select();
+    }
+}
+
+function cancelarEdicion(commentId) {
+    document.getElementById(`edit-area-${commentId}`).classList.remove('show');
+}
+
+async function guardarEdicion(commentId) {
+    const input = document.getElementById(`edit-input-${commentId}`);
+    const nuevoTexto = input.value.trim();
+    if (!nuevoTexto) return mostrarToast('Escribe algo');
+    
+    try {
+        const comments = currentPost.comments || [];
+        const comment = comments.find(c => c.id === commentId);
+        if (comment) {
+            comment.text = nuevoTexto;
+            await pb.collection('posts').update(currentPost.id, { comments: comments });
+            currentPost.comments = comments;
+            await cargarComentarios(comments);
+            mostrarToast('✅ Comentario actualizado');
+        }
+    } catch(e) {
+        console.error('Error al editar:', e);
+        mostrarToast('Error al editar');
+    }
+}
 
         function abrirRespuesta(commentId) {
             const area = document.getElementById(`reply-area-${commentId}`);
@@ -1991,6 +2890,68 @@ window.addEventListener('storage', (e) => {
         window.abrirBuscadorFullscreen = abrirBuscadorFullscreen;
         window.cerrarBuscadorFullscreen = cerrarBuscadorFullscreen;
 
+
+        // ============================================================
+// 🎠 FUNCIONES DEL CARRUSEL
+// ============================================================
+
+let carruselIndices = {};
+
+function carruselNavegar(carruselId, direccion) {
+    const container = document.getElementById(`${carruselId}-container`);
+    const totalSlides = container.children.length;
+    const currentIndex = carruselIndices[carruselId] || 0;
+    const nuevoIndex = Math.max(0, Math.min(totalSlides - 1, currentIndex + direccion));
+    
+    carruselIrA(carruselId, nuevoIndex);
+}
+
+function carruselIrA(carruselId, index) {
+    const container = document.getElementById(`${carruselId}-container`);
+    const totalSlides = container.children.length;
+    
+    if (index < 0 || index >= totalSlides) return;
+    
+    carruselIndices[carruselId] = index;
+    container.style.transform = `translateX(-${index * 100}%)`;
+    
+    // Actualizar contador
+    const counter = document.getElementById(`${carruselId}-counter`);
+    if (counter) counter.textContent = `${index + 1} / ${totalSlides}`;
+    
+    // Actualizar dots
+    const dots = document.querySelectorAll(`#${carruselId}-indicators .post-carrusel-dot`);
+    dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+    });
+}
+
+// Soporte para gestos táctiles (deslizar)
+document.addEventListener('DOMContentLoaded', function() {
+    let touchStartX = 0;
+    let touchEndX = 0;
+    let carruselActual = null;
+    
+    document.addEventListener('touchstart', function(e) {
+        const carrusel = e.target.closest('.post-carrusel');
+        if (carrusel) {
+            carruselActual = carrusel.id;
+            touchStartX = e.changedTouches[0].screenX;
+        }
+    }, { passive: true });
+    
+    document.addEventListener('touchend', function(e) {
+        if (!carruselActual) return;
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchStartX - touchEndX;
+        
+        if (Math.abs(diff) > 40) {
+            const direccion = diff > 0 ? 1 : -1;
+            carruselNavegar(carruselActual, direccion);
+        }
+        carruselActual = null;
+    }, { passive: true });
+});
     </script>
 
     <script>
