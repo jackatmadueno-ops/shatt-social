@@ -1402,23 +1402,54 @@
         }
 
         // ========== RECUPERAR CONTRASEÑA ==========
-        async function recuperarPassword() {
-            const email = prompt("📧 Ingresa tu correo electrónico:");
-            if (!email) return;
-            try {
-                const todos = await pb.collection('usuarios').getFullList({ $autoCancel: false });
-                const u = todos.find(x => x.email && x.email.toLowerCase().trim() === email.toLowerCase().trim());
-                if (!u) { mostrarToast('❌ Correo no registrado', true); return; }
-                const tok = Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b => b.toString(16).padStart(2, '0')).join('');
-                await pb.collection('usuarios').update(u.id, {
-                    resetToken: tok,
-                    resetTokenExpires: new Date(Date.now() + 3600000).toISOString()
-                });
-                const link = `${window.location.origin}/restablecer.html?token=${tok}&email=${encodeURIComponent(u.email)}`;
-                if (confirm("🔗 ¿Abrir enlace?")) window.open(link, '_blank');
-                else mostrarToast('📋 Enlace copiado. Revisa tu portapapeles.');
-            } catch(e) { mostrarToast('❌ Error: ' + e.message, true); }
+        // ========== RECUPERAR CONTRASEÑA (CON SMTP) ==========
+async function recuperarPassword() {
+    const email = prompt("📧 Ingresa tu correo electrónico:");
+    if (!email) return;
+    
+    // Validación básica
+    if (!email.includes('@') || !email.includes('.')) {
+        mostrarToast('❌ Correo electrónico inválido', true);
+        return;
+    }
+    
+    // Desactivar botón mientras procesa
+    const btn = document.querySelector('.recover-link');
+    if (btn) {
+        btn.style.opacity = '0.5';
+        btn.style.pointerEvents = 'none';
+    }
+    
+    try {
+        // ✅ USAR EL MÉTODO NATIVO DE POCKETBASE
+        await pb.collection('usuarios').requestPasswordReset(email.trim());
+        
+        mostrarToast('📧 ¡Correo enviado! Revisa tu bandeja de entrada');
+        console.log('✅ Correo de recuperación enviado a:', email);
+        
+        // Mensaje adicional después de 2 segundos
+        setTimeout(() => {
+            mostrarToast('💡 Si no ves el correo, revisa tu carpeta de SPAM');
+        }, 3000);
+        
+    } catch(e) {
+        console.error('Error en recuperación:', e);
+        
+        if (e.status === 404) {
+            mostrarToast('❌ Correo no registrado en SHATTS', true);
+        } else if (e.status === 400 && e.message?.includes('unverified')) {
+            mostrarToast('❌ Debes verificar tu email primero', true);
+        } else {
+            mostrarToast('❌ Error: ' + (e.message || 'desconocido'), true);
         }
+    } finally {
+        // Restaurar botón
+        if (btn) {
+            btn.style.opacity = '1';
+            btn.style.pointerEvents = 'auto';
+        }
+    }
+}
 
         // ========== ESCAPE HTML ==========
         function escapeHtml(t) { if (!t) return ''; return t.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
