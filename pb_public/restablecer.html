@@ -32,6 +32,7 @@
             border: 2px solid #e0e0e0; 
             border-radius: 30px; 
             font-size: 16px;
+            box-sizing: border-box;
             transition: all 0.2s;
         }
         input:focus {
@@ -54,6 +55,11 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(102,126,234,0.4);
         }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
         .error { 
             color: #ff4444; 
             margin-top: 10px; 
@@ -75,86 +81,138 @@
             color: #4CAF50;
             text-decoration: underline;
         }
+        .loading-spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #fff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .info-text {
+            color: #666;
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🔐 Restablecer contraseña</h1>
+        <p class="info-text">Ingresa tu nueva contraseña para continuar</p>
+        
         <form id="resetForm">
             <input type="password" id="newPassword" placeholder="Nueva contraseña (mínimo 6 caracteres)" required>
             <input type="password" id="confirmPassword" placeholder="Confirmar contraseña" required>
-            <button type="submit">Restablecer contraseña</button>
+            <button type="submit" id="resetBtn">Restablecer contraseña</button>
         </form>
         <div id="message"></div>
     </div>
 
     <script>
-        const pb = new PocketBase('https://shatt-social-production.up.railway.app');
+    const PB_URL = 'https://shatt-social-production.up.railway.app';
+    const pb = new PocketBase(PB_URL);
+    
+    // Obtener token y email de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const email = urlParams.get('email');
+    
+    function esTokenValido(token) {
+        return /^[a-f0-9]{64}$/.test(token);
+    }
+    
+    // Validar parámetros
+    if (!token || !email) {
+        document.getElementById('message').innerHTML = '<div class="error">❌ Enlace inválido o expirado</div>';
+        document.getElementById('resetForm').style.display = 'none';
+    } else if (!esTokenValido(token)) {
+        document.getElementById('message').innerHTML = '<div class="error">❌ Token inválido</div>';
+        document.getElementById('resetForm').style.display = 'none';
+    }
+    
+    document.getElementById('resetForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const newPass = document.getElementById('newPassword').value;
+        const confirmPass = document.getElementById('confirmPassword').value;
+        const msgDiv = document.getElementById('message');
+        const btn = document.getElementById('resetBtn');
+        const originalText = btn.textContent;
         
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');
-        const email = urlParams.get('email');
+        // Limpiar mensaje anterior
+        msgDiv.innerHTML = '';
         
-        // Función para validar token hexadecimal (64 caracteres)
-        function esTokenValido(token) {
-            return /^[a-f0-9]{64}$/.test(token);
+        // Validar contraseñas
+        if (newPass.length < 6) {
+            msgDiv.innerHTML = '<div class="error">❌ La contraseña debe tener al menos 6 caracteres</div>';
+            return;
         }
         
-        // Validar token y email
-        if (!token || !email) {
-            document.getElementById('message').innerHTML = '<div class="error">❌ Enlace inválido o expirado</div>';
-            document.getElementById('resetForm').style.display = 'none';
-        } else if (!esTokenValido(token)) {
-            document.getElementById('message').innerHTML = '<div class="error">❌ Token inválido</div>';
-            document.getElementById('resetForm').style.display = 'none';
+        if (newPass !== confirmPass) {
+            msgDiv.innerHTML = '<div class="error">❌ Las contraseñas no coinciden</div>';
+            return;
         }
         
-        document.getElementById('resetForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const newPass = document.getElementById('newPassword').value;
-            const confirmPass = document.getElementById('confirmPassword').value;
+        // Desactivar botón
+        btn.disabled = true;
+        btn.innerHTML = '<span class="loading-spinner"></span> PROCESANDO...';
+        
+        try {
+            // ✅ VERIFICAR QUE EL TOKEN SEA VÁLIDO EN LA BASE DE DATOS
+            const result = await pb.collection('usuarios').getList(1, 1, {
+                filter: `email = "${email}" && resetToken = "${token}"`,
+                $autoCancel: false
+            });
             
-            if (newPass.length < 6) {
-                document.getElementById('message').innerHTML = '<div class="error">❌ La contraseña debe tener al menos 6 caracteres</div>';
+            if (result.items.length === 0) {
+                msgDiv.innerHTML = '<div class="error">❌ Enlace inválido o expirado. Solicita un nuevo enlace.</div>';
+                btn.disabled = false;
+                btn.textContent = originalText;
                 return;
             }
             
-            if (newPass !== confirmPass) {
-                document.getElementById('message').innerHTML = '<div class="error">❌ Las contraseñas no coinciden</div>';
+            const user = result.items[0];
+            
+            // ✅ VERIFICAR QUE NO HAYA EXPIRADO
+            if (new Date(user.resetTokenExpires) < new Date()) {
+                msgDiv.innerHTML = '<div class="error">❌ El enlace ha expirado (1 hora). Solicita uno nuevo.</div>';
+                btn.disabled = false;
+                btn.textContent = originalText;
                 return;
             }
             
-            try {
-                // Verificar token en la base de datos
-                const usuarios = await pb.collection('usuarios').getList(1, 1, {
-                    filter: `email = "${email}" && resetToken = "${token}" && resetTokenExpires > "${new Date().toISOString()}"`
-                });
-                
-                if (usuarios.items.length === 0) {
-                    document.getElementById('message').innerHTML = '<div class="error">❌ Enlace inválido o expirado. Solicita un nuevo enlace de recuperación.</div>';
-                    return;
-                }
-                
-                const user = usuarios.items[0];
-                
-                // Actualizar contraseña y limpiar token
-                await pb.collection('usuarios').update(user.id, {
-                    password: newPass,
-                    passwordConfirm: newPass,
-                    resetToken: null,
-                    resetTokenExpires: null,
-                    resetAttempts: 0,
-                    resetLastAttempt: null
-                });
-                
-                document.getElementById('message').innerHTML = '<div class="success">✅ Contraseña restablecida correctamente.<br><a href="iniciarsesion.html">🔐 Iniciar sesión</a></div>';
-                document.getElementById('resetForm').style.display = 'none';
-                
-            } catch(e) {
-                console.error(e);
-                document.getElementById('message').innerHTML = '<div class="error">❌ Error al restablecer la contraseña. Intenta nuevamente.</div>';
-            }
-        });
+            // ✅ ACTUALIZAR CONTRASEÑA
+            await pb.collection('usuarios').update(user.id, {
+                password: newPass,
+                passwordConfirm: newPass,
+                resetToken: null,
+                resetTokenExpires: null
+            });
+            
+            // ✅ MENSAJE DE ÉXITO
+            msgDiv.innerHTML = `
+                <div class="success">
+                    ✅ Contraseña restablecida correctamente.<br><br>
+                    <a href="iniciarsesion.html">🔐 Iniciar sesión</a>
+                </div>
+            `;
+            document.getElementById('resetForm').style.display = 'none';
+            
+        } catch(e) {
+            console.error('Error al restablecer:', e);
+            msgDiv.innerHTML = `<div class="error">❌ Error al restablecer la contraseña: ${e.message || 'desconocido'}</div>`;
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    });
     </script>
 </body>
 </html>
