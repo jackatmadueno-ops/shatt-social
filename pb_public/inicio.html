@@ -7621,5 +7621,13 @@ if (user2 && Notification.permission !== 'denied') {
 }
 </script>
 
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(() => console.log('✅ SHATT lista para instalar como app'))
+    .catch(err => console.log('❌ Error al registrar SW:', err));
+}
+</script>
+    
 </body>
 </html>
