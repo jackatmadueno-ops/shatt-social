@@ -1,0 +1,24 @@
+{
+  "name": "SHATT - Red Social",
+  "short_name": "SHATT",
+  "description": "Conéctate con todos en una red social libre",
+  "start_url": "/pb_public/inicio.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#3a6186",
+  "theme_color": "#3a6186",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
