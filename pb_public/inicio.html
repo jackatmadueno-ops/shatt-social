@@ -9,11 +9,6 @@
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/dayjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.9/plugin/relativeTime.js"></script>
     <script>dayjs.extend(window.dayjs_plugin_relativeTime);</script>
-    <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/icon-192.png">
-    <meta name="theme-color" content="#3a6186">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     
     <!-- 🆕 ESTE SCRIPT DEBE IR AQUÍ, ANTES DE TODO -->
@@ -3373,9 +3368,11 @@ body.dark-mode .comment-reply-item {
     border-color: #2a2a3a;
 }
 
+
     </style>
 </head>
 <body>
+   <body>
     <div class="app-wrapper">
         <!-- NAVBAR SUPERIOR -->
         <div class="navbar-top">
@@ -3536,52 +3533,52 @@ body.dark-mode .comment-reply-item {
             </div>
 
             <div class="content">
-    <!-- NUEVO PUBLISH-AREA (el bonito) -->
-    <div class="publish-area" style="padding: 0; background: transparent; border: none;">
-        <div class="shatts-card" style="max-width: 100%; margin: 0;">
-            <div class="mood-header">
-                <div class="mood-trigger" id="openMoodBtn">
-                    <span>🌊</span>
-                    <p>¿Cómo te sientes hoy?</p>
-                    <span style="font-size: 0.75rem;">▼</span>
+                <!-- NUEVO PUBLISH-AREA (el bonito) -->
+                <div class="publish-area" style="padding: 0; background: transparent; border: none;">
+                    <div class="shatts-card" style="max-width: 100%; margin: 0;">
+                        <div class="mood-header">
+                            <div class="mood-trigger" id="openMoodBtn">
+                                <span>🌊</span>
+                                <p>¿Cómo te sientes hoy?</p>
+                                <span style="font-size: 0.75rem;">▼</span>
+                            </div>
+                            <div id="selectedMoodDisplay" class="selected-mood-badge">✨ sin estado aún</div>
+                        </div>
+
+                        <div id="moodPanel" class="mood-panel hidden">
+                            <div class="section-label">🌟 sentimientos</div>
+                            <div class="emotion-grid" id="emotionsList"></div>
+                            <div class="section-label" style="margin-top: 6px;">⚡ actividades random</div>
+                            <div class="emotion-grid" id="activitiesList"></div>
+                        </div>
+
+                        <div class="compose-area">
+                            <textarea id="p-text" rows="2" placeholder="escribe lo absurdo, lo real, lo que sea..."></textarea>
+                        </div>
+
+                        <div id="cleanPreview" class="preview-clean hidden"></div>
+
+                        <div class="action-bar">
+                            <div class="media-tools">
+                                <button id="mic-btn" class="shatts-icon-btn" onclick="toggleMic()">🎙️ Grabar audio</button>
+                                <button id="uploadImageBtn" class="shatts-icon-btn" onclick="document.getElementById('f-file').click()">🖼️ Imagen</button>
+                                <input type="file" id="f-file" accept="image/*" style="display: none;" onchange="previewImg(this)" multiple>
+                            </div>
+                            <span id="timer" class="rec-timer" style="margin-left: 8px; display: none;">00:00</span>
+                            <button id="publishBtn" class="publish-premium" onclick="publish()">PUBLICAR ✨</button>
+                        </div>
+                    </div>
                 </div>
-                <div id="selectedMoodDisplay" class="selected-mood-badge">✨ sin estado aún</div>
+
+                <!-- MURO DE POSTS -->
+                <div id="muro"></div>
             </div>
-
-            <div id="moodPanel" class="mood-panel hidden">
-                <div class="section-label">🌟 sentimientos</div>
-                <div class="emotion-grid" id="emotionsList"></div>
-                <div class="section-label" style="margin-top: 6px;">⚡ actividades random</div>
-                <div class="emotion-grid" id="activitiesList"></div>
-            </div>
-
-            <div class="compose-area">
-                <textarea id="p-text" rows="2" placeholder="escribe lo absurdo, lo real, lo que sea..."></textarea>
-            </div>
-
-            <div id="cleanPreview" class="preview-clean hidden"></div>
-
-            <div class="action-bar">
-                <div class="media-tools">
-                    <button id="mic-btn" class="shatts-icon-btn" onclick="toggleMic()">🎙️ Grabar audio</button>
-                    <button id="uploadImageBtn" class="shatts-icon-btn" onclick="document.getElementById('f-file').click()">🖼️ Imagen</button>
-                    <input type="file" id="f-file" accept="image/*" style="display: none;" onchange="previewImg(this)" multiple>
-                </div>
-                <span id="timer" class="rec-timer" style="margin-left: 8px; display: none;">00:00</span>
-                <button id="publishBtn" class="publish-premium" onclick="publish()">PUBLICAR ✨</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MURO DE POSTS -->
-    <div id="muro"></div>
-</div>
 
             <div class="right-sidebar">
                 <div class="panel-retro">
-    <div class="side-title">🟢 En línea <span id="online-count" style="font-size:11px; color:#888; font-weight:normal;"></span></div>
-    <div id="online-users" style="max-height:300px; overflow-y:auto; padding-right:4px;"></div>
-</div>
+                    <div class="side-title">🟢 En línea <span id="online-count" style="font-size:11px; color:#888; font-weight:normal;"></span></div>
+                    <div id="online-users" style="max-height:300px; overflow-y:auto; padding-right:4px;"></div>
+                </div>
                 <div class="panel-retro">
                     <div class="side-title">🔥 Tendencias</div>
                     <span class="tag-item" onclick="cargarTendencias()">🏆 Top Semanal</span>
@@ -3602,126 +3599,106 @@ body.dark-mode .comment-reply-item {
     </div>
 
     <div id="modal-overlay" class="overlay" onclick="cerrarModalesGlobal()"></div>
-    <!-- Reemplazar el modal de diseño actual -->
-<div id="design-modal" class="modal" style="max-width: 600px;">
-    <h3>🎨 Personalizar Shatt</h3>
-    
-    <!-- Tema -->
-    <div class="settings-section">
-        <div class="settings-section-title">🌓 TEMA</div>
-        <div class="settings-item">
-            <span>Modo oscuro</span>
-            <label class="switch">
-                <input type="checkbox" id="dark-mode-toggle-modal" onchange="toggleDarkModeModal()">
-                <span class="slider"></span>
-            </label>
-        </div>
-    </div>
-    
-        <!-- 🎭 SELECTOR DE TEMAS -->
-<div style="margin-bottom: 20px;">
-    <label style="font-weight: bold; font-size: 13px; display: block; margin-bottom: 10px;">🎭 Tema visual</label>
-    <div class="theme-selector">
-        <div class="theme-card active" data-theme="shatt" onclick="cambiarTema('shatt', this)">
-            <div class="theme-preview shatt"></div><span class="theme-name">🔵 Shatt</span>
-        </div>
-        <div class="theme-card" data-theme="frutiger" onclick="cambiarTema('frutiger', this)">
-            <div class="theme-preview frutiger"></div><span class="theme-name">🌊 Aero</span>
-        </div>
-        <div class="theme-card" data-theme="dorf" onclick="cambiarTema('dorf', this)">
-            <div class="theme-preview dorf"></div><span class="theme-name">🏢 DORF</span>
-        </div>
-        <div class="theme-card" data-theme="metro" onclick="cambiarTema('metro', this)">
-            <div class="theme-preview metro"></div><span class="theme-name">🪟 Metro</span>
-        </div>
-        <div class="theme-card" data-theme="darkaero" onclick="cambiarTema('darkaero', this)">
-            <div class="theme-preview darkaero"></div><span class="theme-name">🌑 Dark</span>
-        </div>
-        <div class="theme-card" data-theme="y2k" onclick="cambiarTema('y2k', this)">
-            <div class="theme-preview y2k"></div><span class="theme-name">🌀 Y2K</span>
-        </div>
-    </div>
-</div>
 
-    <!-- Fondos predefinidos -->
-    <div class="settings-section">
-        <div class="settings-section-title">🎨 FONDOS RÁPIDOS</div>
-        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-            <div class="preset-bg" style="background:#3a6186;" onclick="setBgNube('#3a6186')" title="Azul océano"></div>
-            <div class="preset-bg" style="background:#1a1a2e;" onclick="setBgNube('#1a1a2e')" title="Noche"></div>
-            <div class="preset-bg" style="background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);" onclick="setBgNube('linear-gradient(135deg, #667eea 0%, #764ba2 100%)')" title="Púrpura"></div>
-            <div class="preset-bg" style="background:linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" onclick="setBgNube('linear-gradient(135deg, #f093fb 0%, #f5576c 100%)')" title="Rosa"></div>
-            <div class="preset-bg" style="background:linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" onclick="setBgNube('linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)')" title="Cian"></div>
-            <div class="preset-bg" style="background:linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);" onclick="setBgNube('linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)')" title="Verde"></div>
-        </div>
-    </div>
-    
-    <!-- Imagen personalizada CON VISTA PREVIA -->
-    <div class="settings-section">
-        <div class="settings-section-title">🖼️ TU IMAGEN DE FONDO</div>
-        <div class="bg-upload-container">
-    <label for="bg-image-nube" class="bg-upload-btn">
-        <span class="bg-upload-icon">🖼️</span>
-        <span class="bg-upload-text">Seleccionar imagen</span>
-    </label>
-    <input type="file" id="bg-image-nube" accept="image/*" onchange="previewBgNube(this)" hidden>
-    <div id="bg-preview-nube" style="display:none; margin-top:12px;">
-        <p style="font-size:11px; color:#888; margin-bottom:8px;">👁️ Vista previa</p>
-        <div class="bg-preview-grid">
-            <div class="bg-preview-item">
-                <span class="bg-preview-label">🖥️ PC</span>
-                <div id="bg-preview-pc" class="bg-preview-box pc"></div>
-            </div>
-            <div class="bg-preview-item">
-                <span class="bg-preview-label">📱 Móvil</span>
-                <div id="bg-preview-movil" class="bg-preview-box movil"></div>
+    <!-- MODAL DE DISEÑO -->
+    <div id="design-modal" class="modal" style="max-width: 600px;">
+        <h3>🎨 Personalizar Shatt</h3>
+        
+        <div class="settings-section">
+            <div class="settings-section-title">🌓 TEMA</div>
+            <div class="settings-item">
+                <span>Modo oscuro</span>
+                <label class="switch">
+                    <input type="checkbox" id="dark-mode-toggle-modal" onchange="toggleDarkModeModal()">
+                    <span class="slider"></span>
+                </label>
             </div>
         </div>
-        <button class="remove-attach" onclick="quitarFondoPreview()" style="margin-top:8px;">✖ Quitar</button>
-    </div>
-</div>
-        <div id="bg-preview-container" style="display: none; margin-top: 10px;">
-            <p style="font-size: 11px; color: #888; margin-bottom: 5px;">👁️ Vista previa:</p>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <div style="flex: 1; min-width: 150px;">
-                    <p style="font-size: 10px; color: #666;">PC</p>
-                    <div id="bg-preview-pc" style="width: 100%; aspect-ratio: 16/9; border-radius: 12px; border: 2px solid #ccc; background-size: cover; background-position: center;"></div>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="font-weight: bold; font-size: 13px; display: block; margin-bottom: 10px;">🎭 Tema visual</label>
+            <div class="theme-selector">
+                <div class="theme-card active" data-theme="shatt" onclick="cambiarTema('shatt', this)">
+                    <div class="theme-preview shatt"></div><span class="theme-name">🔵 Shatt</span>
                 </div>
-                <div style="flex: 1; min-width: 120px;">
-                    <p style="font-size: 10px; color: #666;">MÓVIL</p>
-                    <div id="bg-preview-movil" style="width: 120px; aspect-ratio: 9/16; border-radius: 20px; border: 2px solid #ccc; background-size: cover; background-position: center; margin: 0 auto;"></div>
+                <div class="theme-card" data-theme="frutiger" onclick="cambiarTema('frutiger', this)">
+                    <div class="theme-preview frutiger"></div><span class="theme-name">🌊 Aero</span>
+                </div>
+                <div class="theme-card" data-theme="dorf" onclick="cambiarTema('dorf', this)">
+                    <div class="theme-preview dorf"></div><span class="theme-name">🏢 DORF</span>
+                </div>
+                <div class="theme-card" data-theme="metro" onclick="cambiarTema('metro', this)">
+                    <div class="theme-preview metro"></div><span class="theme-name">🪟 Metro</span>
+                </div>
+                <div class="theme-card" data-theme="darkaero" onclick="cambiarTema('darkaero', this)">
+                    <div class="theme-preview darkaero"></div><span class="theme-name">🌑 Dark</span>
+                </div>
+                <div class="theme-card" data-theme="y2k" onclick="cambiarTema('y2k', this)">
+                    <div class="theme-preview y2k"></div><span class="theme-name">🌀 Y2K</span>
                 </div>
             </div>
         </div>
+
+        <div class="settings-section">
+            <div class="settings-section-title">🎨 FONDOS RÁPIDOS</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <div class="preset-bg" style="background:#3a6186;" onclick="setBgNube('#3a6186')" title="Azul océano"></div>
+                <div class="preset-bg" style="background:#1a1a2e;" onclick="setBgNube('#1a1a2e')" title="Noche"></div>
+                <div class="preset-bg" style="background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);" onclick="setBgNube('linear-gradient(135deg, #667eea 0%, #764ba2 100%)')" title="Púrpura"></div>
+                <div class="preset-bg" style="background:linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" onclick="setBgNube('linear-gradient(135deg, #f093fb 0%, #f5576c 100%)')" title="Rosa"></div>
+                <div class="preset-bg" style="background:linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" onclick="setBgNube('linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)')" title="Cian"></div>
+                <div class="preset-bg" style="background:linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);" onclick="setBgNube('linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)')" title="Verde"></div>
+            </div>
+        </div>
+        
+        <div class="settings-section">
+            <div class="settings-section-title">🖼️ TU IMAGEN DE FONDO</div>
+            <div class="bg-upload-container">
+                <label for="bg-image-nube" class="bg-upload-btn">
+                    <span class="bg-upload-icon">🖼️</span>
+                    <span class="bg-upload-text">Seleccionar imagen</span>
+                </label>
+                <input type="file" id="bg-image-nube" accept="image/*" onchange="previewBgNube(this)" hidden>
+                <div id="bg-preview-nube" style="display:none; margin-top:12px;">
+                    <p style="font-size:11px; color:#888; margin-bottom:8px;">👁️ Vista previa</p>
+                    <div class="bg-preview-grid">
+                        <div class="bg-preview-item">
+                            <span class="bg-preview-label">🖥️ PC</span>
+                            <div id="bg-preview-pc" class="bg-preview-box pc"></div>
+                        </div>
+                        <div class="bg-preview-item">
+                            <span class="bg-preview-label">📱 Móvil</span>
+                            <div id="bg-preview-movil" class="bg-preview-box movil"></div>
+                        </div>
+                    </div>
+                    <button class="remove-attach" onclick="quitarFondoPreview()" style="margin-top:8px;">✖ Quitar</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="settings-section">
+            <div class="settings-section-title">🔆 TRANSPARENCIA DE PANELES</div>
+            <input type="range" id="opacity-slider-nube" min="0.3" max="1" step="0.05" value="1" oninput="setOpacityNube(this.value)" style="width: 100%;">
+            <span id="opacity-value-nube">100%</span>
+        </div>
+        
+        <div class="settings-section">
+            <div class="settings-section-title">🎨 COLOR DE ACENTO</div>
+            <input type="color" id="accent-color-nube" value="#3b5998" onchange="setAccentNube(this.value)" style="width: 100%; height: 40px; border-radius: 10px;">
+        </div>
+        
+        <div class="settings-section">
+            <div class="settings-section-title">📏 TAMAÑO DE FUENTE</div>
+            <input type="range" id="font-size-slider-nube" min="12" max="22" step="1" value="16" oninput="setFontSizeNube(this.value)" style="width: 100%;">
+            <span id="font-size-display-nube">16px</span>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
+            <button class="btn-retro" onclick="guardarDisenoGlobal()" style="flex: 2; background: #4CAF50; color: white;">💾 GUARDAR</button>
+            <button class="btn-retro" onclick="resetearDisenoGlobal()" style="flex: 1; background: #ff6b6b; color: white;">🔄</button>
+            <button class="btn-retro" onclick="cerrarModalesGlobal()" style="flex: 1;">❌</button>
+        </div>
     </div>
-    
-    <!-- Opacidad -->
-    <div class="settings-section">
-        <div class="settings-section-title">🔆 TRANSPARENCIA DE PANELES</div>
-        <input type="range" id="opacity-slider-nube" min="0.3" max="1" step="0.05" value="1" oninput="setOpacityNube(this.value)" style="width: 100%;">
-        <span id="opacity-value-nube">100%</span>
-    </div>
-    
-    <!-- Color de acento -->
-    <div class="settings-section">
-        <div class="settings-section-title">🎨 COLOR DE ACENTO</div>
-        <input type="color" id="accent-color-nube" value="#3b5998" onchange="setAccentNube(this.value)" style="width: 100%; height: 40px; border-radius: 10px;">
-    </div>
-    
-    <!-- Tamaño de fuente -->
-    <div class="settings-section">
-        <div class="settings-section-title">📏 TAMAÑO DE FUENTE</div>
-        <input type="range" id="font-size-slider-nube" min="12" max="22" step="1" value="16" oninput="setFontSizeNube(this.value)" style="width: 100%;">
-        <span id="font-size-display-nube">16px</span>
-    </div>
-    
-    <!-- Botones -->
-    <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
-        <button class="btn-retro" onclick="guardarDisenoGlobal()" style="flex: 2; background: #4CAF50; color: white;">💾 GUARDAR</button>
-        <button class="btn-retro" onclick="resetearDisenoGlobal()" style="flex: 1; background: #ff6b6b; color: white;">🔄</button>
-        <button class="btn-retro" onclick="cerrarModalesGlobal()" style="flex: 1;">❌</button>
-    </div>
-</div>
 
     <div id="imageViewerModal" class="image-viewer-modal">
         <button class="image-viewer-close" onclick="cerrarImageViewer()">✕</button>
@@ -3729,81 +3706,68 @@ body.dark-mode .comment-reply-item {
             <img id="imageViewerImg" src="" alt="Imagen">
         </div>
     </div>
+
     <!-- MODAL DE COMPARTIR -->
-<div id="share-modal" class="modal" style="max-width: 400px; display: none;">
-    <h3 style="text-align: center; margin-bottom: 20px;">🔗 Compartir publicación</h3>
-    
-    <div id="share-link-container" style="background: #f0f0f0; padding: 12px; border-radius: 12px; margin-bottom: 20px; word-break: break-all; font-size: 13px; text-align: center;">
-        Cargando enlace...
+    <div id="share-modal" class="modal" style="max-width: 400px; display: none;">
+        <h3 style="text-align: center; margin-bottom: 20px;">🔗 Compartir publicación</h3>
+        <div id="share-link-container" style="background: #f0f0f0; padding: 12px; border-radius: 12px; margin-bottom: 20px; word-break: break-all; font-size: 13px; text-align: center;">
+            Cargando enlace...
+        </div>
+        <div style="display: grid; gap: 10px;">
+            <button class="btn-retro" onclick="compartirEmail()" style="display: flex; align-items: center; gap: 10px; justify-content: center;">
+                <span>📧</span> Compartir por Correo
+            </button>
+            <button class="btn-retro" onclick="compartirWhatsApp()" style="display: flex; align-items: center; gap: 10px; justify-content: center; background: #25D366; color: white;">
+                <span>💬</span> Compartir en WhatsApp
+            </button>
+            <button class="btn-retro" onclick="compartirQR()" style="display: flex; align-items: center; gap: 10px; justify-content: center;">
+                <span>📱</span> Ver Código QR
+            </button>
+            <button class="btn-retro" onclick="copiarEnlaceClipboard()" style="display: flex; align-items: center; gap: 10px; justify-content: center;">
+                <span>📋</span> Copiar Enlace
+            </button>
+        </div>
+        <div id="qr-container" style="display: none; text-align: center; margin-top: 20px;">
+            <div id="qr-code" style="display: inline-block; padding: 15px; background: white; border-radius: 12px; border: 2px solid #000;"></div>
+            <p style="font-size: 11px; color: #888; margin-top: 10px;">Escanea para ver la publicación</p>
+        </div>
+        <button class="btn-retro" onclick="cerrarShareModal()" style="width: 100%; margin-top: 15px;">❌ Cerrar</button>
     </div>
-    
-    <div style="display: grid; gap: 10px;">
-        <button class="btn-retro" onclick="compartirEmail()" style="display: flex; align-items: center; gap: 10px; justify-content: center;">
-            <span>📧</span> Compartir por Correo
-        </button>
-        <button class="btn-retro" onclick="compartirWhatsApp()" style="display: flex; align-items: center; gap: 10px; justify-content: center; background: #25D366; color: white;">
-            <span>💬</span> Compartir en WhatsApp
-        </button>
-        <button class="btn-retro" onclick="compartirQR()" style="display: flex; align-items: center; gap: 10px; justify-content: center;">
-            <span>📱</span> Ver Código QR
-        </button>
-        <button class="btn-retro" onclick="copiarEnlaceClipboard()" style="display: flex; align-items: center; gap: 10px; justify-content: center;">
-            <span>📋</span> Copiar Enlace
-        </button>
-    </div>
-    
-    <div id="qr-container" style="display: none; text-align: center; margin-top: 20px;">
-        <div id="qr-code" style="display: inline-block; padding: 15px; background: white; border-radius: 12px; border: 2px solid #000;"></div>
-        <p style="font-size: 11px; color: #888; margin-top: 10px;">Escanea para ver la publicación</p>
-    </div>
-    
-    <button class="btn-retro" onclick="cerrarShareModal()" style="width: 100%; margin-top: 15px;">❌ Cerrar</button>
 
-</div>
-
-<!-- MODAL PARA EDITAR POST -->
-<div id="edit-post-modal" class="modal" style="max-width: 500px; display: none;">
-    <h3 style="text-align: center; margin-bottom: 15px;">✏️ Editar publicación</h3>
-    
-    <!-- Editar texto -->
-    <label style="font-weight: bold; font-size: 13px;">📝 Texto</label>
-    <textarea id="edit-post-text" rows="4" style="width: 100%; padding: 12px; border: 2px solid #000; border-radius: 8px; font-family: inherit; font-size: 14px; resize: vertical; margin-bottom: 15px;"></textarea>
-    
-    <!-- Imagen actual -->
-    <div id="edit-current-image-container" style="display: none; margin-bottom: 15px;">
-        <label style="font-weight: bold; font-size: 13px;">🖼️ Imagen actual</label>
-        <div style="position: relative; display: inline-block;">
-            <img id="edit-current-image" src="" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid #ccc;">
-            <button onclick="quitarImagenEdicion()" style="position: absolute; top: -10px; right: -10px; background: #ff4444; color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-size: 14px;">✕</button>
+    <!-- MODAL PARA EDITAR POST -->
+    <div id="edit-post-modal" class="modal" style="max-width: 500px; display: none;">
+        <h3 style="text-align: center; margin-bottom: 15px;">✏️ Editar publicación</h3>
+        <label style="font-weight: bold; font-size: 13px;">📝 Texto</label>
+        <textarea id="edit-post-text" rows="4" style="width: 100%; padding: 12px; border: 2px solid #000; border-radius: 8px; font-family: inherit; font-size: 14px; resize: vertical; margin-bottom: 15px;"></textarea>
+        <div id="edit-current-image-container" style="display: none; margin-bottom: 15px;">
+            <label style="font-weight: bold; font-size: 13px;">🖼️ Imagen actual</label>
+            <div style="position: relative; display: inline-block;">
+                <img id="edit-current-image" src="" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid #ccc;">
+                <button onclick="quitarImagenEdicion()" style="position: absolute; top: -10px; right: -10px; background: #ff4444; color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-size: 14px;">✕</button>
+            </div>
+        </div>
+        <label style="font-weight: bold; font-size: 13px;">🆕 Cambiar imagen (opcional)</label>
+        <input type="file" id="edit-new-image" accept="image/*" onchange="previewEditImage(this)" style="width: 100%; margin-bottom: 10px;">
+        <div id="edit-preview-image-container" style="display: none; margin-bottom: 15px;">
+            <p style="font-size: 11px; color: #888;">👁️ Nueva imagen:</p>
+            <img id="edit-preview-image" src="" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid #4CAF50;">
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+            <button class="btn-retro" onclick="guardarEdicionPost()" style="flex: 2; background: #4CAF50; color: white;">💾 Guardar cambios</button>
+            <button class="btn-retro" onclick="cerrarModalEditar()" style="flex: 1;">❌ Cancelar</button>
         </div>
     </div>
-    
-    <!-- Cambiar imagen -->
-    <label style="font-weight: bold; font-size: 13px;">🆕 Cambiar imagen (opcional)</label>
-    <input type="file" id="edit-new-image" accept="image/*" onchange="previewEditImage(this)" style="width: 100%; margin-bottom: 10px;">
-    
-    <!-- Vista previa de nueva imagen -->
-    <div id="edit-preview-image-container" style="display: none; margin-bottom: 15px;">
-        <p style="font-size: 11px; color: #888;">👁️ Nueva imagen:</p>
-        <img id="edit-preview-image" src="" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid #4CAF50;">
-    </div>
-    
-    <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
-        <button class="btn-retro" onclick="guardarEdicionPost()" style="flex: 2; background: #4CAF50; color: white;">💾 Guardar cambios</button>
-        <button class="btn-retro" onclick="cerrarModalEditar()" style="flex: 1;">❌ Cancelar</button>
-    </div>
-</div>
 
-<!-- MODAL PARA CONFIRMAR ELIMINACIÓN -->
-<div id="delete-confirm-modal" class="modal" style="max-width: 380px; display: none; text-align: center;">
-    <div style="font-size: 50px; margin-bottom: 15px;">🗑️</div>
-    <h3>¿Eliminar publicación?</h3>
-    <p style="color: #888; margin: 10px 0 20px 0;">Esta acción no se puede deshacer</p>
-    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-        <button class="btn-retro" onclick="confirmarEliminarPost()" style="flex: 1; background: #ff4444; color: white;">🗑️ Eliminar</button>
-        <button class="btn-retro" onclick="cerrarModalEliminar()" style="flex: 1;">Cancelar</button>
-    </div>
-</div>
+    <!-- MODAL PARA CONFIRMAR ELIMINACIÓN -->
+    <div id="delete-confirm-modal" class="modal" style="max-width: 380px; display: none; text-align: center;">
+        <div style="font-size: 50px; margin-bottom: 15px;">🗑️</div>
+        <h3>¿Eliminar publicación?</h3>
+        <p style="color: #888; margin: 10px 0 20px 0;">Esta acción no se puede deshacer</p>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn-retro" onclick="confirmarEliminarPost()" style="flex: 1; background: #ff4444; color: white;">🗑️ Eliminar</button>
+            <button class="btn-retro" onclick="cerrarModalEliminar()" style="flex: 1;">Cancelar</button>
+        </div>
+    </div> 
 
 <script>
 // Variables globales
@@ -5660,85 +5624,129 @@ function copiarEnlace(postId) {
 // Construir perfil de preferencias del usuario
 // ========== 🏆 ALGORITMO DE FEED (RÁPIDO - SIN CONSULTAS EXTRAS) ==========
 
-// Calcular puntuación para un post (sin analizar perfil)
+// ========== NUEVO ALGORITMO: FEED EQUILIBRADO ==========
 function calcularScore(post) {
     let score = 0;
     const horas = dayjs().diff(dayjs(post.created), 'hour');
     const dias = horas / 24;
     
-    // ===== 1. FRESCURA (30%) =====
-    if (horas < 1) score += 30;
-    else if (horas < 3) score += 25;
-    else if (horas < 6) score += 20;
-    else if (horas < 12) score += 15;
-    else if (horas < 24) score += 10;
-    else if (dias < 2) score += 5;
-    else if (dias < 5) score += 2;
+    // ===== 1. FRESCURA (40%) - Lo más importante =====
+    if (horas < 1) score += 40;
+    else if (horas < 3) score += 35;
+    else if (horas < 6) score += 30;
+    else if (horas < 12) score += 25;
+    else if (horas < 24) score += 20;
+    else if (dias < 2) score += 15;
+    else if (dias < 3) score += 10;
+    else if (dias < 5) score += 5;
+    else score += 2;
     
-    // ===== 2. CONEXIONES SOCIALES (30%) =====
-    if (post.usuario === currentUser.id) {
-        score += 30; // Tus posts siempre arriba
-    } else if (window._cacheSeguidores?.includes(post.usuario)) {
-        score += 20; // Gente que sigues
-    }
-    
-    // ===== 3. ENGAGEMENT (30%) =====
+    // ===== 2. ENGAGEMENT (30%) =====
     const rating = post.rating || 0;
     const ratingCount = post.ratingCount || 0;
-    
-    if (ratingCount >= 2 && rating >= 4.0) score += 25;
-    else if (ratingCount >= 1 && rating >= 3.5) score += 15;
-    else if (rating >= 3.0) score += 8;
-    
     const comentarios = post.comments?.length || 0;
-    if (comentarios >= 5) score += 10;
-    else if (comentarios >= 2) score += 5;
-    else if (comentarios >= 1) score += 3;
     
-    // ===== 4. TIPO DE CONTENIDO (10%) =====
-    if (post.imagen) score += 8;
-    if (post.audio) score += 4;
+    if (ratingCount >= 3 && rating >= 4.5) score += 25;
+    else if (ratingCount >= 2 && rating >= 4.0) score += 20;
+    else if (ratingCount >= 1 && rating >= 3.5) score += 12;
+    else if (ratingCount >= 1) score += 5;
     
-    // ===== 5. YA INTERACTUASTE =====
-    if (window._cacheIdsVotados?.includes(post.id)) score += 5;
+    if (comentarios >= 3) score += 10;
+    else if (comentarios >= 1) score += 5;
     
-    return score;
+    // ===== 3. DIVERSIDAD (20%) - ¡NUEVO! =====
+    const postsPorUsuario = window._postsPorUsuario || {};
+    const usuarioId = post.usuario;
+    const limite = usuarioId === currentUser.id ? 3 : 2;
+    
+    if (postsPorUsuario[usuarioId] >= limite) {
+        score -= 50;
+    }
+    
+    if (post.imagen) score += 5;
+    if (post.audio) score += 3;
+    
+    // ===== 4. SORPRESA (10%) - ¡NUEVO! =====
+    const interacciones = window._interaccionesPorUsuario || {};
+    const interaccionesConEste = interacciones[usuarioId] || 0;
+    
+    if (interaccionesConEste < 3) score += 15;
+    else if (interaccionesConEste < 10) score += 8;
+    else score += 3;
+    
+    // Pequeño factor aleatorio
+    score += Math.random() * 2;
+    
+    return Math.max(0, score);
 }
 
-// 🆕 cargarPosts OPTIMIZADO (rápido)
+// ========== CONTAR POSTS POR USUARIO ==========
+function contarPostsPorUsuario(posts) {
+    const contador = {};
+    for (const item of posts) {
+        const uid = item.usuario;
+        contador[uid] = (contador[uid] || 0) + 1;
+    }
+    return contador;
+}
+
+// ========== CARGAR INTERACCIONES DEL USUARIO ==========
+async function cargarInteracciones() {
+    if (!currentUser) return {};
+    try {
+        const votos = await pb.collection('votos').getFullList({
+            filter: `usuario = "${currentUser.id}"`,
+            fields: 'post'
+        });
+        
+        const interacciones = {};
+        for (const voto of votos) {
+            try {
+                const post = await pb.collection('posts').getOne(voto.post, { fields: 'usuario' });
+                const uid = post.usuario;
+                interacciones[uid] = (interacciones[uid] || 0) + 1;
+            } catch(e) {}
+        }
+        return interacciones;
+    } catch(e) {
+        return {};
+    }
+}
+
+// ========== CARGAR POSTS CON NUEVO ALGORITMO ==========
 async function cargarPosts(pagina = 1, esCargaInicial = true) {
     const muro = document.getElementById('muro');
     
-    // Si es la primera carga, mostrar skeletons
-if (pagina === 1 && esCargaInicial) {
-    muro.innerHTML = '';
-    for (let i = 0; i < 3; i++) {
-        const skeleton = document.createElement('div');
-        skeleton.className = 'post skeleton';
-        skeleton.style.cssText = `
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            animation: pulseSkeleton 1.5s ease-in-out infinite;
-        `;
-        skeleton.innerHTML = `
-            <div style="display:flex; gap:12px; align-items:center; margin-bottom:15px;">
-                <div style="width:48px;height:48px;border-radius:50%;background:#e0e0e0;"></div>
-                <div>
-                    <div style="width:120px;height:16px;background:#e0e0e0;border-radius:4px;margin-bottom:6px;"></div>
-                    <div style="width:80px;height:12px;background:#e0e0e0;border-radius:4px;"></div>
+    // Skeletons para carga inicial
+    if (pagina === 1 && esCargaInicial) {
+        muro.innerHTML = '';
+        for (let i = 0; i < 3; i++) {
+            const skeleton = document.createElement('div');
+            skeleton.className = 'post skeleton';
+            skeleton.style.cssText = `
+                background: rgba(255,255,255,0.05);
+                border-radius: 12px;
+                padding: 20px;
+                margin-bottom: 20px;
+                animation: pulseSkeleton 1.5s ease-in-out infinite;
+            `;
+            skeleton.innerHTML = `
+                <div style="display:flex; gap:12px; align-items:center; margin-bottom:15px;">
+                    <div style="width:48px;height:48px;border-radius:50%;background:#e0e0e0;"></div>
+                    <div>
+                        <div style="width:120px;height:16px;background:#e0e0e0;border-radius:4px;margin-bottom:6px;"></div>
+                        <div style="width:80px;height:12px;background:#e0e0e0;border-radius:4px;"></div>
+                    </div>
                 </div>
-            </div>
-            <div style="width:100%;height:60px;background:#e0e0e0;border-radius:4px;margin-bottom:12px;"></div>
-            <div style="display:flex;gap:20px;">
-                <div style="width:80px;height:24px;background:#e0e0e0;border-radius:4px;"></div>
-                <div style="width:80px;height:24px;background:#e0e0e0;border-radius:4px;"></div>
-            </div>
-        `;
-        muro.appendChild(skeleton);
+                <div style="width:100%;height:60px;background:#e0e0e0;border-radius:4px;margin-bottom:12px;"></div>
+                <div style="display:flex;gap:20px;">
+                    <div style="width:80px;height:24px;background:#e0e0e0;border-radius:4px;"></div>
+                    <div style="width:80px;height:24px;background:#e0e0e0;border-radius:4px;"></div>
+                </div>
+            `;
+            muro.appendChild(skeleton);
+        }
     }
-}
     
     if (pagina > 1) {
         const loader = document.createElement('div');
@@ -5748,25 +5756,23 @@ if (pagina === 1 && esCargaInicial) {
     }
     
     try {
-        const isPrivate = configuracionGlobal?.perfil_privado || false;
-        const filter = isPrivate ? `usuario = "${currentUser.id}"` : '';
-        
-        // Cargar posts (30 por página para ir más rápido)
-        const records = await pb.collection('posts').getList(pagina, 30, {
+        // Obtener posts (más cantidad para mejor muestreo)
+        const records = await pb.collection('posts').getList(pagina, 40, {
             sort: '-created',
             expand: 'usuario',
-            filter
+            filter: '' // Sin filtro para ver todo
         });
         
         if (records.items.length === 0 && pagina === 1) {
             muro.innerHTML = `<div style="text-align:center; padding:60px 20px;">
                 <div style="font-size:50px; margin-bottom:15px;">📭</div>
                 <div style="color:#888; font-size:16px;">No hay publicaciones aún</div>
+                <div style="color:#aaa; font-size:13px; margin-top:8px;">¡Sé el primero en publicar!</div>
             </div>`;
             return;
         }
         
-        if (records.items.length < 30) noHayMasPosts = true;
+        if (records.items.length < 40) noHayMasPosts = true;
         
         // Marcar usuarios en línea
         const ahora = Date.now();
@@ -5778,7 +5784,7 @@ if (pagina === 1 && esCargaInicial) {
             }
         }
         
-        // Caché (solo se carga 1 vez por sesión)
+        // Cargar cachés necesarios (solo una vez)
         if (!window._cacheSeguidores) {
             const seguidos = await pb.collection('seguidores').getFullList({ 
                 filter: `seguidor = "${currentUser.id}"`,
@@ -5795,13 +5801,17 @@ if (pagina === 1 && esCargaInicial) {
             window._cacheIdsVotados = misVotos.map(v => v.post);
         }
         
-        // Calcular score SIN consultas extras
+        // ===== NUEVO: Calcular posts por usuario e interacciones =====
+        window._postsPorUsuario = contarPostsPorUsuario(records.items);
+        window._interaccionesPorUsuario = await cargarInteracciones();
+        
+        // Calcular score con el nuevo algoritmo
         const postsConScore = records.items.map(post => ({
             post,
             score: calcularScore(post)
         }));
         
-        // Ordenar por score
+        // Ordenar por score (más alto primero)
         postsConScore.sort((a, b) => b.score - a.score);
         
         // Limpiar loader
@@ -5814,8 +5824,8 @@ if (pagina === 1 && esCargaInicial) {
         }
         
         // Renderizar posts
-        const contadorUsuario = {};
         let postsAgregados = 0;
+        const contadorUsuario = {};
         
         for (const item of postsConScore) {
             const post = item.post;
@@ -5823,10 +5833,10 @@ if (pagina === 1 && esCargaInicial) {
             if (palabrasFiltro.some(p => (post.texto || '').toLowerCase().includes(p))) continue;
             if (todosLosPostsCargados.includes(post.id)) continue;
             
+            // Control de duplicados de usuario (ya lo hace el score, pero por seguridad)
             const userId = post.usuario;
             contadorUsuario[userId] = (contadorUsuario[userId] || 0) + 1;
-            
-            const limite = userId === currentUser.id ? 5 : 4;
+            const limite = userId === currentUser.id ? 4 : 3;
             if (contadorUsuario[userId] > limite) continue;
             
             muro.appendChild(crearPostElement(post));
@@ -5865,7 +5875,7 @@ if (pagina === 1 && esCargaInicial) {
             </div>`;
         }
     }
-} 
+}
 
 // Agregar estilos para skeleton
 const styleSkeleton = document.createElement('style');
@@ -6108,15 +6118,16 @@ document.addEventListener('touchend', async () => {
 
 
 
-// 🆕 RESETEAR CACHÉ
+// ========== RESETEAR CACHÉ Y RECARGAR ==========
 function resetearCacheYRecargar() {
     window._cacheSeguidores = null;
     window._cacheVotos = null;
     window._cacheIdsVotados = null;
+    window._postsPorUsuario = null;
+    window._interaccionesPorUsuario = null;
     paginaActual = 1;
     noHayMasPosts = false;
     todosLosPostsCargados = [];
-    perfilUsuario.ultimaActualizacion = null; // 🆕 Resetear perfil también
     cargarPosts(1, true);
 }
 
@@ -6887,6 +6898,7 @@ function typewriterCollapse(el, toHeight) {
         cargarUsuariosEnLinea()
     ]);
     
+    
     // 7. Cargar configuraciones
     cargarHistorial();
     cargarConfiguraciones();
@@ -6897,6 +6909,7 @@ function typewriterCollapse(el, toHeight) {
     setInterval(cargarUsuariosEnLinea, 60000);
     setInterval(cargarNotificaciones, 30000);
     
+
 })();
 
 
@@ -7619,15 +7632,8 @@ if (user2 && Notification.permission !== 'denied') {
         }).catch(() => {});
     });
 }
+
 </script>
 
-<script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js')
-    .then(() => console.log('✅ SHATT lista para instalar como app'))
-    .catch(err => console.log('❌ Error al registrar SW:', err));
-}
-</script>
-    
 </body>
 </html>
