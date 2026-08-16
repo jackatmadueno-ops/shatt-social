@@ -7625,6 +7625,439 @@ if (user2 && Notification.permission !== 'denied') {
     });
 }
 
+// =============================================
+// 🎯 NAVBAR DINÁMICA (BAJA Y SE ESCONDE)
+// =============================================
+// =============================================
+// 🎯 NAVBAR DINÁMICA (BAJA Y SE ESCONDE)
+// =============================================
+
+(function() {
+    // Solo aplicar en PC (pantallas > 768px)
+    if (window.innerWidth <= 768) return;
+    
+    const navbar = document.querySelector('.navbar-top');
+    if (!navbar) return;
+    
+    let lastScrollY = window.scrollY;
+    let hideTimeout = null;
+    let isVisible = true;
+    let isHovering = false;
+    let isAtTop = true;
+    
+    // Guardar la altura original de la navbar
+    const navbarHeight = navbar.offsetHeight;
+    
+    // Estilos iniciales - MANTENER POSICIÓN ORIGINAL
+    navbar.style.transition = 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.3s ease';
+    navbar.style.willChange = 'transform';
+    navbar.style.position = 'sticky';
+    navbar.style.top = '0';
+    navbar.style.zIndex = '100';
+    
+    // Función para mostrar la barra
+    function showNavbar(animate = true) {
+        if (isVisible) return;
+        
+        isVisible = true;
+        navbar.style.transform = 'translateY(0%)';
+        navbar.style.opacity = '1';
+        navbar.style.pointerEvents = 'auto';
+        
+        // Resetear el temporizador de ocultación
+        resetHideTimer();
+    }
+    
+    // Función para ocultar la barra
+    function hideNavbar() {
+        if (!isVisible || isHovering || isAtTop) return;
+        
+        isVisible = false;
+        navbar.style.transform = 'translateY(-100%)';
+        navbar.style.opacity = '0';
+        navbar.style.pointerEvents = 'none';
+    }
+    
+    // Función para resetear el temporizador de ocultación
+    function resetHideTimer() {
+        if (hideTimeout) {
+            clearTimeout(hideTimeout);
+            hideTimeout = null;
+        }
+        
+        // Si está visible y no está en hover, programar ocultación después de 2 segundos
+        if (isVisible && !isHovering && !isAtTop) {
+            hideTimeout = setTimeout(() => {
+                hideNavbar();
+            }, 2000);
+        }
+    }
+    
+    // Evento de scroll
+    function handleScroll() {
+        const currentScrollY = window.scrollY;
+        const scrollDelta = currentScrollY - lastScrollY;
+        
+        // Detectar si estamos en la parte superior
+        isAtTop = currentScrollY < 50;
+        
+        // Si está en la parte superior, mostrar siempre
+        if (isAtTop) {
+            if (!isVisible) {
+                isVisible = true;
+                navbar.style.transform = 'translateY(0%)';
+                navbar.style.opacity = '1';
+                navbar.style.pointerEvents = 'auto';
+            }
+            lastScrollY = currentScrollY;
+            return;
+        }
+        
+        // Si el usuario hizo scroll hacia abajo y la barra está visible, ocultar inmediatamente
+        if (scrollDelta > 10 && isVisible && !isHovering) {
+            hideNavbar();
+        }
+        // Si el usuario hizo scroll hacia arriba, mostrar
+        else if (scrollDelta < -10 && !isVisible) {
+            showNavbar();
+        }
+        
+        lastScrollY = currentScrollY;
+    }
+    
+    // Evento de hover (mouse sobre la barra)
+    navbar.addEventListener('mouseenter', () => {
+        isHovering = true;
+        if (!isVisible) {
+            showNavbar();
+        } else {
+            // Resetear el temporizador si estaba a punto de ocultarse
+            resetHideTimer();
+        }
+    });
+    
+    navbar.addEventListener('mouseleave', () => {
+        isHovering = false;
+        // Si el mouse sale y no estamos en la parte superior, empezar el temporizador
+        if (!isAtTop) {
+            resetHideTimer();
+        }
+    });
+    
+    // Evento de movimiento del mouse (detectar si el mouse está en la parte superior)
+    document.addEventListener('mousemove', (e) => {
+        // Si el mouse está cerca de la parte superior (top 100px), mostrar barra
+        if (e.clientY < 100 && !isVisible) {
+            showNavbar();
+        }
+    });
+    
+    // Evento de scroll con throttling para mejor rendimiento
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                handleScroll();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+    
+    // Mostrar al cargar y empezar el temporizador
+    setTimeout(() => {
+        showNavbar();
+    }, 100);
+    
+    // Si el usuario interactúa con la página (teclado, clic), mostrar barra
+    document.addEventListener('keydown', () => {
+        if (!isAtTop) showNavbar();
+    });
+    document.addEventListener('click', () => {
+        if (!isAtTop) showNavbar();
+    });
+    document.addEventListener('touchstart', () => {
+        if (window.innerWidth <= 768) return;
+        if (!isAtTop) showNavbar();
+    });
+    
+    // Recalcular al cambiar el tamaño de la ventana
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            if (window.innerWidth <= 768) {
+                // En móvil, mostrar siempre
+                navbar.style.transform = 'translateY(0%)';
+                navbar.style.opacity = '1';
+                navbar.style.pointerEvents = 'auto';
+                navbar.style.position = 'sticky';
+            } else {
+                // En PC, reaplicar lógica
+                if (!isVisible && !isAtTop) {
+                    navbar.style.transform = 'translateY(-100%)';
+                    navbar.style.opacity = '0';
+                    navbar.style.pointerEvents = 'none';
+                } else {
+                    navbar.style.transform = 'translateY(0%)';
+                    navbar.style.opacity = '1';
+                    navbar.style.pointerEvents = 'auto';
+                }
+            }
+        }, 300);
+    });
+    
+    console.log('✅ Navbar dinámica activada (PC)');
+})();
+
+// =============================================
+// 📱 COLUMNAS LATERALES DINÁMICAS (SOLO PC)
+// =============================================
+
+(function() {
+    // Solo aplicar en PC (pantallas > 768px)
+    if (window.innerWidth <= 768) return;
+    
+    const leftSidebar = document.querySelector('.sidebar');
+    const rightSidebar = document.querySelector('.right-sidebar');
+    
+    if (!leftSidebar || !rightSidebar) return;
+    
+    let lastScrollY = window.scrollY;
+    let hideTimeoutLeft = null;
+    let hideTimeoutRight = null;
+    let isLeftVisible = true;
+    let isRightVisible = true;
+    let isLeftHovering = false;
+    let isRightHovering = false;
+    let isAtTop = true;
+    
+    // Alturas originales (para referencia)
+    const leftHeight = leftSidebar.offsetHeight;
+    const rightHeight = rightSidebar.offsetHeight;
+    
+    // Configuración
+    const SCROLL_THRESHOLD = 15;  // px de scroll para activar
+    const HIDE_DELAY = 3000;      // 3 segundos antes de ocultar (más tiempo que la barra)
+    const TOP_THRESHOLD = 100;    // px desde arriba para mostrar siempre
+    
+    // Estilos iniciales - MANTENER POSICIÓN ORIGINAL
+    [leftSidebar, rightSidebar].forEach(el => {
+        el.style.transition = 'transform 0.5s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease';
+        el.style.willChange = 'transform';
+        el.style.position = 'sticky';
+        el.style.top = '80px';  // Debajo de la barra superior
+        el.style.zIndex = '50';
+        el.style.maxHeight = 'calc(100vh - 120px)';
+        el.style.overflowY = 'auto';
+        el.style.scrollbarWidth = 'thin';
+    });
+    
+    // Función para mostrar columna izquierda
+    function showLeft(animate = true) {
+        if (isLeftVisible) return;
+        isLeftVisible = true;
+        leftSidebar.style.transform = 'translateX(0%)';
+        leftSidebar.style.opacity = '1';
+        leftSidebar.style.pointerEvents = 'auto';
+        resetHideTimerLeft();
+    }
+    
+    // Función para ocultar columna izquierda
+    function hideLeft() {
+        if (!isLeftVisible || isLeftHovering || isAtTop) return;
+        isLeftVisible = false;
+        leftSidebar.style.transform = 'translateX(-120%)';  // Sale por la izquierda
+        leftSidebar.style.opacity = '0';
+        leftSidebar.style.pointerEvents = 'none';
+    }
+    
+    // Función para mostrar columna derecha
+    function showRight(animate = true) {
+        if (isRightVisible) return;
+        isRightVisible = true;
+        rightSidebar.style.transform = 'translateX(0%)';
+        rightSidebar.style.opacity = '1';
+        rightSidebar.style.pointerEvents = 'auto';
+        resetHideTimerRight();
+    }
+    
+    // Función para ocultar columna derecha
+    function hideRight() {
+        if (!isRightVisible || isRightHovering || isAtTop) return;
+        isRightVisible = false;
+        rightSidebar.style.transform = 'translateX(120%)';  // Sale por la derecha
+        rightSidebar.style.opacity = '0';
+        rightSidebar.style.pointerEvents = 'none';
+    }
+    
+    // Resetear temporizadores
+    function resetHideTimerLeft() {
+        if (hideTimeoutLeft) {
+            clearTimeout(hideTimeoutLeft);
+            hideTimeoutLeft = null;
+        }
+        if (isLeftVisible && !isLeftHovering && !isAtTop) {
+            hideTimeoutLeft = setTimeout(() => {
+                hideLeft();
+            }, HIDE_DELAY);
+        }
+    }
+    
+    function resetHideTimerRight() {
+        if (hideTimeoutRight) {
+            clearTimeout(hideTimeoutRight);
+            hideTimeoutRight = null;
+        }
+        if (isRightVisible && !isRightHovering && !isAtTop) {
+            hideTimeoutRight = setTimeout(() => {
+                hideRight();
+            }, HIDE_DELAY);
+        }
+    }
+    
+    // Evento de scroll
+    function handleScroll() {
+        const currentScrollY = window.scrollY;
+        const scrollDelta = currentScrollY - lastScrollY;
+        
+        // Detectar si estamos en la parte superior
+        isAtTop = currentScrollY < TOP_THRESHOLD;
+        
+        // Si está en la parte superior, mostrar siempre
+        if (isAtTop) {
+            if (!isLeftVisible) {
+                isLeftVisible = true;
+                leftSidebar.style.transform = 'translateX(0%)';
+                leftSidebar.style.opacity = '1';
+                leftSidebar.style.pointerEvents = 'auto';
+            }
+            if (!isRightVisible) {
+                isRightVisible = true;
+                rightSidebar.style.transform = 'translateX(0%)';
+                rightSidebar.style.opacity = '1';
+                rightSidebar.style.pointerEvents = 'auto';
+            }
+            lastScrollY = currentScrollY;
+            return;
+        }
+        
+        // Scroll hacia abajo - ocultar columnas
+        if (scrollDelta > SCROLL_THRESHOLD) {
+            if (isLeftVisible && !isLeftHovering) hideLeft();
+            if (isRightVisible && !isRightHovering) hideRight();
+        }
+        // Scroll hacia arriba - mostrar columnas
+        else if (scrollDelta < -SCROLL_THRESHOLD) {
+            if (!isLeftVisible) showLeft();
+            if (!isRightVisible) showRight();
+        }
+        
+        lastScrollY = currentScrollY;
+    }
+    
+    // Eventos de hover
+    leftSidebar.addEventListener('mouseenter', () => {
+        isLeftHovering = true;
+        if (!isLeftVisible) showLeft();
+        else resetHideTimerLeft();
+    });
+    
+    leftSidebar.addEventListener('mouseleave', () => {
+        isLeftHovering = false;
+        if (!isAtTop) resetHideTimerLeft();
+    });
+    
+    rightSidebar.addEventListener('mouseenter', () => {
+        isRightHovering = true;
+        if (!isRightVisible) showRight();
+        else resetHideTimerRight();
+    });
+    
+    rightSidebar.addEventListener('mouseleave', () => {
+        isRightHovering = false;
+        if (!isAtTop) resetHideTimerRight();
+    });
+    
+    // Evento de movimiento del mouse (mostrar si el mouse está cerca del borde)
+    document.addEventListener('mousemove', (e) => {
+        // Borde izquierdo
+        if (e.clientX < 50 && !isLeftVisible && !isAtTop) {
+            showLeft();
+        }
+        // Borde derecho
+        if (e.clientX > window.innerWidth - 50 && !isRightVisible && !isAtTop) {
+            showRight();
+        }
+    });
+    
+    // Throttling del scroll
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                handleScroll();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+    
+    // Mostrar al cargar y empezar el temporizador
+    setTimeout(() => {
+        showLeft();
+        showRight();
+    }, 100);
+    
+    // Interacciones del usuario
+    document.addEventListener('keydown', () => {
+        if (!isAtTop) {
+            showLeft();
+            showRight();
+        }
+    });
+    document.addEventListener('click', () => {
+        if (!isAtTop) {
+            showLeft();
+            showRight();
+        }
+    });
+    
+    // Recalcular al cambiar el tamaño
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            if (window.innerWidth <= 768) {
+                // En móvil, las columnas están ocultas por CSS
+                // No hacemos nada porque ya tienen display:none
+            } else {
+                // Reaplicar estado en PC
+                if (!isLeftVisible && !isAtTop) {
+                    leftSidebar.style.transform = 'translateX(-120%)';
+                    leftSidebar.style.opacity = '0';
+                    leftSidebar.style.pointerEvents = 'none';
+                } else {
+                    leftSidebar.style.transform = 'translateX(0%)';
+                    leftSidebar.style.opacity = '1';
+                    leftSidebar.style.pointerEvents = 'auto';
+                }
+                if (!isRightVisible && !isAtTop) {
+                    rightSidebar.style.transform = 'translateX(120%)';
+                    rightSidebar.style.opacity = '0';
+                    rightSidebar.style.pointerEvents = 'none';
+                } else {
+                    rightSidebar.style.transform = 'translateX(0%)';
+                    rightSidebar.style.opacity = '1';
+                    rightSidebar.style.pointerEvents = 'auto';
+                }
+            }
+        }, 300);
+    });
+    
+    console.log('✅ Columnas laterales dinámicas activadas (PC)');
+})();
+
 </script>
 
 </body>
