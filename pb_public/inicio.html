@@ -3368,6 +3368,24 @@ body.dark-mode .comment-reply-item {
     border-color: #2a2a3a;
 }
 
+#offline-users {
+    scroll-behavior: smooth;
+}
+
+#offline-users > div {
+    animation: fadeInItem 0.3s ease;
+}
+
+@keyframes fadeInItem {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
     </style>
 </head>
@@ -3579,12 +3597,20 @@ body.dark-mode .comment-reply-item {
                     <div class="side-title">🟢 En línea <span id="online-count" style="font-size:11px; color:#888; font-weight:normal;"></span></div>
                     <div id="online-users" style="max-height:300px; overflow-y:auto; padding-right:4px;"></div>
                 </div>
-                <div class="panel-retro">
-                    <div class="side-title">🔥 Tendencias</div>
-                    <span class="tag-item" onclick="cargarTendencias()">🏆 Top Semanal</span>
-                    <span class="tag-item" onclick="cargarTendencias()">📊 Ranking SHATTS</span>
-                    <span class="tag-item" onclick="cargarTendencias()">⭐ Líderes</span>
-                </div>
+                <!-- Panel de Desconectados -->
+                <!-- NUEVO PANEL: Desconectados con scroll infinito -->
+<div class="panel-retro">
+    <div class="side-title">🌙 Desconectados <span id="offline-count" style="font-size:11px; color:#888; font-weight:normal;"></span></div>
+    <div id="offline-users" style="max-height:400px; overflow-y:auto; padding-right:4px; scroll-behavior:smooth;">
+        <div style="text-align:center; padding:20px; color:#888; font-size:13px;">⏳ Cargando...</div>
+    </div>
+    <!-- Loader de scroll (visible mientras carga) -->
+    <div id="offline-loader" style="display:none; text-align:center; padding:15px; color:#888; font-size:13px;">
+        <span>🔄 Cargando más usuarios...</span>
+    </div>
+</div>
+        </div>
+    </div>
             </div>
         </div>
     </div>
@@ -6214,6 +6240,222 @@ async function cargarUsuariosEnLinea() {
     } catch(e) { div.innerHTML = '<div style="padding:10px; text-align:center; color:#888;">👥 No se pudo cargar</div>'; }
 }
 
+// ========== USUARIOS DESCONECTADOS CON SCROLL INFINITO ==========
+let offlineUsersCache = [];
+let offlinePage = 0;
+const OFFLINE_PAGE_SIZE = 10;  // Cargar de 10 en 10
+let isLoadingOffline = false;
+let allOfflineLoaded = false;
+let offlineContainer = null;
+
+async function cargarUsuariosDesconectados(reset = true) {
+    const div = document.getElementById('offline-users');
+    const countDiv = document.getElementById('offline-count');
+    const loader = document.getElementById('offline-loader');
+    if (!div) return;
+    
+    // Guardar referencia del contenedor para el scroll
+    offlineContainer = div;
+    
+    // Si es reset, limpiar todo
+    if (reset) {
+        offlineUsersCache = [];
+        offlinePage = 0;
+        allOfflineLoaded = false;
+        div.innerHTML = '<div style="text-align:center; padding:20px; color:#888; font-size:13px;">⏳ Cargando...</div>';
+        if (loader) loader.style.display = 'none';
+        // Remover event listener viejo
+        div.removeEventListener('scroll', handleOfflineScroll);
+    }
+    
+    if (isLoadingOffline) return;
+    isLoadingOffline = true;
+    if (loader) loader.style.display = 'block';
+    
+    try {
+        const users = await pb.collection('usuarios').getFullList();
+        const ahora = Date.now();
+        const hace5Min = ahora - (5 * 60 * 1000);
+        
+        // Filtrar desconectados (excluir al usuario actual)
+        const offlineUsers = users.filter(u => {
+            if (u.id === currentUser?.id) return false;
+            const ultimaVez = u.ultimaVez ? new Date(u.ultimaVez).getTime() : 0;
+            return ultimaVez < hace5Min || ultimaVez === 0;
+        });
+        
+        // Ordenar por última vez (más reciente primero)
+        offlineUsers.sort((a, b) => {
+            const aTime = a.ultimaVez ? new Date(a.ultimaVez).getTime() : 0;
+            const bTime = b.ultimaVez ? new Date(b.ultimaVez).getTime() : 0;
+            return bTime - aTime;
+        });
+        
+        // Guardar en caché
+        offlineUsersCache = offlineUsers;
+        
+        if (countDiv) countDiv.textContent = `(${offlineUsers.length})`;
+        
+        if (offlineUsers.length === 0) {
+            div.innerHTML = `
+                <div style="display:flex; flex-direction:column; align-items:center; padding:30px 10px; color:#888; gap:8px;">
+                    <span style="font-size:30px;">🌙</span>
+                    <span style="font-size:13px;">¡Todos están conectados!</span>
+                    <span style="font-size:11px; color:#aaa;">Noche tranquila 🌙</span>
+                </div>
+            `;
+            if (loader) loader.style.display = 'none';
+            isLoadingOffline = false;
+            return;
+        }
+        
+        // Si es reset, mostrar primeros usuarios
+        if (reset) {
+            offlinePage = 0;
+            div.innerHTML = '';
+        }
+        
+        // Calcular cuántos mostrar
+        const start = offlinePage * OFFLINE_PAGE_SIZE;
+        const end = Math.min(start + OFFLINE_PAGE_SIZE, offlineUsers.length);
+        const batch = offlineUsers.slice(start, end);
+        
+        // Si no hay más usuarios
+        if (batch.length === 0) {
+            allOfflineLoaded = true;
+            if (loader) loader.style.display = 'none';
+            isLoadingOffline = false;
+            // ✅ Mostrar mensaje de "todos cargados"
+            const footer = document.createElement('div');
+            footer.style.cssText = 'text-align:center; padding:15px; color:#aaa; font-size:12px;';
+            footer.textContent = `✨ ${offlineUsers.length} usuarios desconectados`;
+            div.appendChild(footer);
+            return;
+        }
+        
+        // Renderizar cada usuario
+        let html = '';
+        for (const user of batch) {
+            const nombre = user.nick || user.email.split('@')[0] || 'Usuario';
+            const avatar = user.pfp ? pb.files.getUrl(user, user.pfp) : null;
+            
+            // ✅ DETECTAR SI ES GIF, VIDEO O IMAGEN
+            let avatarHtml = '';
+            if (avatar) {
+                const extension = avatar.split('.').pop().toLowerCase().split('?')[0];
+                if (['gif'].includes(extension)) {
+                    avatarHtml = `
+                        <img src="${avatar}" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #94a3b8; filter:grayscale(0.5);" loading="lazy">
+                    `;
+                } else if (['mp4', 'webm', 'mov'].includes(extension)) {
+                    avatarHtml = `
+                        <video style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #94a3b8; filter:grayscale(0.5);" muted loop playsinline autoplay loading="lazy">
+                            <source src="${avatar}">
+                        </video>
+                    `;
+                } else {
+                    avatarHtml = `
+                        <img src="${avatar}" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #94a3b8; filter:grayscale(0.5);" loading="lazy">
+                    `;
+                }
+            } else {
+                avatarHtml = `
+                    <div style="width:40px; height:40px; border-radius:50%; background:#ddd; display:flex; align-items:center; justify-content:center; font-size:18px; border:2px solid #94a3b8; filter:grayscale(0.5);">👤</div>
+                `;
+            }
+            
+            const tiempoOffline = user.ultimaVez ? 
+                calcularTiempoOffline(new Date(user.ultimaVez).getTime()) : 
+                'Nunca conectado';
+            
+            html += `
+                <div data-user-id="${user.id}" style="display:flex; align-items:center; gap:12px; padding:10px 8px; border-radius:12px; cursor:pointer; transition:all 0.2s; border-bottom:1px solid rgba(0,0,0,0.03);">
+                    <div style="position:relative; flex-shrink:0;">
+                        ${avatarHtml}
+                        <span style="position:absolute; bottom:0; right:0; width:12px; height:12px; background:#94a3b8; border-radius:50%; border:2px solid white;"></span>
+                    </div>
+                    <div style="flex:1; min-width:0;">
+                        <div style="font-weight:600; font-size:13px; color:#666;">@${escapeHtml(nombre)}</div>
+                        <div style="font-size:10px; color:#94a3b8; display:flex; align-items:center; gap:4px;">
+                            🌙 ${tiempoOffline}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Agregar al contenedor
+        div.innerHTML += html;
+        
+        // Incrementar página
+        offlinePage++;
+        
+        // ✅ Si hay más usuarios, ocultar loader y mostrar scroll infinito
+        if (end < offlineUsers.length) {
+            if (loader) loader.style.display = 'none';
+            
+            // ✅ Agregar event listener de scroll (solo si no está ya)
+            if (reset) {
+                div.addEventListener('scroll', handleOfflineScroll);
+            }
+        } else {
+            allOfflineLoaded = true;
+            if (loader) loader.style.display = 'none';
+            // ✅ Mostrar mensaje de "todos cargados"
+            const footer = document.createElement('div');
+            footer.style.cssText = 'text-align:center; padding:15px; color:#aaa; font-size:12px;';
+            footer.textContent = `✨ ${offlineUsers.length} usuarios desconectados`;
+            div.appendChild(footer);
+        }
+        
+        // Evento click para ver perfil (usando delegación de eventos para mejor rendimiento)
+        div.querySelectorAll('[data-user-id]').forEach(el => {
+            el.addEventListener('click', function() {
+                verPerfil(this.dataset.userId);
+            });
+        });
+        
+    } catch(e) {
+        console.error("Error cargando desconectados:", e);
+        div.innerHTML = '<div style="padding:10px; text-align:center; color:#888;">❌ No se pudo cargar</div>';
+    }
+    
+    isLoadingOffline = false;
+}
+
+// ========== MANEJAR SCROLL INFINITO ==========
+function handleOfflineScroll() {
+    const div = offlineContainer;
+    if (!div) return;
+    
+    // Verificar si el usuario llegó al final
+    const isAtBottom = div.scrollTop + div.clientHeight >= div.scrollHeight - 20;
+    
+    if (isAtBottom && !isLoadingOffline && !allOfflineLoaded) {
+        // Cargar más usuarios automáticamente
+        cargarUsuariosDesconectados(false);
+    }
+}
+
+// ========== CALCULAR TIEMPO DESCONECTADO ==========
+function calcularTiempoOffline(ultimaVezTimestamp) {
+    const ahora = Date.now();
+    const diffMs = ahora - ultimaVezTimestamp;
+    const diffMin = Math.floor(diffMs / 60000);
+    const diffHoras = Math.floor(diffMs / 3600000);
+    const diffDias = Math.floor(diffMs / 86400000);
+    
+    if (diffMin < 60) {
+        return `Hace ${diffMin}m`;
+    } else if (diffHoras < 24) {
+        return `Hace ${diffHoras}h`;
+    } else if (diffDias < 7) {
+        return `Hace ${diffDias}d`;
+    } else {
+        return `Inactivo`;
+    }
+}
+
 // ========== CONFIGURACIÓN ==========
 function abrirPanelConfiguracion() { document.getElementById('settings-overlay').classList.add('active'); document.querySelector('.settings-panel').classList.add('active'); document.body.style.overflow = 'hidden'; cargarConfiguraciones(); cargarPalabrasFiltro(); }
 function cerrarPanelConfiguracion() { document.getElementById('settings-overlay').classList.remove('active'); document.querySelector('.settings-panel').classList.remove('active'); document.body.style.overflow = ''; }
@@ -6882,13 +7124,14 @@ function typewriterCollapse(el, toHeight) {
     setInterval(actualizarUltimaVez, 30000);
     
     // 6. Cargar datos
-    await Promise.all([
-        cargarPerfilUsuario(currentUser.id),
-        cargarPosts(1, true),  // ✅ USA LA FUNCIÓN QUE YA EXISTE
-        cargarGaleria(),
-        cargarNotificaciones(),
-        cargarUsuariosEnLinea()
-    ]);
+await Promise.all([
+    cargarPerfilUsuario(currentUser.id),
+    cargarPosts(1, true),
+    cargarGaleria(),
+    cargarNotificaciones(),
+    cargarUsuariosEnLinea(),
+    cargarUsuariosDesconectados(true)  // ← true = reset
+]);
     
     
     // 7. Cargar configuraciones
@@ -6898,10 +7141,8 @@ function typewriterCollapse(el, toHeight) {
     renderMoodSelectors();
     
     // 8. Intervalos
-    setInterval(cargarUsuariosEnLinea, 60000);
-    setInterval(cargarNotificaciones, 30000);
-    
-
+setInterval(cargarUsuariosEnLinea, 60000);
+setInterval(() => cargarUsuariosDesconectados(true), 120000);  // ← Actualizar cada 2 min
 })();
 
 
@@ -8057,6 +8298,7 @@ if (user2 && Notification.permission !== 'denied') {
     
     console.log('✅ Columnas laterales dinámicas activadas (PC)');
 })();
+
 
 </script>
 
