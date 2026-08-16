@@ -5659,9 +5659,6 @@ function calcularScore(post) {
     const usuarioId = post.usuario;
     const limite = usuarioId === currentUser.id ? 3 : 2;
     
-    if (postsPorUsuario[usuarioId] >= limite) {
-        score -= 50;
-    }
     
     if (post.imagen) score += 5;
     if (post.audio) score += 3;
@@ -5757,7 +5754,7 @@ async function cargarPosts(pagina = 1, esCargaInicial = true) {
     
     try {
         // Obtener posts (más cantidad para mejor muestreo)
-        const records = await pb.collection('posts').getList(pagina, 40, {
+        const records = await pb.collection('posts').getList(pagina, 150, {
             sort: '-created',
             expand: 'usuario',
             filter: '' // Sin filtro para ver todo
@@ -5832,13 +5829,8 @@ async function cargarPosts(pagina = 1, esCargaInicial = true) {
             if (!post.expand?.usuario) continue;
             if (palabrasFiltro.some(p => (post.texto || '').toLowerCase().includes(p))) continue;
             if (todosLosPostsCargados.includes(post.id)) continue;
-            
-            // Control de duplicados de usuario (ya lo hace el score, pero por seguridad)
-            const userId = post.usuario;
-            contadorUsuario[userId] = (contadorUsuario[userId] || 0) + 1;
-            const limite = userId === currentUser.id ? 4 : 3;
-            if (contadorUsuario[userId] > limite) continue;
-            
+    
+             // ✅ AHORA MUESTRA TODOS LOS POSTS SIN LÍMITE
             muro.appendChild(crearPostElement(post));
             todosLosPostsCargados.push(post.id);
             postsAgregados++;
