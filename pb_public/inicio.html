@@ -3836,6 +3836,7 @@ let perfilUsuario = {
 
 
 
+
 const PB_URL = 'https://shatt-social-production.up.railway.app';
 const pb = new PocketBase(PB_URL);
 pb.autoCancellation(false);
@@ -3865,6 +3866,62 @@ let todosLosPostsCargados = [];
 
 // ========== 🆕 SISTEMA DE CONFIGURACIÓN 100% EN LA NUBE ==========
 let configuracionGlobal = null;
+
+
+// ========== RESTAURAR DISEÑO ORIGINAL ==========
+function restaurarDisenoOriginal() {
+    const disenoGuardado = sessionStorage.getItem('shatt_diseno_original');
+    if (!disenoGuardado) return false;
+    
+    try {
+        const diseno = JSON.parse(disenoGuardado);
+        console.log('🔄 Restaurando diseño original...');
+        
+        if (diseno.fondo) document.body.style.background = diseno.fondo;
+        if (diseno.bgImage) document.body.style.backgroundImage = diseno.bgImage;
+        if (diseno.bgColor) document.body.style.backgroundColor = diseno.bgColor;
+        
+        if (diseno.darkMode) document.body.classList.add('dark-mode');
+        else document.body.classList.remove('dark-mode');
+        
+        if (diseno.opacidad) document.documentElement.style.setProperty('--panel-opacity', diseno.opacidad);
+        if (diseno.accent) document.documentElement.style.setProperty('--shatt-blue', diseno.accent);
+        if (diseno.fontSize) document.documentElement.style.fontSize = diseno.fontSize;
+        
+        if (diseno.tema) {
+            document.body.className = document.body.className
+                .split(' ')
+                .filter(c => !c.startsWith('theme-'))
+                .join(' ');
+            document.body.classList.add(diseno.tema);
+        }
+        
+        sessionStorage.removeItem('shatt_diseno_original');
+        console.log('✅ Diseño original restaurado correctamente');
+        return true;
+    } catch(e) {
+        console.error('❌ Error restaurando diseño:', e);
+        sessionStorage.removeItem('shatt_diseno_original');
+        return false;
+    }
+}
+
+// Evento para cuando se usa el botón atrás
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        console.log('🔄 Botón atrás detectado, restaurando diseño...');
+        restaurarDisenoOriginal();
+        if (currentUser) {
+            cargarPerfilUsuario(currentUser.id);
+            resetearCacheYRecargar();
+        }
+    }
+});
+
+// Al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    restaurarDisenoOriginal();
+});
 
 // Cargar estilo al iniciar
 (async function cargarMiEstilo() {
@@ -7086,6 +7143,61 @@ function typewriterCollapse(el, toHeight) {
 
 // ========== INICIALIZACIÓN CORREGIDA ==========
 (async function() {
+
+        // ============================================================
+    // ✅ 1. RESTAURAR DISEÑO DESDE sessionStorage (ANTES DE TODO)
+    // ============================================================
+    const disenoGuardado = sessionStorage.getItem('shatt_diseno_guardado');
+    if (disenoGuardado) {
+        try {
+            const diseno = JSON.parse(disenoGuardado);
+            console.log('🔄 Restaurando diseño original desde sessionStorage...');
+            
+            // Restaurar tema
+            if (diseno.tema) {
+                document.body.className = document.body.className
+                    .split(' ')
+                    .filter(c => !c.startsWith('theme-'))
+                    .join(' ');
+                document.body.classList.add(diseno.tema);
+            }
+            
+            // Restaurar modo oscuro
+            if (diseno.darkMode) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+            
+            // Restaurar fondo
+            if (diseno.fondo) {
+                document.body.style.background = diseno.fondo;
+            }
+            
+            // Restaurar opacidad
+            if (diseno.opacidad) {
+                document.documentElement.style.setProperty('--panel-opacity', diseno.opacidad);
+            }
+            
+            // Restaurar color de acento
+            if (diseno.accent) {
+                document.documentElement.style.setProperty('--shatt-blue', diseno.accent);
+            }
+            
+            // Restaurar tamaño de fuente
+            if (diseno.fontSize) {
+                document.documentElement.style.fontSize = diseno.fontSize;
+            }
+            
+            // Limpiar sessionStorage
+            sessionStorage.removeItem('shatt_diseno_guardado');
+            console.log('✅ Diseño original restaurado correctamente');
+        } catch(e) {
+            console.error('❌ Error restaurando diseño:', e);
+            sessionStorage.removeItem('shatt_diseno_guardado');
+        }
+    }
+
     // 1. Verificar sesión
     const saved = localStorage.getItem('pocketbase_auth');
     if (saved) {
