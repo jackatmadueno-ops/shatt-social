@@ -1725,103 +1725,142 @@
             }
         }
 
+      
+// 👤 CARGAR PERFIL DEL USUARIO (CORREGIDO)
+// ============================================================
+async function cargarDatos(uid) {
+    try {
+        const user = await pb.collection('usuarios').getOne(uid);
+        
         // ============================================================
-        // 👤 CARGAR PERFIL DEL USUARIO
+        // 🚨 LO MÁS IMPORTANTE: NO SOBRESCRIBIR EL DISEÑO DEL USUARIO ACTUAL
         // ============================================================
-        async function cargarDatos(uid) {
+        
+        // ✅ GUARDAR el diseño actual del usuario logueado ANTES de cualquier cambio
+        if (uid !== currentUser?.id) {
+            // Guardar en sessionStorage (NO en localStorage)
+            const disenoActual = {
+                tema: document.body.className.split(' ').find(c => c.startsWith('theme-')) || 'theme-shatt',
+                darkMode: document.body.classList.contains('dark-mode'),
+                fondo: document.body.style.background || '#3a6186',
+                opacidad: getComputedStyle(document.documentElement).getPropertyValue('--panel-opacity').trim() || '1',
+                accent: getComputedStyle(document.documentElement).getPropertyValue('--shatt-blue').trim() || '#3b5998',
+                fontSize: getComputedStyle(document.documentElement).fontSize || '16px'
+            };
+            sessionStorage.setItem('shatt_diseno_guardado', JSON.stringify(disenoActual));
+            console.log('💾 Diseño actual guardado (temporal)');
+        }
+        
+        // ============================================================
+        // 🔥 AQUÍ ESTÁ EL CAMBIO CLAVE: NO USAR localStorage
+        // ============================================================
+        
+        // ❌ ELIMINA o COMENTA estas líneas que SOBRESCRIBEN localStorage:
+        // localStorage.setItem('shatt_tema_global', user.tema_global);
+        // localStorage.setItem('shatt_darkmode_cache', ...);
+        // localStorage.setItem('shatt_bg_cache', ...);
+        // localStorage.setItem('shatt_accent_cache', ...);
+        // localStorage.setItem('shatt_fontsize_cache', ...);
+        
+        // ✅ EN SU LUGAR, solo aplica el diseño VISUALMENTE (sin guardar en localStorage)
+        // Esto solo afecta a la página actual, no al localStorage
+        
+        // Aplicar tema del usuario visitado (SOLO VISUAL)
+        if (user.tema_global) {
+            // Quitar temas anteriores
+            document.body.className = document.body.className
+                .split(' ')
+                .filter(c => !c.startsWith('theme-'))
+                .join(' ');
+            document.body.classList.add('theme-' + user.tema_global);
+            // ❌ NO guardar en localStorage
+        }
+        
+        // Aplicar modo oscuro del visitado (SOLO VISUAL)
+        if (user.tema === 'dark') {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+        }
+        // ❌ NO guardar en localStorage
+        
+        // Aplicar fondo del visitado (SOLO VISUAL)
+        if (user.imagen_fondo) {
             try {
-                const user = await pb.collection('usuarios').getOne(uid);
-                
-                // Aplicar tema del usuario visitado
-                if (user.tema_global) {
-                    document.body.className = document.body.className
-                        .split(' ')
-                        .filter(c => !c.startsWith('theme-'))
-                        .join(' ');
-                    document.body.classList.add('theme-' + user.tema_global);
-                    localStorage.setItem('shatt_tema_global', user.tema_global);
-                }
-                
-                if (user.tema === 'dark') {
-                    document.body.classList.add('dark-mode');
-                    localStorage.setItem('shatt_darkmode_cache', 'true');
-                } else {
-                    document.body.classList.remove('dark-mode');
-                    localStorage.setItem('shatt_darkmode_cache', 'false');
-                }
-                
-                if (user.imagen_fondo) {
-                    try {
-                        const url = pb.files.getUrl(user, user.imagen_fondo);
-                        document.body.style.background = `url(${url}) center/cover fixed`;
-                        localStorage.setItem('shatt_bg_cache', `url(${url}) center/cover fixed`);
-                    } catch(e) {}
-                } else if (user.color_fondo && user.color_fondo !== 'none') {
-                    document.body.style.background = user.color_fondo;
-                    localStorage.setItem('shatt_bg_cache', user.color_fondo);
-                }
-                
-                if (user.opacidad) {
-                    document.documentElement.style.setProperty('--panel-opacity', user.opacidad);
-                    localStorage.setItem('shatt_opacity_cache', user.opacidad);
-                }
-                
-                if (user.accent_color) {
-                    document.documentElement.style.setProperty('--shatt-blue', user.accent_color);
-                    localStorage.setItem('shatt_accent_cache', user.accent_color);
-                }
-                
-                if (user.tamano_fuente) {
-                    document.documentElement.style.fontSize = user.tamano_fuente + 'px';
-                    localStorage.setItem('shatt_fontsize_cache', user.tamano_fuente);
-                }
+                const url = pb.files.getUrl(user, user.imagen_fondo);
+                document.body.style.background = `url(${url}) center/cover fixed`;
+            } catch(e) {}
+        } else if (user.color_fondo && user.color_fondo !== 'url_bg') {
+            document.body.style.background = user.color_fondo;
+        }
+        // ❌ NO guardar en localStorage
+        
+        // Aplicar opacidad (SOLO VISUAL)
+        if (user.opacidad) {
+            document.documentElement.style.setProperty('--panel-opacity', user.opacidad);
+        }
+        
+        // Aplicar color de acento (SOLO VISUAL)
+        if (user.accent_color) {
+            document.documentElement.style.setProperty('--shatt-blue', user.accent_color);
+        }
+        
+        // Aplicar tamaño de fuente (SOLO VISUAL)
+        if (user.tamano_fuente) {
+            document.documentElement.style.fontSize = user.tamano_fuente + 'px';
+        }
+        
+        // ============================================================
+        // 📊 EL RESTO DE TU CÓDIGO PARA MOSTRAR DATOS DEL PERFIL
+        // ============================================================
+        
+        // ... (tu código existente para mostrar nombre, bio, etc.)
+        let nombreMostrar = user.nick || (user.email ? user.email.split('@')[0] : "Usuario");
+        document.getElementById('disp-nick').innerText = `@${nombreMostrar}`;
+        document.getElementById('disp-bio').innerText = user.bio || "Sin bio.";
+        document.getElementById('disp-about').innerText = user.about || "Hola!";
+        document.getElementById('disp-int-gen').innerText = user.intGen || "-";
+        document.getElementById('disp-int-mus').innerText = user.intMus || "-";
+        document.getElementById('disp-pais').innerText = user.pais || "-";
+        document.getElementById('disp-sexo').innerText = user.sexo || "-";
+        document.getElementById('disp-fuma').innerText = user.fuma || "-";
+        document.getElementById('disp-toma').innerText = user.toma || "-";
 
-                // Mostrar datos del perfil
-                let nombreMostrar = user.nick || (user.email ? user.email.split('@')[0] : "Usuario");
-                document.getElementById('disp-nick').innerText = `@${nombreMostrar}`;
-                document.getElementById('disp-bio').innerText = user.bio || "Sin bio.";
-                document.getElementById('disp-about').innerText = user.about || "Hola!";
-                document.getElementById('disp-int-gen').innerText = user.intGen || "-";
-                document.getElementById('disp-int-mus').innerText = user.intMus || "-";
-                document.getElementById('disp-pais').innerText = user.pais || "-";
-                document.getElementById('disp-sexo').innerText = user.sexo || "-";
-                document.getElementById('disp-fuma').innerText = user.fuma || "-";
-                document.getElementById('disp-toma').innerText = user.toma || "-";
+        document.getElementById('mobile-nick').innerText = `@${nombreMostrar}`;
+        document.getElementById('mobile-bio').innerText = user.bio || "Sin bio.";
+        document.getElementById('mobile-pais').innerText = user.pais || "-";
+        document.getElementById('mobile-sexo').innerText = user.sexo || "-";
+        document.getElementById('mobile-fuma').innerText = user.fuma || "-";
+        document.getElementById('mobile-toma').innerText = user.toma || "-";
 
-                document.getElementById('mobile-nick').innerText = `@${nombreMostrar}`;
-                document.getElementById('mobile-bio').innerText = user.bio || "Sin bio.";
-                document.getElementById('mobile-pais').innerText = user.pais || "-";
-                document.getElementById('mobile-sexo').innerText = user.sexo || "-";
-                document.getElementById('mobile-fuma').innerText = user.fuma || "-";
-                document.getElementById('mobile-toma').innerText = user.toma || "-";
+        // Contadores
+        const seguidores = await getSeguidoresCount(uid);
+        const seguidos = await getSeguidosCount(uid);
+        actualizarContadores(seguidores, seguidos);
 
-                // Contadores
-                const seguidores = await getSeguidoresCount(uid);
-                const seguidos = await getSeguidosCount(uid);
-                actualizarContadores(seguidores, seguidos);
-
-                // Foto de perfil
-                if (user.pfp) {
-                    const url = pb.files.getUrl(user, user.pfp);
-                    const esVideo = user.pfp.toLowerCase().match(/\.(mp4|webm|mov|avi)$/i);
-                    if (esVideo) {
-                        document.getElementById('disp-pfp').innerHTML = `<video src="${url}" style="width:100%;height:100%;object-fit:cover;" muted autoplay loop playsinline></video>`;
-                        document.getElementById('mobile-pfp').innerHTML = `<video src="${url}" style="width:100%;height:100%;object-fit:cover;" muted autoplay loop playsinline></video>`;
-                    } else {
-                        document.getElementById('disp-pfp').innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;">`;
-                        document.getElementById('mobile-pfp').innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;">`;
-                    }
-                }
-
-                // Botones de seguir/mensaje
-                await configurarBotones(uid);
-                await configurarBotonesMovil(uid);
-                
-            } catch(e) {
-                document.getElementById('disp-nick').innerText = "Usuario no encontrado";
-                mostrarToast("❌ Usuario no encontrado");
+        // Foto de perfil
+        if (user.pfp) {
+            const url = pb.files.getUrl(user, user.pfp);
+            const esVideo = user.pfp.toLowerCase().match(/\.(mp4|webm|mov|avi)$/i);
+            if (esVideo) {
+                document.getElementById('disp-pfp').innerHTML = `<video src="${url}" style="width:100%;height:100%;object-fit:cover;" muted autoplay loop playsinline></video>`;
+                document.getElementById('mobile-pfp').innerHTML = `<video src="${url}" style="width:100%;height:100%;object-fit:cover;" muted autoplay loop playsinline></video>`;
+            } else {
+                document.getElementById('disp-pfp').innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;">`;
+                document.getElementById('mobile-pfp').innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;">`;
             }
         }
+
+        // Botones de seguir/mensaje
+        await configurarBotones(uid);
+        await configurarBotonesMovil(uid);
+        
+    } catch(e) {
+        console.error('Error cargando perfil:', e);
+        document.getElementById('disp-nick').innerText = "Usuario no encontrado";
+        mostrarToast("❌ Usuario no encontrado");
+    }
+}
 
         // ============================================================
         // 👥 SEGUIDORES Y SEGUIDOS
